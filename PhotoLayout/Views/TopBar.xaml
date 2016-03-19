@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="PhotoLayout.Views.TopBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PhotoLayout.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="800">
+    <UserControl.Resources>
+        <!-- Default button style -->
+        <Style TargetType="Button" BasedOn="{StaticResource EmptyButton}">
+            <Setter Property="Margin" Value="10,0" />
+        </Style>
+        
+        <!-- Default path style -->
+        <Style TargetType="Path" BasedOn="{StaticResource ButtonContent}">
+            <Setter Property="StrokeThickness" Value="2" />
+            <Setter Property="Fill" Value="White" />
+        </Style>
+        
+        <!-- Default border separator style -->
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="#FF8F8A8A" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="0,6,0,3" />
+        </Style>
+        
+        <!-- Default text block style -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Left column -->
+        <StackPanel Orientation="Horizontal">
+            <!-- Back -->
+            <Button>
+                <Path Data="{StaticResource Cancel}" Stretch="Uniform" Height="25" StrokeThickness="1" />
+            </Button>
+
+            <!-- Border separator -->
+            <Border />
+
+            <!-- Rename -->
+            <Button Content="Rename" />            
+            <!-- Save -->
+            <Button Content="Save" />
+            
+            <!-- Border separator -->
+            <Border />
+        </StackPanel>
+
+        <!-- Middle column : Image name -->
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="50,0">
+            <TextBlock Text="This right here is an image name" TextTrimming="CharacterEllipsis" MaxWidth="1000" />
+            <TextBlock Text="*" Margin="1,0,0,6"/>
+        </StackPanel>
+    
+        <!-- Right column -->
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <!-- Border separator -->
+            <Border />
+            
+            <!-- Change layout -->
+            <StackPanel Margin="15,0">
+                <TextBlock Text="Change layout" Margin="0,0,0,3" />
+                
+                <!-- Previous and Next buttons for layout change -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="previousLayout">
+                        <Path Data="{StaticResource Previous}" Width="40" Stretch="Fill" />
+                    </Button>
+                    <Button x:Name="nextLayout">
+                        <Path Data="{StaticResource Previous}" Width="40" Stretch="Fill">
+                            <Path.LayoutTransform>
+                                <RotateTransform Angle="180" />
+                            </Path.LayoutTransform>
+                        </Path>
+                    </Button>                                                        
+                </StackPanel>
+            </StackPanel>            
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,9 +1,17 @@
 ﻿<Application x:Class="PhotoLayout.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PhotoLayout"
+             xmlns:local="clr-namespace:PhotoLayout"             
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- First 2 ways can produce a bug in VS2015, where the source path is not recognized for some reason -->
+                <ResourceDictionary Source="Resources/Shapes.xaml" />
+                <ResourceDictionary Source="Resources/ButtonStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Resources/PathStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/PhotoLayout;component/Resources/Brushes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

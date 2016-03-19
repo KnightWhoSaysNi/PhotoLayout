@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:PhotoLayout">
+
+    <SolidColorBrush x:Key="Accent" Color="#FF6ACDF4" />
+    
+</ResourceDictionary>

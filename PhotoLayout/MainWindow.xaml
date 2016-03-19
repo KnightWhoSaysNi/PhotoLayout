@@ -3,10 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PhotoLayout"
+        xmlns:views="clr-namespace:PhotoLayout.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="800" Width="1600">
+    <Window.Background>
+        <SolidColorBrush Color="#2c3e50" />
+    </Window.Background>
+    
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <Border BorderBrush="LightBlue" BorderThickness="0.5">
+            <views:TopBar Margin="0,0,0,2"/>            
+        </Border>
+        
         
     </Grid>
 </Window>
