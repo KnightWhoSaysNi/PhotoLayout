@@ -20,12 +20,7 @@
         
         <!-- Default path style -->
         <Style TargetType="Path" BasedOn="{StaticResource ButtonContent}">
-            <Setter Property="Fill" Value="White" />
-            <Setter Property="LayoutTransform">
-                <Setter.Value>
-                    <ScaleTransform ScaleX="2.5" ScaleY="2.5" />
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Fill" Value="White" />            
         </Style>
 
         <Style TargetType="StackPanel">
@@ -50,7 +45,11 @@
         <!-- Get more images -->
         <StackPanel Grid.Row="2" Grid.Column="0" Margin="50,0,20,0">
             <Button>
-                <Path Data="{StaticResource GetMoreImages}" />
+                <Path Data="{StaticResource GetMoreImages}">
+                    <Path.LayoutTransform>
+                        <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
+                    </Path.LayoutTransform>
+                </Path>
             </Button>
             <TextBlock Text="Get more images" />
         </StackPanel>
