@@ -13,7 +13,7 @@
         </Style>
         
         <!-- Default path style -->
-        <Style TargetType="Path" BasedOn="{StaticResource ButtonContent}">
+        <Style TargetType="Path" BasedOn="{StaticResource ButtonPath}">
             <Setter Property="StrokeThickness" Value="2" />
             <Setter Property="Fill" Value="White" />
         </Style>
