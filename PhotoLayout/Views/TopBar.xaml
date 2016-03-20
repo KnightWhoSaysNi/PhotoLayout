@@ -48,7 +48,7 @@
         <StackPanel Orientation="Horizontal">
             <!-- Back -->
             <Button>
-                <Path Data="{StaticResource Cancel}" Stretch="Uniform" Height="25" StrokeThickness="1" />
+                <Path Data="{StaticResource Cancel}" Stretch="Uniform" Height="35" StrokeThickness="1" />
             </Button>
 
             <!-- Border separator -->
@@ -81,10 +81,10 @@
                 <!-- Previous and Next buttons for layout change -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="previousLayout">
-                        <Path Data="{StaticResource Previous}" Width="40" Stretch="Fill" />
+                        <Path Data="{StaticResource Previous}" Width="60" Height="50" Stretch="Fill" />
                     </Button>
                     <Button x:Name="nextLayout">
-                        <Path Data="{StaticResource Previous}" Width="40" Stretch="Fill">
+                        <Path Data="{StaticResource Previous}" Width="60" Height="50" Stretch="Fill">
                             <Path.LayoutTransform>
                                 <RotateTransform Angle="180" />
                             </Path.LayoutTransform>
