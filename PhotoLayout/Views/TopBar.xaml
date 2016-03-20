@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PhotoLayout.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="800">
+             d:DesignHeight="200" d:DesignWidth="1200">
     <UserControl.Resources>
         <!-- Default button style -->
         <Style TargetType="Button" BasedOn="{StaticResource EmptyButton}">
@@ -14,8 +14,13 @@
         
         <!-- Default path style -->
         <Style TargetType="Path" BasedOn="{StaticResource ButtonPath}">
-            <Setter Property="StrokeThickness" Value="2" />
+            <Setter Property="StrokeThickness" Value="1" />
             <Setter Property="Fill" Value="White" />
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                </Setter.Value>
+            </Setter>
         </Style>
         
         <!-- Default border separator style -->
@@ -48,7 +53,7 @@
         <StackPanel Orientation="Horizontal">
             <!-- Back -->
             <Button>
-                <Path Data="{StaticResource Cancel}" Stretch="Uniform" Height="35" StrokeThickness="1" />
+                <Path Data="{StaticResource Cancel}" Height="20" Stretch="Uniform"/>
             </Button>
 
             <!-- Border separator -->
@@ -57,8 +62,20 @@
             <!-- Rename -->
             <Button Content="Rename" />            
             <!-- Save -->
-            <Button Content="Save" />
-            
+            <Button Content="Save"/>
+
+            <!-- Border separator -->
+            <Border />
+
+            <!-- Undo -->
+            <Button>
+                <Path Data="{StaticResource Undo}" />
+            </Button>
+            <!-- Redo -->
+            <Button>
+                <Path Data="{StaticResource Redo}" />
+            </Button>
+
             <!-- Border separator -->
             <Border />
         </StackPanel>
@@ -81,12 +98,19 @@
                 <!-- Previous and Next buttons for layout change -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="previousLayout">
-                        <Path Data="{StaticResource Previous}" Width="60" Height="50" Stretch="Fill" />
+                        <Path Data="{StaticResource Previous}">
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleX="2" ScaleY="1.5" />
+                            </Path.LayoutTransform>
+                        </Path>
                     </Button>
                     <Button x:Name="nextLayout">
-                        <Path Data="{StaticResource Previous}" Width="60" Height="50" Stretch="Fill">
+                        <Path Data="{StaticResource Previous}">
                             <Path.LayoutTransform>
-                                <RotateTransform Angle="180" />
+                                <TransformGroup>
+                                    <RotateTransform Angle="180" />
+                                    <ScaleTransform ScaleX="2" ScaleY="1.5" />
+                                </TransformGroup>                                
                             </Path.LayoutTransform>
                         </Path>
                     </Button>                                                        

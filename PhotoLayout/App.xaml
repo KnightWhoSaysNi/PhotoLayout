@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="/PhotoLayout;component/Resources/PathStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/PhotoLayout;component/Resources/Brushes.xaml" />
                 <ResourceDictionary Source="/PhotoLayout;component/Resources/TextBlockStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Resources/BorderStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
