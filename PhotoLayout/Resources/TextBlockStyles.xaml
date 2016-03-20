@@ -2,17 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PhotoLayout">
 
-    <!-- Path set as a content for a button -->
-    <Style x:Key="ButtonPath" TargetType="Path">
+    <!-- TextBlock set as a content for a button -->
+    <Style x:Key="ButtonTextBlock" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}" />
+        <Setter Property="Foreground" Value="White" />
         <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="Stroke" Value="White" />
-        <Setter Property="Fill" Value="White" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsPressed}" Value="True">
-                <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
 </ResourceDictionary>

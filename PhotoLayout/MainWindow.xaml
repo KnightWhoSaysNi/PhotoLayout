@@ -19,6 +19,7 @@
 
         <!-- Top bar -->
         <Border x:Name="topBorder" BorderBrush="LightBlue" BorderThickness="0.5" Margin="-10,-100,0,0">
+            <!-- Slide down animation -->
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -37,11 +38,13 @@
             </Border.Style>
             <views:TopBar />            
         </Border>
+        
+        
 
-        <Border Grid.Row="2" BorderBrush="LightCyan" BorderThickness="1" CornerRadius="5" Padding="35" VerticalAlignment="Bottom">
+        <Border Grid.Row="2" BorderBrush="LightCyan" BorderThickness="1" CornerRadius="5" Padding="15" VerticalAlignment="Bottom">
             <views:PhotoManipulationView />
-        </Border>
+        </Border>       
 
-        <Button Visibility="Collapsed" Grid.Row="2" Content="Show" Foreground="Black" FontSize="22" Margin="200" Click="Button_Click" VerticalAlignment="Bottom" />
+        <Button x:Name="showTop" HorizontalAlignment="Center" Padding="5" Margin="5" Grid.Row="2" Content="Show top bar" Foreground="Black" FontSize="22" Click="Button_Click" VerticalAlignment="Bottom" />
     </Grid>
 </Window>

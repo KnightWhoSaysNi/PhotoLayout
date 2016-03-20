@@ -29,6 +29,7 @@ namespace PhotoLayout
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             topBorder.Visibility = Visibility.Visible;
+            showTop.Visibility = Visibility.Collapsed;
         }
     }
 }

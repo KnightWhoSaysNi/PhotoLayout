@@ -19,14 +19,11 @@
         </Style>
         
         <!-- Default path style -->
-        <Style TargetType="Path" BasedOn="{StaticResource ButtonContent}">
+        <Style TargetType="Path" BasedOn="{StaticResource ButtonPath}">
             <Setter Property="Fill" Value="White" />            
         </Style>
 
-        <Style TargetType="StackPanel">
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-        </Style>
+        
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -43,44 +40,44 @@
         </Grid.ColumnDefinitions>
 
         <!-- Get more images -->
-        <StackPanel Grid.Row="2" Grid.Column="0" Margin="50,0,20,0">
-            <Button>
-                <Path Data="{StaticResource GetMoreImages}">
+        <Button Grid.Row="2" Grid.Column="0" Margin="50,0,20,0" HorizontalAlignment="Center">
+            <StackPanel>
+                <Path Data="{StaticResource GetMoreImages}" StrokeThickness="0.1">
                     <Path.LayoutTransform>
                         <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
                     </Path.LayoutTransform>
                 </Path>
-            </Button>
-            <TextBlock Text="Get more images" />
-        </StackPanel>
+                <TextBlock Margin="0,8,0,0" Text="Get more images" />
+            </StackPanel>
+        </Button>
 
         <!-- Replace image -->
-        <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,0">
-            <Button>
-                <Border>
-                    <Path Data="{StaticResource ReplaceImage}" Fill="Transparent">
-                        <Path.LayoutTransform>
-                            <ScaleTransform ScaleX="3.5" ScaleY="3.5" />
-                        </Path.LayoutTransform>
-                    </Path>                    
-                </Border>
-            </Button>
-            <TextBlock Text="Replace" />
-        </StackPanel>
+        <Button Grid.Row="2" Grid.Column="1" Margin="20,0">
+            <StackPanel>
+                <Path Data="{StaticResource ReplaceImage}" Fill="Transparent">
+                    <Path.LayoutTransform>
+                        <ScaleTransform ScaleX="3.5" ScaleY="3.5" />
+                    </Path.LayoutTransform>
+                </Path>
+                <TextBlock Text="Replace" />
+            </StackPanel>
+        </Button>
 
-        <StackPanel Grid.Row="2" Grid.Column="2" Margin="20,0">
-            <Button>
+        <!-- Flip horizontally -->
+        <Button Grid.Row="2" Grid.Column="2" Margin="20,0">
+            <StackPanel>
                 <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
                     <Path.LayoutTransform>
                         <ScaleTransform ScaleX="1.8" ScaleY="1.8" />
                     </Path.LayoutTransform>
                 </Path>
-            </Button>
-            <TextBlock Text="Flip horizontally" />
-        </StackPanel>
+                <TextBlock Text="Flip horizontally" />
+            </StackPanel>
+        </Button>
 
-        <StackPanel Grid.Row="2" Grid.Column="3" Margin="20,0">
-            <Button>
+        <!-- Flip vertically -->
+        <Button Grid.Row="2" Grid.Column="3" Margin="20,0">
+            <StackPanel>
                 <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
                     <Path.LayoutTransform>
                         <TransformGroup>
@@ -89,8 +86,8 @@
                         </TransformGroup>
                     </Path.LayoutTransform>
                 </Path>
-            </Button>
-            <TextBlock Text="Flip vertically" />
-        </StackPanel>
+                <TextBlock Text="Flip vertically" />
+            </StackPanel>
+        </Button>
     </Grid>
 </UserControl>
