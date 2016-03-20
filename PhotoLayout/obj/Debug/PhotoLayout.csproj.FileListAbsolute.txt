@@ -20,3 +20,5 @@ C:\Users\Alita\Documents\Visual Studio 2015\Projects\PhotoLayout\PhotoLayout\obj
 C:\Users\Alita\Documents\Visual Studio 2015\Projects\PhotoLayout\PhotoLayout\obj\Debug\Resources\Shapes.baml
 C:\Users\Alita\Documents\Visual Studio 2015\Projects\PhotoLayout\PhotoLayout\obj\Debug\Resources\PathStyles.baml
 C:\Users\Alita\Documents\Visual Studio 2015\Projects\PhotoLayout\PhotoLayout\obj\Debug\Resources\Brushes.baml
+C:\Users\Alita\Documents\Visual Studio 2015\Projects\PhotoLayout\PhotoLayout\obj\Debug\Views\PhotoManipulationView.g.cs
+C:\Users\Alita\Documents\Visual Studio 2015\Projects\PhotoLayout\PhotoLayout\obj\Debug\Views\PhotoManipulationView.baml

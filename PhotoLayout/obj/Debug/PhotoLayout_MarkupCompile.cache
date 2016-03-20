@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Alita\Documents\Visual Studio 2015\Projects\PhotoLayout\PhotoLayout\App.xaml
-61045343641
+7-528640312
 
-6150217060
+7-1076386195
 13738642453
-MainWindow.xaml;Resources\Brushes.xaml;Resources\ButtonStyles.xaml;Resources\PathStyles.xaml;Resources\Shapes.xaml;Views\TopBar.xaml;
+MainWindow.xaml;Resources\Brushes.xaml;Resources\ButtonStyles.xaml;Resources\PathStyles.xaml;Resources\Shapes.xaml;Views\PhotoManipulationView.xaml;Views\TopBar.xaml;
 
 False
 

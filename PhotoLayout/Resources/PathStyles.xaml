@@ -4,7 +4,9 @@
 
     <!-- Path set as a content for a button -->
     <Style x:Key="ButtonContent" TargetType="Path">
+        <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="Stroke" Value="White" />
+        <Setter Property="Fill" Value="White" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsPressed}" Value="True">
                 <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />

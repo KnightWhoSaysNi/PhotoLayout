@@ -13,22 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PhotoLayout
+namespace PhotoLayout.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for PhotoManipulationView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class PhotoManipulationView : UserControl
     {
-        public MainWindow()
+        public PhotoManipulationView()
         {
             InitializeComponent();
-            //something
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            topBorder.Visibility = Visibility.Visible;
         }
     }
 }
