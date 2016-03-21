@@ -63,7 +63,7 @@
                                     </Style.Triggers>
                                 </Style>                                
                             </Border.Style>
-                            <Image Source="{Binding }" Height="200" Width="200"/>
+                            <Image Source="{Binding }" MinWidth="150" MaxWidth="200" Height="150" Stretch="Uniform" />                            
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

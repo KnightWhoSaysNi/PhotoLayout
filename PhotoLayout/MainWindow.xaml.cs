@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -28,8 +29,7 @@ namespace PhotoLayout
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         #region - Fields -
-
-        private int currentImageIndex = 0;
+        
         private ImageSource image;
 
         #endregion
@@ -78,43 +78,41 @@ namespace PhotoLayout
 
         private void OnOpen(object sender, ExecutedRoutedEventArgs e)
         {
+            // TODO Check if this releases memory!!! --- it does not without direct call to GC
+            AllPhotos.Clear();
+
             var openDialog = new OpenFileDialog();
             openDialog.Filter = "Image files (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF";
             openDialog.Multiselect = true;
+
             if (openDialog.ShowDialog() == true)
             {
                 var imagePaths = openDialog.FileNames;
 
+                // Just creates a list of bitmap images
+                //List<BitmapImage> bitmaps = new List<BitmapImage>();
+                //foreach (var imagePath in imagePaths)
+                //{
+                //    var count = bitmaps.Count;
+                //    bitmaps.Add(CreateImage(imagePath));                    
+                //}
 
+                //bitmaps.Clear();
+
+                // TODO Is this the best way of updating UI?
                 var worker = new BackgroundWorker();
-                //worker.WorkerReportsProgress = true;
 
                 worker.DoWork += (s, workerArgs) =>
                 {
-                    int count = 0;
                     foreach (var imagePath in imagePaths)
                     {
-                        if (count % 10 == 0)
-                        {
-                            Thread.Sleep(100);
-                        }
                         BitmapImage bitmap = CreateImage(imagePath);
-                        //worker.ReportProgress(count / imagePaths.Length, bitmap);
                         Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(bitmap)), DispatcherPriority.Background);
-                        count++;
                     }
                 };
 
-                //worker.ProgressChanged += (s, workerArgs) =>
-                //{
-                //    BitmapImage bitmap = (BitmapImage)workerArgs.UserState;
-
-                //Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(bitmap)), DispatcherPriority.Background);
-                //    //AllPhotos.Add(bitmap);
-                //};
-
-                //Dispatcher.BeginInvoke((Action)(() => worker.RunWorkerAsync()), DispatcherPriority.ApplicationIdle);
                 worker.RunWorkerAsync();
+
 
                 //foreach (var imagePath in imagePaths)
                 //{
@@ -124,7 +122,6 @@ namespace PhotoLayout
                 //        AllPhotos.Add(bitmap);
                 //    }), DispatcherPriority.ApplicationIdle);
                 //}
-
             }
         }        
 
@@ -134,30 +131,26 @@ namespace PhotoLayout
             showTop.Visibility = Visibility.Collapsed;
         }
 
-        private void ShowFirstImage(object sender, RoutedEventArgs e)
+        private void CallGC(object sender, RoutedEventArgs e)
         {
-            //if (AllPhotos == null || AllPhotos.Count == 0)
-            //{
-            //    // No images to show
-            //    // TODO Add a 'No Image' image to show in the image preview
-            //    return;
-            //}
-
-            //if (!CreateImage(AllPhotos[0]))
-            //{
-            //    // TODO Same as the above check, but with some error message 
-            //}
-            //currentImageIndex = 0;
+            GC.Collect();
         }
 
         private BitmapImage CreateImage(string filePath)
         {
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.DecodePixelHeight = 800;
             
+            BitmapImage bitmapImage = new BitmapImage();
+            //var stream = File.OpenRead(filePath);
+
+            bitmapImage.BeginInit();
+            //bitmapImage.CreateOptions = BitmapCreateOptions.DelayCreation;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+
+            // If this is not set memory is not being released at all, until AllPhotos is cleared AND GC is called. 
+            // But with this set memory is being released automatically, probably after AllPhotos has been filled up
+            bitmapImage.DecodePixelWidth = 200;
             bitmapImage.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
+            //bitmapImage.StreamSource = stream;
             // To save significant application memory, set the DecodePixelWidth or  
             // DecodePixelHeight of the BitmapImage value of the image source to the desired 
             // height or width of the rendered image. If you don't do this, the application will 
@@ -170,25 +163,16 @@ namespace PhotoLayout
             bitmapImage.EndInit();
             bitmapImage.Freeze(); // TODO Check if the images can be resized after this
 
+            //stream.Dispose();
+            //bitmapImage = null;
+
             //imagePreview.Source = bitmapImage;
             return bitmapImage;
         }
 
         private void NextImage(object sender, RoutedEventArgs e)
         {
-            //    if (AllPhotos == null || AllPhotos.Count == 0)
-            //    {
-            //        System.Diagnostics.Debug.WriteLine("There are no images");
-            //        return;
-            //    }
-
-            //    currentImageIndex++;
-            //    if (currentImageIndex == AllPhotos.Count)
-            //    {
-            //        currentImageIndex = 0;
-            //    }
-
-            //    CreateImage(AllPhotos[currentImageIndex]);
+            
         }
 
         private void PreviousImage(object sender, RoutedEventArgs e)
