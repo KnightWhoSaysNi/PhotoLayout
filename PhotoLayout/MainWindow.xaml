@@ -38,13 +38,21 @@
             </Border.Style>
             <views:TopBar />            
         </Border>
-        
-        
 
-        <Border Grid.Row="2" BorderBrush="LightCyan" BorderThickness="1" CornerRadius="5" Padding="15" VerticalAlignment="Bottom">
+        <Border Grid.Row="1" BorderBrush="LightSalmon" BorderThickness="1" Margin="10" CornerRadius="5" Padding="15">
+            <views:PhotoLayoutSelection DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" /> 
+        </Border>
+
+        <!-- Photo manipulation view -->
+        <Border Grid.Row="2" BorderBrush="LightCyan" BorderThickness="1" CornerRadius="5" Padding="15" VerticalAlignment="Bottom" >
             <views:PhotoManipulationView />
-        </Border>       
+        </Border>
 
-        <Button x:Name="showTop" HorizontalAlignment="Center" Padding="5" Margin="5" Grid.Row="2" Content="Show top bar" Foreground="Black" FontSize="22" Click="Button_Click" VerticalAlignment="Bottom" />
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="5" HorizontalAlignment="Center">
+            <Button x:Name="showTop" Padding="5" Content="Show top bar" Foreground="Black" FontSize="22" Click="ShowTopBar" Margin="5" />
+            <Button Content="Show first image" FontSize="22" Click="ShowFirstImage" Margin="5" />
+            <Button Content="Next image" FontSize="22" Click="NextImage" Margin="5" />
+            <Button Content="Previous image" FontSize="22" Click="PreviousImage" Margin="5" />
+        </StackPanel>
     </Grid>
 </Window>
