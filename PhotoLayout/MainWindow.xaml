@@ -52,8 +52,8 @@
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="5" HorizontalAlignment="Center">
             <Button x:Name="showTop" Padding="5" Content="Show top bar" Foreground="Black" FontSize="22" Click="ShowTopBar" Margin="5" />
             <Button Content="Call GC" FontSize="22" Click="CallGC" Margin="5" />
-            <Button Content="Next image" FontSize="22" Click="NextImage" Margin="5" />
-            <Button Content="Previous image" FontSize="22" Click="PreviousImage" Margin="5" />
+            <Button Visibility="Collapsed" Content="Clear stored photos" FontSize="22" Click="ClearStoredPhotos" Margin="5" />
+            <Button Visibility="Collapsed" Content="Preview last photo" FontSize="22" Click="PreviewLastPhoto" Margin="5" />
             <Image x:Name="previewImage" Height="1000" Width="1000" Visibility="Collapsed"/>
         </StackPanel>
     </Grid>
