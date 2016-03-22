@@ -25,6 +25,9 @@ namespace PhotoLayout.Views
             InitializeComponent();            
         }
 
+        /// <summary>
+        /// Stops auto scrolling of selected item into view. When selected item is partially visible stops the ListBox from auto scrolling to it.
+        /// </summary>
         private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
         {
             e.Handled = true;
