@@ -197,17 +197,6 @@ namespace PhotoLayout
             if (AllPhotos != null)
             {
                 AllPhotos.Clear();
-                return;
-            }
-
-            if (StoredPhotos != null)
-            {
-                StoredPhotos.Clear();
-            }
-
-            if (AllPhotos.Count > 0)
-            {
-                AllPhotos.RemoveAt(0);
             }
         }
 
