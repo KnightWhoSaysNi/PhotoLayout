@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoLayout.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,7 +30,7 @@ namespace PhotoLayout
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         #region - Fields -
-        
+
         //private ImageSource image;
 
         #endregion
@@ -39,8 +40,9 @@ namespace PhotoLayout
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
             
+            this.DataContext = this;
+
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
 
             AllPhotos = new ObservableCollection<BitmapSource>();

@@ -59,6 +59,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Models\Photo.cs" />
+    <Compile Include="ViewModels\BindableBase.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\NavigationViewModel.cs" />
+    <Compile Include="ViewModels\PhotoManipulationViewModel.cs" />
+    <Compile Include="ViewModels\TestViewModel.cs" />
     <Compile Include="Views\PhotoLayoutSelection.xaml.cs">
       <DependentUpon>PhotoLayoutSelection.xaml</DependentUpon>
     </Compile>
@@ -146,8 +153,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controls\" />
-    <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\temp layout icon.ico" />
