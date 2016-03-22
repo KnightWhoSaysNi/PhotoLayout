@@ -22,8 +22,12 @@ namespace PhotoLayout.Views
     {
         public PhotoLayoutSelection()
         {
-            InitializeComponent();
-            
+            InitializeComponent();            
+        }
+
+        private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }
