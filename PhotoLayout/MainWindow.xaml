@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:PhotoLayout.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1600">
+        Title="MainWindow" Height="800" Width="1600"
+        Icon="Icons/temp layout icon.ico">
     <Window.Background>
         <SolidColorBrush Color="#2c3e50" />
     </Window.Background>
