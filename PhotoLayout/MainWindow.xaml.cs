@@ -171,7 +171,7 @@ namespace PhotoLayout
 
             // If this is not set memory is not being released at all, until AllPhotos is cleared AND GC is called. 
             // But with this set to a low value, memory is being released automatically, maybe after AllPhotos has been filled up
-            bitmapImage.DecodePixelWidth = 2000;
+            bitmapImage.DecodePixelWidth = 1000;
             bitmapImage.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
             // To save significant application memory, set the DecodePixelWidth or  
             // DecodePixelHeight of the BitmapImage value of the image source to the desired 
