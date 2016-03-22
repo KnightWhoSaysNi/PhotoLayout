@@ -38,6 +38,7 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
+            <TextBlock Text="Number photos in AllPhotos: " FontSize="22" VerticalAlignment="Center" />
             <TextBlock Text="{Binding ElementName=allPhotosListBox, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}" FontSize="22" VerticalAlignment="Center" />
         </StackPanel>
         
@@ -52,30 +53,42 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="5" BorderBrush="White" BorderThickness="1" CornerRadius="5">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
-                                            <Setter Property="BorderThickness" Value="1.5" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>                                
-                            </Border.Style>
-                            <Image Source="{Binding }" MinWidth="150" MaxWidth="200" Height="150" Stretch="Uniform" />                            
-                        </Border>
+                        <Border x:Name="bd" Margin="3" BorderBrush="White" BorderThickness="1.5" CornerRadius="5" Width="150" Height="150">
+                            <Border.OpacityMask>
+                                <VisualBrush>
+                                    <VisualBrush.Visual>
+                                        <Border Background="White" CornerRadius="5" Width="150" Height="150" />
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Border.OpacityMask>
+                            <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>                           
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
-                <!--<ListBox.ItemContainerStyle>
+                <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
-                        
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="bd" >
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Accent}" />
+                                            <Setter TargetName="bd" Property="BorderThickness" Value="2" />
+                                            <Setter TargetName="bd" Property="CornerRadius" Value="5" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
-                </ListBox.ItemContainerStyle>-->
+                </ListBox.ItemContainerStyle>
             </ListBox>
         </Border>
-        
+
         <!-- Modified photos -->
         <StackPanel Visibility="Visible" Grid.Column="1" Grid.RowSpan="2" Margin="40,20">
             <Rectangle Margin="20" Width="50" Height="50" Fill="Bisque" />
