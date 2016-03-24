@@ -27,6 +27,8 @@
         
         <!-- Layout selection -->
         <StackPanel Orientation="Horizontal" Margin="20">
+            <TextBlock Text="Number photos in AllPhotos: " FontSize="22" Foreground="White" VerticalAlignment="Center" />
+            <TextBlock Text="{Binding ElementName=allPhotosListBox, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}" FontSize="22" VerticalAlignment="Center" Foreground="White" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="MediumVioletRed" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="SlateBlue" />
@@ -38,11 +40,11 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
-            <TextBlock Text="Number photos in AllPhotos: " FontSize="22" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding ElementName=allPhotosListBox, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}" FontSize="22" VerticalAlignment="Center" />
         </StackPanel>
         
-        <!-- Photo selection -->
+        
+        
+        <!-- Photo selection -->        
         <Border Grid.Row="1" BorderBrush="LightSkyBlue" BorderThickness="1" CornerRadius="5" Margin="10">
             <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding AllPhotos}">
                 <ListBox.ItemsPanel>
