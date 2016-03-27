@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoLayout.Models;
 using PhotoLayout.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,7 @@ namespace PhotoLayout
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
 
             AllPhotos = new ObservableCollection<BitmapSource>();
+
         }
 
         #endregion  
@@ -82,34 +84,13 @@ namespace PhotoLayout
 
         private void OnOpen(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO Check if this releases memory!!! --- it does not without direct call to GC
-            //AllPhotos.Clear();
-
             var openDialog = new OpenFileDialog();
             openDialog.Filter = "Image files (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF";
             openDialog.Multiselect = true;
 
             if (openDialog.ShowDialog() == true)
             {
-                var imagePaths = openDialog.FileNames;
-
-                //// Just creates a list of bitmap images
-                //List<BitmapImage> bitmaps = new List<BitmapImage>();
-                //foreach (var imagePath in imagePaths)
-                //{
-                //    var count = bitmaps.Count;
-                //    bitmaps.Add(CreateImage(imagePath));
-                //}
-                //if (StoredPhotos == null)
-                //{
-                //    StoredPhotos = new List<BitmapImage>(bitmaps);
-                //}
-                //else
-                //{
-                //    StoredPhotos.AddRange(bitmaps);
-                //}
-                //return;
-                
+                var imagePaths = openDialog.FileNames;                                               
 
                 // TODO Is this the best way of updating UI?
                 var worker = new BackgroundWorker();
@@ -169,11 +150,11 @@ namespace PhotoLayout
 
             bitmapImage.BeginInit();
             //bitmapImage.CreateOptions = BitmapCreateOptions.DelayCreation;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.CacheOption = BitmapCacheOption.None; // None or OnLoad - doesn't matter for direct load as it is now
 
             // If this is not set memory is not being released at all, until AllPhotos is cleared AND GC is called. 
             // But with this set to a low value, memory is being released automatically, maybe after AllPhotos has been filled up
-            bitmapImage.DecodePixelWidth = 1000;
+            bitmapImage.DecodePixelWidth = 200;
             bitmapImage.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
             // To save significant application memory, set the DecodePixelWidth or  
             // DecodePixelHeight of the BitmapImage value of the image source to the desired 
