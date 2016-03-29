@@ -130,8 +130,8 @@ namespace PhotoLayout
                 //    {
                 //        BitmapImage bitmap = CreateImage(imagePath);
                 //        AllPhotos.Add(bitmap);
-                //    }), DispatcherPriority.ApplicationIdle); 
-                //}                
+                //    }), DispatcherPriority.ApplicationIdle);
+                //}
             }
         }        
 
@@ -171,7 +171,7 @@ namespace PhotoLayout
 
             // If this is not set memory is not being released at all, until AllPhotos is cleared AND GC is called. 
             // But with this set to a low value, memory is being released automatically, maybe after AllPhotos has been filled up
-            bitmapImage.DecodePixelWidth = 300;
+            bitmapImage.DecodePixelWidth = 300; // up to 800 might also be ok (more testing needed)
             bitmapImage.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
             // To save significant application memory, set the DecodePixelWidth or  
             // DecodePixelHeight of the BitmapImage value of the image source to the desired 
@@ -190,34 +190,19 @@ namespace PhotoLayout
 
         #region - Temp test methods -
 
-        private void ClearStoredPhotos(object sender, RoutedEventArgs e)
+        private void ClearAllPhotos(object sender, RoutedEventArgs e)
         {
             if (AllPhotos != null)
             {
                 AllPhotos.Clear();
                 return;
-            }
-
-            if (StoredPhotos != null)
-            {
-                StoredPhotos.Clear();
-            }
-
-            if (AllPhotos.Count > 0)
-            {
-                AllPhotos.RemoveAt(0);
-            }
+            }           
         }
 
         private int count = 0;
-        private void PreviewLastPhoto(object sender, RoutedEventArgs e)
+        private void ClearWrapPanel(object sender, RoutedEventArgs e)
         {
-            AllPhotos.Add(StoredPhotos[count]);
-            count++;
-            if (count == StoredPhotos.Count)
-            {
-                count = 0;
-            }
+            
         }
 
         #endregion
