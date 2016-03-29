@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\SelectedItemCountToColorConverter.cs" />
     <Compile Include="Views\PhotoLayoutSelection.xaml.cs">
       <DependentUpon>PhotoLayoutSelection.xaml</DependentUpon>
     </Compile>
