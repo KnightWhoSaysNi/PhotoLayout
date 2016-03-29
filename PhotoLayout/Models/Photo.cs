@@ -5,22 +5,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.IO;
+using System.Drawing;
 
 namespace PhotoLayout.Models
 {
     public class Photo : INotifyPropertyChanged
     {
-        #region - Fields -
+        #region - Fields -        
 
+        private string name;
+        private string extension;
         private bool isSaved;
+        private bool isNewPhoto;
+        private BitmapSource originalBitmap;
+        private BitmapSource thumbnail;
+        private BitmapSource previewBitmap;
 
         #endregion
 
         #region - Constructors -
-
-        public Photo()
+        
+        // On Save a name is given (extension as well, most likely) and an image is saved to temp folder with a specific uri.
+        // That uri is specified here, with the name and extension
+        public Photo(Uri uri, string name, string extension, bool isNewPhoto = false)
         {
-
+            // If it's an existing photo no need for explanation
+            // If it's a complex photo then it's actually an already created image and technically there is no difference (YET!)
+            this.PhotoUri = uri;
+            this.isNewPhoto = isNewPhoto;
+            this.name = name;
+            this.extension = extension;
         }
 
         #endregion
@@ -38,14 +53,80 @@ namespace PhotoLayout.Models
 
         #endregion
 
+        #region - Enums -
+
+        // TODO Check if these are optimal values
+        enum DecodePixelWidth
+        {
+            OriginalPixelWidth = 0,
+            ThumbnailPixelWidth = 300,
+            PreviewPixelWidth = 1920
+        }
+
+        #endregion
+
         #region - Properties -
 
-        // TODO !!! Check if Drawing image is a better solution than an Image control with BitmapSource !!!
-        // Might need refactoring later on
-        public BitmapSource Source { get; set; }
-        public BitmapSource ThumbnailSource { get; set; }
+        //public Image ComplexImage { get; set; } // This should be the screenshot of the mixed images. It might need to be WriteableBitmap instead of Drawing.Image
 
-        public string Name { get; set; }
+        public Uri PhotoUri { get; private set; }
+        public BitmapSource OriginalBitmap
+        {
+            get
+            {
+                return originalBitmap;
+            }
+            set
+            {
+                originalBitmap = value;
+                OnPropertyChanged(nameof(OriginalBitmap));
+            }        
+        }
+
+        public BitmapSource Thumbnail
+        {
+            get
+            {
+                return thumbnail;
+            }
+            set
+            {
+                thumbnail = value;
+                OnPropertyChanged(nameof(Thumbnail));
+            }
+        }     
+                   
+        public BitmapSource PreviewBitmap
+        {
+            get
+            {
+                return previewBitmap;
+            }
+            set
+            {
+                previewBitmap = value;
+                OnPropertyChanged(nameof(PreviewBitmap));
+            }         
+        } 
+        // public BitmapSource PrintBitmap { get; private set; } // TODO Determine if this property is also needed
+
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                if (name != value)
+                {
+                    name = value;
+                    OnPropertyChanged(nameof(Name));
+
+                    if (isNewPhoto)
+                    {
+                        SetPhotoUri();
+                    }
+                }
+            }
+        }
         
         public bool IsSaved
         {
@@ -55,11 +136,11 @@ namespace PhotoLayout.Models
                 if (isSaved != value)
                 {
                     isSaved = value;
-                    OnPropertyChanged(nameof(IsSaved));
+                    OnPropertyChanged(nameof(IsSaved)); 
                 }
             }
         }
-
+        
         #endregion
 
         #region - Public methods -
@@ -67,6 +148,45 @@ namespace PhotoLayout.Models
         public override string ToString()
         {
             return this.Name;
+        }
+
+        public void UpdateBitmapSources()
+        {
+            OriginalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
+            Thumbnail = GetBitmapSource(DecodePixelWidth.ThumbnailPixelWidth);
+            PreviewBitmap = GetBitmapSource(DecodePixelWidth.PreviewPixelWidth);
+        }
+
+        #endregion
+
+        #region - Private methods -
+
+        private BitmapSource GetBitmapSource(DecodePixelWidth decodeWidth)
+        {
+            BitmapImage source = new BitmapImage();
+            source.BeginInit();
+            source.CacheOption = BitmapCacheOption.None; // TODO Check if this should be OnLoad
+            //source.DecodeFailed
+            if (decodeWidth != DecodePixelWidth.OriginalPixelWidth)
+            {
+                source.DecodePixelWidth = (int)decodeWidth;
+            }
+            source.UriSource = PhotoUri;
+            source.EndInit();
+            source.Freeze();
+
+            return source;
+        }
+
+        /// <summary>
+        /// Sets uri for the photo. Used only for the newly created photo.
+        /// </summary>
+        private void SetPhotoUri()
+        {
+            // TODO Resolve different extensions already in name
+            // TODO Check if 1 folder up is the place to put the temp 
+            string tempPhotoUri = $"../TempPhoto/{name}{extension}"; 
+            PhotoUri = new Uri(tempPhotoUri, UriKind.Relative); 
         }
 
         #endregion

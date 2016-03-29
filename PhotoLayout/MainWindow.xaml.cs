@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoLayout.Models;
 using PhotoLayout.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -82,9 +83,6 @@ namespace PhotoLayout
 
         private void OnOpen(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO Check if this releases memory!!! --- it does not without direct call to GC
-            //AllPhotos.Clear();
-
             var openDialog = new OpenFileDialog();
             openDialog.Filter = "Image files (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF";
             openDialog.Multiselect = true;
@@ -92,24 +90,6 @@ namespace PhotoLayout
             if (openDialog.ShowDialog() == true)
             {
                 var imagePaths = openDialog.FileNames;
-
-                //// Just creates a list of bitmap images
-                //List<BitmapImage> bitmaps = new List<BitmapImage>();
-                //foreach (var imagePath in imagePaths)
-                //{
-                //    var count = bitmaps.Count;
-                //    bitmaps.Add(CreateImage(imagePath));
-                //}
-                //if (StoredPhotos == null)
-                //{
-                //    StoredPhotos = new List<BitmapImage>(bitmaps);
-                //}
-                //else
-                //{
-                //    StoredPhotos.AddRange(bitmaps);
-                //}
-                //return;
-                
 
                 // TODO Is this the best way of updating UI?
                 var worker = new BackgroundWorker();
@@ -169,7 +149,7 @@ namespace PhotoLayout
 
             bitmapImage.BeginInit();
             //bitmapImage.CreateOptions = BitmapCreateOptions.DelayCreation;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.CacheOption = BitmapCacheOption.None; // None or OnLoad - doesn't matter for direct load as it is now
 
             // If this is not set memory is not being released at all, until AllPhotos is cleared AND GC is called. 
             // But with this set to a low value, memory is being released automatically, maybe after AllPhotos has been filled up
@@ -196,16 +176,14 @@ namespace PhotoLayout
         {
             if (AllPhotos != null)
             {
-                AllPhotos.Clear();
-                return;
-            }           
+                AllPhotos.Clear();                
+            }
         }
 
-        private int count = 0;
         private void ClearWrapPanel(object sender, RoutedEventArgs e)
         {
-            
-        }
+
+        }    
 
         #endregion
     }
