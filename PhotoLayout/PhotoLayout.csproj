@@ -66,6 +66,8 @@
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PhotoManipulationViewModel.cs" />
     <Compile Include="ViewModels\TestViewModel.cs" />
+    <Compile Include="Controls\LayoutGrid.cs" />
+    <Compile Include="Converters\SelectedItemCountToColorConverter.cs" />
     <Compile Include="Views\PhotoLayoutSelection.xaml.cs">
       <DependentUpon>PhotoLayoutSelection.xaml</DependentUpon>
     </Compile>
@@ -153,6 +155,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controls\" />
+    <Folder Include="Models\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\temp layout icon.ico" />

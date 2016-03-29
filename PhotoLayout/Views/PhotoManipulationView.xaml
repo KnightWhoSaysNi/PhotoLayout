@@ -46,7 +46,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Get more images -->
-        <Button Grid.Column="0" Margin="50,0,20,0" Command="ApplicationCommands.Open">
+        <Button Grid.Column="0" Command="ApplicationCommands.Open">
             <Border Style="{StaticResource ButtonContentBorder}">
                 <StackPanel>
                     <Path Data="{StaticResource MoreImages}" StrokeThickness="0.1">
