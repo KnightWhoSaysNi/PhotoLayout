@@ -30,8 +30,8 @@
         </Grid.ColumnDefinitions>
         
         <!-- Layout selection -->
-        <StackPanel Orientation="Horizontal" Margin="20">
-            <TextBlock Text="Number photos in AllPhotos: " Foreground="White" FontSize="22" VerticalAlignment="Center" />
+        <!--<StackPanel Orientation="Horizontal" Margin="20">
+            <TextBlock Text="Number of photos in AllPhotos: " Foreground="White" FontSize="22" VerticalAlignment="Center" />
             <TextBlock Text="{Binding ElementName=allPhotosListBox, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}" FontSize="22" VerticalAlignment="Center" Foreground="White" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="MediumVioletRed" />
@@ -44,7 +44,37 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
-        </StackPanel>
+        </StackPanel>-->
+        <ListBox Margin="20" ItemsSource="{Binding ElementName=allPhotosListBox, Path=SelectedItems}" Background="Transparent" 
+                 ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Horizontal" IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Orange" Width="175" Height="175">
+                        <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />                        
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border x:Name="bd" Margin="1,0" BorderThickness="2" BorderBrush="Orange">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
         
         <!-- Photo selection -->
         <Border Grid.Row="1" BorderBrush="LightSkyBlue" BorderThickness="1" CornerRadius="5" Margin="10">
@@ -119,10 +149,5 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="Orange" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
         </StackPanel>
-
-        <!-- ListBox for testing purposes-->
-        <!--<ListBox Grid.Column="1" Grid.RowSpan="3" Grid.Row="0" Margin="40,20" ItemsSource="{Binding AllPhotos}" Height="300" VerticalAlignment="Top" ScrollViewer.VerticalScrollBarVisibility="Visible" />-->
-        <!--<ListBox Grid.Column="0" Grid.Row="2" Margin="40,20" ItemsSource="{Binding AllPhotos}" ScrollViewer.VerticalScrollBarVisibility="Visible" FontSize="30" />-->
-
     </Grid>
 </UserControl>
