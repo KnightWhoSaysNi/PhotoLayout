@@ -4,13 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PhotoLayout.Views"
+             xmlns:converters="clr-namespace:PhotoLayout.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="1600">
     <UserControl.Resources>
+        <converters:SelectedItemCountToColorConverter x:Key="SelectedItemCountToColor" />
+        
         <Style x:Key="allPhotosListBox" TargetType="ListBox">
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
             <Setter Property="Background" Value="Transparent" />
+            <Setter Property="SelectionMode" Value="Multiple" />
         </Style>
     </UserControl.Resources>
     
@@ -27,6 +31,8 @@
         
         <!-- Layout selection -->
         <StackPanel Orientation="Horizontal" Margin="20">
+            <TextBlock Text="Number photos in AllPhotos: " Foreground="White" FontSize="22" VerticalAlignment="Center" />
+            <TextBlock Text="{Binding ElementName=allPhotosListBox, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}" FontSize="22" VerticalAlignment="Center" Foreground="White" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="MediumVioletRed" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="SlateBlue" />
@@ -38,8 +44,6 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
-            <TextBlock Text="Number photos in AllPhotos: " FontSize="22" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding ElementName=allPhotosListBox, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}" FontSize="22" VerticalAlignment="Center" />
         </StackPanel>
         
         <!-- Photo selection -->
@@ -53,14 +57,16 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border x:Name="bd" BorderBrush="White" BorderThickness="1.5" CornerRadius="5" Width="150" Height="150">
+                        <Border x:Name="bd" BorderBrush="Gray" BorderThickness="1.5" CornerRadius="5" Width="150" Height="150">
                             <Border.OpacityMask>
                                 <VisualBrush>
                                     <VisualBrush.Visual>
-                                        <Border Background="White" CornerRadius="{Binding ElementName=bd, Path=CornerRadius}" Width="{Binding ElementName=bd, Path=Width}" Height="{Binding ElementName=bd, Path=Height}" />
+                                        <!-- Binding ElementName=bd, Path=*** doesn't work for some reason - it's created after opacity mask? -->
+                                        <Border Background="White" CornerRadius="5" Width="150" Height="150" />
                                     </VisualBrush.Visual>
                                 </VisualBrush>
-                            </Border.OpacityMask>                                                      
+                            </Border.OpacityMask>    
+                            <!-- Thumbnail image -->
                             <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>                           
                     </DataTemplate>
@@ -68,18 +74,31 @@
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
-                        <Setter Property="Margin" Value="2" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
-                                    <Border x:Name="bd">
-                                        <ContentPresenter />
+                                    <Border x:Name="bd" BorderThickness="3" BorderBrush="Transparent">
+                                        <Grid>
+                                            <ContentPresenter />
+                                            <Path x:Name="pathy" 
+                                                  Data="{StaticResource CircleOk}" 
+                                                  Opacity="0.8" 
+                                                  Stroke="Black" 
+                                                  Visibility="Collapsed" 
+                                                  HorizontalAlignment="Right" 
+                                                  VerticalAlignment="Bottom" 
+                                                  Height="40" 
+                                                  Width="40"
+                                                  Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=SelectedItems.Count, 
+                                                Converter={StaticResource SelectedItemCountToColor}, ConverterParameter={StaticResource Accent}}"/>
+                                        </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Accent}" />
-                                            <Setter TargetName="bd" Property="BorderThickness" Value="2" />
-                                            <Setter TargetName="bd" Property="CornerRadius" Value="5" />                                           
+                                            <Setter TargetName="bd" Property="BorderBrush" 
+                                                    Value="{Binding ElementName=pathy, Path=Fill}" />
+                                            <Setter TargetName="bd" Property="CornerRadius" Value="5" />
+                                            <Setter TargetName="pathy" Property="Visibility" Value="Visible" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
