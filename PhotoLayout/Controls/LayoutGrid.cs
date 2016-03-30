@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PhotoLayout.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -47,10 +49,13 @@ namespace PhotoLayout.Controls
     /// </summary>
     public class LayoutGrid : Grid, INotifyPropertyChanged
     {
+        #region - Fields -
 
+
+        #endregion
         static LayoutGrid()
         {
-            //DefaultStyleKeyProperty.OverrideMetadata(typeof(LayoutGrid), new FrameworkPropertyMetadata(typeof(LayoutGrid))); // TODO Check if this will be necessary
+            //DefaultStyleKeyProperty.OverrideMetadata(typeof(LayoutGrid), new FrameworkPropertyMetadata(typeof(LayoutGrid))); // TODO Check if this will be necessary                   
         }
 
         #region - Events -
@@ -66,9 +71,91 @@ namespace PhotoLayout.Controls
 
         #endregion
 
+        #region - Dependency Properties -
+
+        #region - Photos -
+
+        public static DependencyProperty PhotosProperty = DependencyProperty.Register("Photos", typeof(ObservableCollection<Photo>), typeof(LayoutGrid), 
+            new PropertyMetadata(new ObservableCollection<Photo>(), OnPhotosChanged));
+
+        /// <summary>
+        /// Clears the old ObservableCollection and calls GC.Collect when the Photos dependency property changes.
+        /// </summary>        
+        private static void OnPhotosChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // TODO Check if this is necessary for releasing memory before new collection is assigned to the property
+            var oldCollection = e.OldValue as ObservableCollection<Photo>;
+            oldCollection.Clear();
+            GC.Collect();
+        }        
+
+        /// <summary>
+        /// Gets or sets the collection of photos that the layout grid is supposed to display.
+        /// </summary>
+        public ObservableCollection<Photo> Photos
+        {
+            get { return (ObservableCollection<Photo>)GetValue(PhotosProperty); }
+            set { SetValue(PhotosProperty, value); }
+        }
+
+        #endregion
+
+        #region - MinPhotoCount -
+
+        public static DependencyProperty MinPhotoCountProperty = DependencyProperty.Register("MinPhotoCount", typeof(int), typeof(LayoutGrid),
+            new PropertyMetadata(0, OnMinPhotoCountChanged, OnMinPhotoCountCoerceValue));
+
+        /// <summary>
+        /// Coerces the MinPhotoCount property to acceptable value. If the value is below 0 coerces it to 0,
+        /// and if it's above MaxPhotoCount limits it to MaxPhotoCount.
+        /// </summary>
+        /// <param name="d">LayoutGrid whose property is being coerced.</param>
+        /// <param name="baseValue">Specified value for the MinPhotoCount property.</param>
+        /// <returns>Returns 0 if the value is negative, or MaxPhotoCount if it's above that property.</returns>
+        private static object OnMinPhotoCountCoerceValue(DependencyObject d, object baseValue)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            if (layoutGrid == null)
+            {
+                // TODO Decide if validation should be used instead and throw an exception
+                return 0;
+            }
+
+            int count = (int)baseValue;
+            if (count < 0)
+            {
+                count = 0;
+            }
+            else if (count > layoutGrid.MaxPhotoCount)
+            {
+                count = layoutGrid.MaxPhotoCount;
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Empty method. No code/logic needed for OnMinPhotoCountChanged.
+        /// </summary>        
+        private static void OnMinPhotoCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {            
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum count of photographs needed for LayoutGrid to be visible.
+        /// </summary>
+        public int MinPhotoCount
+        {
+            get { return (int)GetValue(MinPhotoCountProperty); }
+            set { SetValue(MinPhotoCountProperty, value); }
+        }
+
+        #endregion
+
+        #endregion
+
         #region - Properties -
 
-
+        public int MaxPhotoCount { get; set; }
 
         #endregion  
     }
