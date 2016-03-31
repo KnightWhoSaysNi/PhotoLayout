@@ -51,7 +51,7 @@ namespace PhotoLayout.Controls
     {
         #region - Fields -
 
-        private static List<ResizableImage> images;
+        private static List<Image> images;
 
         #endregion
 
@@ -64,13 +64,14 @@ namespace PhotoLayout.Controls
 
         public LayoutGrid()
         {
-            images = new List<ResizableImage>();
+            images = new List<Image>();
             Loaded += LayoutGrid_Loaded;
         }
 
         private void LayoutGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            CreateResizableImages();
+            CreateImages();
+            CreateSplitters();
 
             int index = 0;
             for (int row = 0; row < RowCount; row++)
@@ -83,18 +84,44 @@ namespace PhotoLayout.Controls
             }
         }
 
-        private void CreateResizableImages()
+        private void CreateImages()
         {
             int count = RowCount * ColumnCount;
             for (int i = 0; i < count; i++)
             {
-                ResizableImage img = new ResizableImage();
-                img.Stretch = Stretch.UniformToFill;                
+                Image img = new Image();
+                img.Stretch = Stretch.UniformToFill;
                 images.Add(img);
                 this.Children.Add(img);
             }
         }
-        
+
+        private void CreateSplitters()
+        {
+            for (int row = 0; row < RowCount; row++)
+            {
+                GridSplitter rowSplitter = new GridSplitter();
+                rowSplitter.ResizeBehavior = GridResizeBehavior.CurrentAndNext;
+                rowSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                rowSplitter.Height = 4;
+                rowSplitter.Background = Brushes.Red;
+                Grid.SetColumnSpan(rowSplitter, 2);
+                Grid.SetRow(rowSplitter, row);
+                rowSplitter.VerticalAlignment = VerticalAlignment.Bottom;
+                this.Children.Add(rowSplitter);
+            }
+
+            GridSplitter splitter = new GridSplitter();
+            splitter.ResizeBehavior = GridResizeBehavior.CurrentAndNext;
+            splitter.VerticalAlignment = VerticalAlignment.Stretch;
+            splitter.Width = 4;
+            splitter.Background = Brushes.Red;
+            Grid.SetRowSpan(splitter, 6);
+            Grid.SetColumn(splitter, 0);
+            splitter.HorizontalAlignment = HorizontalAlignment.Right;
+            this.Children.Add(splitter);
+        }
+
         #endregion
 
         #region - Events -
