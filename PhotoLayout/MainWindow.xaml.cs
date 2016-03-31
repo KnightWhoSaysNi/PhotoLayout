@@ -47,6 +47,7 @@ namespace PhotoLayout
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
 
             AllPhotos = new ObservableCollection<BitmapSource>();
+            Photos = new ObservableCollection<Photo>();
         }
 
         #endregion  
@@ -180,10 +181,28 @@ namespace PhotoLayout
             }
         }
 
-        private void ClearWrapPanel(object sender, RoutedEventArgs e)
+        private void CreatePhotosAndAddToLayoutGrid(object sender, RoutedEventArgs e)
         {
+            Photos.Clear();                                                   // HD - Wallpapers1_QlwttNW
+            Photo p1 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\HD-Wallpapers1_QlwttNW.jpeg", UriKind.Absolute), "pic 1", ".jpg");
+            Photo p2 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\hd_wallpapers_a13_qXpvPrU.jpg", UriKind.Absolute), "pic 2", ".jpg");
+            Photo p3 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Desktop-Wallpaper-HD2.jpg", UriKind.Absolute), "pic 3", ".jpg");
+            Photo p4 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Penguins.jpg", UriKind.Absolute), "pic 4", ".jpg");
+            Photo p5 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\23-animation-wallpaper.preview.jpg", UriKind.Absolute), "pic 5", ".jpg");
+            p1.UpdateBitmapSources();
+            p2.UpdateBitmapSources();
+            p3.UpdateBitmapSources();
+            p4.UpdateBitmapSources();
+            p5.UpdateBitmapSources();
 
-        }    
+            Photos.Add(p1);
+            Photos.Add(p2);
+            Photos.Add(p3);
+            Photos.Add(p4);
+            Photos.Add(p5);            
+        }   
+        
+        public ObservableCollection<Photo> Photos { get; set; }
 
         #endregion
     }

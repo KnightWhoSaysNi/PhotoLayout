@@ -51,12 +51,78 @@ namespace PhotoLayout.Controls
     {
         #region - Fields -
 
+        private static List<Image> images;
 
         #endregion
+
+        #region - Constructors -
+
         static LayoutGrid()
         {
             //DefaultStyleKeyProperty.OverrideMetadata(typeof(LayoutGrid), new FrameworkPropertyMetadata(typeof(LayoutGrid))); // TODO Check if this will be necessary                   
         }
+
+        public LayoutGrid()
+        {
+            images = new List<Image>();
+            Loaded += LayoutGrid_Loaded;
+        }
+
+        private void LayoutGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            CreateImages();
+            CreateSplitters();
+
+            int index = 0;
+            for (int row = 0; row < RowCount; row++)
+            {
+                for (int col = 0; col < ColumnCount; col++, index++)
+                {
+                    Grid.SetRow(images[index], row);
+                    Grid.SetColumn(images[index], col);
+                }
+            }
+        }
+
+        private void CreateImages()
+        {
+            int count = RowCount * ColumnCount;
+            for (int i = 0; i < count; i++)
+            {
+                Image img = new Image();
+                img.Stretch = Stretch.UniformToFill;
+                images.Add(img);
+                this.Children.Add(img);
+            }
+        }
+
+        private void CreateSplitters()
+        {
+            for (int row = 0; row < RowCount; row++)
+            {
+                GridSplitter rowSplitter = new GridSplitter();
+                rowSplitter.ResizeBehavior = GridResizeBehavior.CurrentAndNext;
+                rowSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                rowSplitter.Height = 4;
+                rowSplitter.Background = Brushes.Red;
+                Grid.SetColumnSpan(rowSplitter, 2);
+                Grid.SetRow(rowSplitter, row);
+                rowSplitter.VerticalAlignment = VerticalAlignment.Bottom;
+                this.Children.Add(rowSplitter);
+            }
+
+            GridSplitter splitter = new GridSplitter();
+            splitter.ResizeBehavior = GridResizeBehavior.CurrentAndNext;
+            splitter.VerticalAlignment = VerticalAlignment.Stretch;
+            splitter.Width = 4;
+            splitter.Background = Brushes.Red;
+            Grid.SetRowSpan(splitter, 6);
+            Grid.SetColumn(splitter, 0);
+            splitter.HorizontalAlignment = HorizontalAlignment.Right;
+            this.Children.Add(splitter);
+        }
+
+        #endregion
 
         #region - Events -
 
@@ -85,9 +151,48 @@ namespace PhotoLayout.Controls
         {
             // TODO Check if this is necessary for releasing memory before new collection is assigned to the property
             var oldCollection = e.OldValue as ObservableCollection<Photo>;
+            oldCollection.CollectionChanged -= OnCollectionChanged;
             oldCollection.Clear();
             GC.Collect();
-        }        
+
+
+            var newCollection = e.NewValue as ObservableCollection<Photo>;
+            //LayoutGrid layoutGrid = d as LayoutGrid;
+
+            //if (layoutGrid != null && newCollection != null)
+            //{
+            //    for (int i = 0; i < newCollection.Count; i++)
+            //    {
+            //        ((Image)layoutGrid.Children[i]).Source = newCollection[i].Thumbnail;
+            //    }                
+            //}
+
+            if (newCollection != null)
+            {
+                newCollection.CollectionChanged += OnCollectionChanged;
+            }
+        }
+
+        private static void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var action = e.Action;
+
+            if (action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                var photo = e.NewItems[0] as Photo;
+                System.Diagnostics.Debug.WriteLine($"OnCollectionChanged ->  Added: {photo}");
+
+                for (int i = 0; i < images.Count; i++)
+                {
+                    if (images[i].Source == null)
+                    {
+                        images[i].Source = photo.Thumbnail;
+                        return;
+                    }
+                }
+                
+            }
+        }
 
         /// <summary>
         /// Gets or sets the collection of photos that the layout grid is supposed to display.
@@ -151,12 +256,129 @@ namespace PhotoLayout.Controls
 
         #endregion
 
+        #region - RowCount -
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RowCountProperty =
+            DependencyProperty.Register("RowCount", typeof(int), typeof(LayoutGrid), 
+                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, OnRowCountChanged, OnRowCountCoerceValue));
+
+        private static object OnRowCountCoerceValue(DependencyObject d, object baseValue)
+        {
+            int rows = (int)baseValue;
+            if (rows < 0)
+            {
+                rows = 0;
+            }
+            // Just a precaution
+            else if (rows > 100)
+            {
+                rows = 100;
+            }
+            return rows;
+        }
+
+        private static void OnRowCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            int rows = (int)e.NewValue;            
+
+            if (layoutGrid != null)
+            {
+                // Clear previous RowDefinitions just in case this property is being set multiple times
+                layoutGrid.RowDefinitions.Clear();
+
+                for (int i = 0; i < rows; i++)
+                {
+                    RowDefinition row = new RowDefinition();
+                    row.Height = GridLength.Auto;
+                    layoutGrid.RowDefinitions.Add(row);
+                }
+            }
+        }
+
+        public int RowCount
+        {
+            get { return (int)GetValue(RowCountProperty); }
+            set { SetValue(RowCountProperty, value); }
+        }
+
+        #endregion
+
+        #region - ColumnCount -
+
+        public static readonly DependencyProperty ColumnCountProperty =
+            DependencyProperty.Register("ColumnCount", typeof(int), typeof(LayoutGrid), 
+                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, OnColumnCountChanged, OnColumnCountCoerceValue));
+
+        private static object OnColumnCountCoerceValue(DependencyObject d, object baseValue)
+        {
+            int columns = (int)baseValue;
+            if (columns < 0)
+            {
+                columns = 0;
+            }
+            // Just a precaution
+            else if (columns > 100)
+            {
+                columns = 100;
+            }
+            return columns;
+        }
+
+        private static void OnColumnCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            int columns = (int)e.NewValue;
+
+            if (layoutGrid != null)
+            {
+                // Clear previous ColumnDefinitions just in case this property is being set multiple times
+                layoutGrid.ColumnDefinitions.Clear();
+
+                for (int i = 0; i < columns; i++)
+                {
+                    ColumnDefinition column = new ColumnDefinition();
+                    column.Width = GridLength.Auto;
+                    layoutGrid.ColumnDefinitions.Add(column);
+                }
+            }
+        }
+
+        public int ColumnCount
+        {
+            get { return (int)GetValue(ColumnCountProperty); }
+            set { SetValue(ColumnCountProperty, value); }
+        }
+
+        #endregion
+
         #endregion
 
         #region - Properties -
 
         public int MaxPhotoCount { get; set; }
+        //public bool HasThumbnails { get; set; }
 
-        #endregion  
+        #endregion
+
+        #region - Overriden methods -
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            return base.MeasureOverride(constraint);
+        }
+
+        protected override Size ArrangeOverride(Size arrangeSize)
+        {
+            return base.ArrangeOverride(arrangeSize);
+        }
+
+        #endregion
+
+        #region - Private methods -
+
+
+        #endregion
     }
 }
