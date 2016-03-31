@@ -42,7 +42,7 @@
 
         <!-- Photo and layout selection -->
         <Border Grid.Row="1" BorderBrush="LightSalmon" BorderThickness="1" Margin="10" CornerRadius="5" Padding="15">
-            <views:PhotoLayoutSelection DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" /> 
+            <views:PhotoLayoutSelection x:Name="photoLayoutSelectiony" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" /> 
         </Border>
 
         <!-- Photo manipulation controls -->
@@ -54,7 +54,7 @@
             <Button x:Name="showTop" Padding="5" Content="Show top bar" Foreground="Black" FontSize="22" Click="ShowTopBar" Margin="5" />
             <Button Content="Call GC" FontSize="22" Click="CallGC" Margin="5" />
             <Button Visibility="Visible" Content="Clear AllPhotos" FontSize="22" Click="ClearAllPhotos" Margin="5" />
-            <Button Visibility="Collapsed" Content="Clear wrap panel" FontSize="22" Click="ClearWrapPanel" Margin="5" />
+            <Button Visibility="Visible" Content="Create photos and show them in LayoutGrid" FontSize="22" Click="CreatePhotosAndAddToLayoutGrid" Margin="5" />
             <Image x:Name="previewImage" Height="1000" Width="1000" Visibility="Collapsed"/>
         </StackPanel>
     </Grid>

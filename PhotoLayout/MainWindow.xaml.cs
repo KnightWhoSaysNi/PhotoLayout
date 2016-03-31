@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoLayout.Controls;
 using PhotoLayout.Models;
 using PhotoLayout.ViewModels;
 using System;
@@ -47,6 +48,7 @@ namespace PhotoLayout
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
 
             AllPhotos = new ObservableCollection<BitmapSource>();
+            Photos = new ObservableCollection<Photo>();
         }
 
         #endregion  
@@ -153,7 +155,7 @@ namespace PhotoLayout
 
             // If this is not set memory is not being released at all, until AllPhotos is cleared AND GC is called. 
             // But with this set to a low value, memory is being released automatically, maybe after AllPhotos has been filled up
-            bitmapImage.DecodePixelWidth = 300; // up to 800 might also be ok (more testing needed)
+            bitmapImage.DecodePixelWidth = 2000; // up to 800 might also be ok (more testing needed)
             bitmapImage.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
             // To save significant application memory, set the DecodePixelWidth or  
             // DecodePixelHeight of the BitmapImage value of the image source to the desired 
@@ -180,10 +182,48 @@ namespace PhotoLayout
             }
         }
 
-        private void ClearWrapPanel(object sender, RoutedEventArgs e)
+        private void CreatePhotosAndAddToLayoutGrid(object sender, RoutedEventArgs e)
         {
+            //Photos.Clear();                                                   // HD - Wallpapers1_QlwttNW            
+            Photo p1 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\gear-mechanical-wallpaper.jpg", UriKind.Absolute), "pic 1", ".jpg");
+            Photo p2 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\HD-Wallpapers1_QlwttNW.jpeg", UriKind.Absolute), "pic 2", ".jpg");
+            Photo p3 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Penguins.jpg", UriKind.Absolute), "pic 3", ".jpg");
+            Photo p4 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\23-animation-wallpaper.preview.jpg", UriKind.Absolute), "pic 4", ".jpg");
+            Photo p5 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Desktop-Wallpaper-HD2.jpg", UriKind.Absolute), "pic 5", ".jpg");
+            p1.UpdateBitmapSources();
+            p2.UpdateBitmapSources();
+            p3.UpdateBitmapSources();
+            p4.UpdateBitmapSources();
+            p5.UpdateBitmapSources();
 
-        }    
+            if (Photos.Count==0)
+            {
+                Photos.Add(p1);
+                return;
+            }
+            if (Photos.Count == 1)
+            {
+                Photos.Add(p2);
+                return;
+            }
+            if (Photos.Count == 2)
+            {
+                Photos.Add(p3);
+                return;
+            }
+            if (Photos.Count == 3)
+            {
+                Photos.Add(p4);
+                return;
+            }
+            if (Photos.Count == 4)
+            {
+                Photos.Add(p5);
+                return;
+            }
+        }   
+        
+        public ObservableCollection<Photo> Photos { get; set; }
 
         #endregion
     }
