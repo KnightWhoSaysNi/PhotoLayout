@@ -89,7 +89,7 @@ namespace PhotoLayout.Controls
             for (int i = 0; i < count; i++)
             {
                 ResizableImage img = new ResizableImage();
-                img.Stretch = Stretch.UniformToFill;                
+                //img.Stretch = Stretch.UniformToFill;                
                 images.Add(img);
                 this.Children.Add(img);
             }
@@ -157,11 +157,11 @@ namespace PhotoLayout.Controls
 
                 for (int i = 0; i < images.Count; i++)
                 {
-                    if (images[i].Source == null)
-                    {
-                        images[i].Source = photo.Thumbnail;
-                        return;
-                    }
+                    //if (images[i].Source == null)
+                    //{
+                    //    images[i].Source = photo.Thumbnail;
+                    //    return;
+                    //}
                 }
                 
             }

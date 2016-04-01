@@ -60,6 +60,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\ResizableImage.cs" />
+    <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\Photo.cs" />
     <Compile Include="ViewModels\BindableBase.cs" />
@@ -111,6 +112,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\PathStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\ResizableImageStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

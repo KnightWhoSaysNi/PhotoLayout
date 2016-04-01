@@ -76,7 +76,7 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <Grid Height="500" Width="500">
+        <Grid Height="200" Width="200">
             <Border BorderBrush="White" BorderThickness="2">
                 <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center" 
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"                                  

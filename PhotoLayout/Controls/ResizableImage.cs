@@ -1,7 +1,9 @@
-﻿using System;
+﻿using PhotoLayout.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -45,7 +47,7 @@ namespace PhotoLayout.Controls
     ///     <MyNamespace:ResizableImage/>
     ///
     /// </summary>
-    public class ResizableImage : Image, INotifyPropertyChanged
+    public class ResizableImage : Control, INotifyPropertyChanged
     {
         #region - Fields -
 
@@ -64,7 +66,7 @@ namespace PhotoLayout.Controls
         #region - Events -
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName]string propertyName="")
         {
             if (PropertyChanged != null)
             {
@@ -76,6 +78,30 @@ namespace PhotoLayout.Controls
 
         #region - Dependency Properties -
 
+        #region - Source -
+
+            public static readonly DependencyProperty SourceProperty = 
+                DependencyProperty.Register("Source", typeof(BitmapSource), typeof(ResizableImage), new PropertyMetadata(null,null,OnSourceCoerceValue));
+
+            private static object OnSourceCoerceValue(DependencyObject d, object baseValue)
+            {
+                BitmapSource newSource = (BitmapSource)baseValue;
+
+                // TODO Check if this is necessary and if null should be returned
+                // Source is set to an image that might be too big to preview so this check (might be) necessary
+                return (newSource.PixelHeight * newSource.PixelWidth < Constants.MaximumPixelsForPreview) ? newSource : null;
+            }
+
+            public BitmapSource Source
+        {
+            get { return (BitmapSource)GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        #endregion
+
+
+        
         #endregion
 
         #region - Properties -
@@ -86,7 +112,7 @@ namespace PhotoLayout.Controls
             set
             {
                 hasLeftSplitter = value;
-                OnPropertyChanged(nameof(HasLeftSplitter));
+                OnPropertyChanged();
             }
         }
         public bool HasTopSplitter
@@ -95,7 +121,7 @@ namespace PhotoLayout.Controls
             set
             {
                 hasTopSplitter = value;
-                OnPropertyChanged(nameof(HasTopSplitter));
+                OnPropertyChanged();
             }
         }
         public bool HasRightSplitter
@@ -104,7 +130,7 @@ namespace PhotoLayout.Controls
             set
             {
                 hasRightSplitter = value;
-                OnPropertyChanged(nameof(HasRightSplitter));
+                OnPropertyChanged();
             }
         }
         public bool HasBottomSplitter
@@ -113,7 +139,7 @@ namespace PhotoLayout.Controls
             set
             {
                 hasBottomSplitter = value;
-                OnPropertyChanged(nameof(HasBottomSplitter));
+                OnPropertyChanged();
             }
         }
 
