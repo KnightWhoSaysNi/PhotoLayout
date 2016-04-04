@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoLayout.Helpers;
 using PhotoLayout.Models;
 using PhotoLayout.ViewModels;
 using System;
@@ -46,8 +47,8 @@ namespace PhotoLayout
 
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
 
-            AllPhotos = new ObservableCollection<BitmapSource>();
-            Photos = new ObservableCollection<Photo>();
+            AllPhotos = new ObservableCollection<Photo>();
+            SelectedPhotos = new ObservableCollection<Photo>();
         }
 
         #endregion  
@@ -77,8 +78,8 @@ namespace PhotoLayout
         //    }
         //}
 
-        public ObservableCollection<BitmapSource> AllPhotos { get; set; }
-        public List<BitmapImage> StoredPhotos { get; set; }
+        public ObservableCollection<Photo> AllPhotos { get; set; }
+        public ObservableCollection<Photo> SelectedPhotos { get; set; }
 
         #endregion  
 
@@ -100,7 +101,13 @@ namespace PhotoLayout
                     foreach (var imagePath in imagePaths)
                     {
                         BitmapSource bitmap = CreateImage(imagePath);
-                        Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(bitmap)), DispatcherPriority.Background);
+                        Dispatcher.BeginInvoke((Action)(() =>
+                        {
+                            Photo photo = new Photo(new Uri(imagePath), "some pic", ".jpg");
+                            photo.UpdateBitmapSources();
+                            AllPhotos.Add(photo);
+                        }
+                        ), DispatcherPriority.Background);
                     }
                 };
 

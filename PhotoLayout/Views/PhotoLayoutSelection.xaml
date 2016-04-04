@@ -10,7 +10,7 @@
              d:DesignHeight="500" d:DesignWidth="1600">
     <UserControl.Resources>
         <converters:SelectedItemCountToColorConverter x:Key="SelectedItemCountToColor" />
-        
+
         <Style x:Key="allPhotosListBox" TargetType="ListBox">
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
@@ -45,68 +45,18 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
-        </StackPanel>-->
-        <ListBox Visibility="Collapsed" Margin="20" ItemsSource="{Binding ElementName=allPhotosListBox, Path=SelectedItems}" Background="Transparent" 
-                 ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal" IsItemsHost="True" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="Orange" Width="175" Height="175">
-                        <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />                        
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <Border x:Name="bd" Margin="1,0" BorderThickness="2" BorderBrush="Orange">
-                                    <ContentPresenter />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
-        <Grid Height="500" Width="500">
-            <Border BorderBrush="White" BorderThickness="2">
-                <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"                                  
-                                     x:Name="layouty" 
-                                     RowCount="6" ColumnCount="2" MinPhotoCount="2" MaxPhotoCount="10" Photos="{Binding Photos}" />
-            </Border>
-            
-        </Grid>
-
+        </StackPanel>--> 
+        <Border BorderBrush="White" BorderThickness="2" Height="500" Width="500">
+            <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                 x:Name="layouty" Margin="0"
+                                 RowCount="6" ColumnCount="2" MinPhotoCount="2" MaxPhotoCount="10" 
+                                 Photos="{Binding SelectedPhotos}" />
+        </Border>
+        <!--<controls:LayoutGrid Photos="{Binding ElementName=allPhotosListBox, Path=ItemsSource}" />-->
+        
         <!-- Photo selection -->
-        <ListBox Grid.Row="1" ItemsSource="{Binding AllPhotos}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Standard">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border x:Name="bd" BorderBrush="Gray" BorderThickness="1.5" CornerRadius="5" Width="150" Height="150">
-                        <Border.OpacityMask>
-                            <VisualBrush>
-                                <VisualBrush.Visual>
-                                    <!-- Binding ElementName=bd, Path=*** doesn't work for some reason - it's created after opacity mask? -->
-                                    <Border Background="White" CornerRadius="5" Width="150" Height="150" />
-                                </VisualBrush.Visual>
-                            </VisualBrush>
-                        </Border.OpacityMask>
-                        <!-- Thumbnail image -->
-                        <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Border Visibility="Collapsed" Grid.Row="1" BorderBrush="LightSkyBlue" BorderThickness="1" CornerRadius="5" Margin="10">
-            <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding AllPhotos}" VirtualizingStackPanel.VirtualizationMode="Recycling">
+        <Border Visibility="Visible" Grid.Row="1" BorderBrush="LightSkyBlue" BorderThickness="1" CornerRadius="5" Margin="10">
+            <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding AllPhotos}" SelectionChanged="allPhotosListBox_SelectionChanged">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
@@ -125,7 +75,7 @@
                                 </VisualBrush>
                             </Border.OpacityMask>    
                             <!-- Thumbnail image -->
-                            <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>                           
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -152,7 +102,7 @@
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
+                                        <Trigger Property="IsSelected" Value="True">                                            
                                             <Setter TargetName="bd" Property="BorderBrush" 
                                                     Value="{Binding ElementName=pathy, Path=Fill}" />
                                             <Setter TargetName="bd" Property="CornerRadius" Value="5" />
