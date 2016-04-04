@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PhotoLayout.Views"
              xmlns:converters="clr-namespace:PhotoLayout.Converters"
+             xmlns:controls="clr-namespace:PhotoLayout.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="1600">
     <UserControl.Resources>
         <converters:SelectedItemCountToColorConverter x:Key="SelectedItemCountToColor" />
-        
+
         <Style x:Key="allPhotosListBox" TargetType="ListBox">
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
@@ -30,7 +31,7 @@
         </Grid.ColumnDefinitions>
         
         <!-- Layout selection -->
-        <!--<StackPanel Orientation="Horizontal" Margin="20">
+        <StackPanel Orientation="Horizontal" Margin="20">
             <TextBlock Text="Number of photos in AllPhotos: " Foreground="White" FontSize="22" VerticalAlignment="Center" />
             <TextBlock Text="{Binding ElementName=allPhotosListBox, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}" FontSize="22" VerticalAlignment="Center" Foreground="White" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
@@ -44,41 +45,19 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
-        </StackPanel>-->
-        <ListBox Margin="20" ItemsSource="{Binding ElementName=allPhotosListBox, Path=SelectedItems}" Background="Transparent" 
-                 ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal" IsItemsHost="True" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="Orange" Width="175" Height="175">
-                        <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />                        
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <Border x:Name="bd" Margin="1,0" BorderThickness="2" BorderBrush="Orange">
-                                    <ContentPresenter />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
+        </StackPanel> 
+        <!-- LayoutGrid testing -->
+        <Border Visibility="Collapsed" BorderBrush="White" BorderThickness="2" Height="500" Width="500">
+            <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                 x:Name="layouty" Margin="0"
+                                 RowCount="6" ColumnCount="2" MinPhotoCount="2" MaxPhotoCount="10" 
+                                 Photos="{Binding SelectedPhotos}" />
+        </Border>
+        <!--<controls:LayoutGrid Photos="{Binding ElementName=allPhotosListBox, Path=ItemsSource}" />-->
         
         <!-- Photo selection -->
-        <Border Grid.Row="1" BorderBrush="LightSkyBlue" BorderThickness="1" CornerRadius="5" Margin="10">
-            <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding AllPhotos}">
+        <Border Visibility="Visible" Grid.Row="1" BorderBrush="LightSkyBlue" BorderThickness="1" CornerRadius="5" Margin="10">
+            <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding AllPhotos}" SelectionChanged="allPhotosListBox_SelectionChanged">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
@@ -97,7 +76,7 @@
                                 </VisualBrush>
                             </Border.OpacityMask>    
                             <!-- Thumbnail image -->
-                            <Image Source="{Binding }" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>                           
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -124,7 +103,7 @@
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
+                                        <Trigger Property="IsSelected" Value="True">                                            
                                             <Setter TargetName="bd" Property="BorderBrush" 
                                                     Value="{Binding ElementName=pathy, Path=Fill}" />
                                             <Setter TargetName="bd" Property="CornerRadius" Value="5" />

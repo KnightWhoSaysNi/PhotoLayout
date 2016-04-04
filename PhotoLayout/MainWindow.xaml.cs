@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoLayout.Helpers;
 using PhotoLayout.Models;
 using PhotoLayout.ViewModels;
 using System;
@@ -32,7 +33,6 @@ namespace PhotoLayout
     {
         #region - Fields -
 
-        //private ImageSource image;
 
         #endregion
 
@@ -46,8 +46,7 @@ namespace PhotoLayout
 
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
 
-            AllPhotos = new ObservableCollection<BitmapSource>();
-
+            AllPhotos = new ObservableCollection<Photo>();
         }
 
         #endregion  
@@ -67,18 +66,7 @@ namespace PhotoLayout
 
         #region - Properties -
 
-        //public ImageSource Image
-        //{
-        //    get { return image; }
-        //    set
-        //    {
-        //        this.image = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
-        public ObservableCollection<BitmapSource> AllPhotos { get; set; }
-        public List<BitmapImage> StoredPhotos { get; set; }
+        public ObservableCollection<Photo> AllPhotos { get; set; }
 
         #endregion  
 
@@ -90,9 +78,9 @@ namespace PhotoLayout
 
             if (openDialog.ShowDialog() == true)
             {
-                var imagePaths = openDialog.FileNames;                                               
+                var imagePaths = openDialog.FileNames;
 
-                // TODO Is this the best way of updating UI?
+                // TODO Is this the best way of updating UI? Additional checks needed to see if the file is indeed a valid image (photo)
                 var worker = new BackgroundWorker();
 
                 worker.DoWork += (s, workerArgs) =>
@@ -100,7 +88,13 @@ namespace PhotoLayout
                     foreach (var imagePath in imagePaths)
                     {
                         BitmapSource bitmap = CreateImage(imagePath);
-                        Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(bitmap)), DispatcherPriority.Background);
+                        Dispatcher.BeginInvoke((Action)(() =>
+                        {
+                            Photo photo = new Photo(new Uri(imagePath), "some pic", ".jpg"); // TODO get photo name from the image path first, or change Photo constructor
+                            photo.UpdateBitmapSources();
+                            AllPhotos.Add(photo);
+                        }
+                        ), DispatcherPriority.Background);
                     }
                 };
 
@@ -129,6 +123,16 @@ namespace PhotoLayout
             GC.Collect();
         }
 
+        private void ClearAllPhotos(object sender, RoutedEventArgs e)
+        {
+            if (AllPhotos != null)
+            {
+                AllPhotos.Clear();                
+            }
+        }
+
+        #region - Temp test methods -
+
         // ***************************************************************
         // ******** NOT INTENDED FOR DIRECT LOADING OF PHOTOS ************
         // ******** SET TO ONLOAD FOR DIRECT LOAD, NONE OTHERWISE ********
@@ -154,7 +158,7 @@ namespace PhotoLayout
 
             // If this is not set memory is not being released at all, until AllPhotos is cleared AND GC is called. 
             // But with this set to a low value, memory is being released automatically, maybe after AllPhotos has been filled up
-            bitmapImage.DecodePixelWidth = 200;
+            bitmapImage.DecodePixelWidth = 300; // up to 800 might also be ok (more testing needed)
             bitmapImage.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
             // To save significant application memory, set the DecodePixelWidth or  
             // DecodePixelHeight of the BitmapImage value of the image source to the desired 
@@ -171,26 +175,28 @@ namespace PhotoLayout
             return bitmapImage;
         }
 
-        #region - Temp test methods -
-
-        private void ClearStoredPhotos(object sender, RoutedEventArgs e)
+        private void CreatePhotosAndAddToLayoutGrid(object sender, RoutedEventArgs e)
         {
-            if (AllPhotos != null)
-            {
-                AllPhotos.Clear();
-            }
-        }
+            Photos.Clear();                                                   // HD - Wallpapers1_QlwttNW
+            Photo p1 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\HD-Wallpapers1_QlwttNW.jpeg", UriKind.Absolute), "pic 1", ".jpg");
+            Photo p2 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\hd_wallpapers_a13_qXpvPrU.jpg", UriKind.Absolute), "pic 2", ".jpg");
+            Photo p3 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Desktop-Wallpaper-HD2.jpg", UriKind.Absolute), "pic 3", ".jpg");
+            Photo p4 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Penguins.jpg", UriKind.Absolute), "pic 4", ".jpg");
+            Photo p5 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\23-animation-wallpaper.preview.jpg", UriKind.Absolute), "pic 5", ".jpg");
+            p1.UpdateBitmapSources();
+            p2.UpdateBitmapSources();
+            p3.UpdateBitmapSources();
+            p4.UpdateBitmapSources();
+            p5.UpdateBitmapSources();
 
-        private int count = 0;
-        private void PreviewLastPhoto(object sender, RoutedEventArgs e)
-        {
-            AllPhotos.Add(StoredPhotos[count]);
-            count++;
-            if (count == StoredPhotos.Count)
-            {
-                count = 0;
-            }
-        }
+            Photos.Add(p1);
+            Photos.Add(p2);
+            Photos.Add(p3);
+            Photos.Add(p4);
+            Photos.Add(p5);            
+        }   
+        
+        public ObservableCollection<Photo> Photos { get; set; }
 
         #endregion
     }
