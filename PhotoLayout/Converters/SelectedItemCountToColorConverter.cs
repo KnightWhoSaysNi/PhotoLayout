@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PhotoLayout.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace PhotoLayout.Converters
         {
             int count = (int)value;
 
-            if (count <= 5)
+            if (count <= Constants.MaxPhotosInLayoutGrid)
             {
                 var brush = (SolidColorBrush)parameter;
                 return brush;
