@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PhotoLayout.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,8 +24,11 @@ namespace PhotoLayout.Views
     {
         public PhotoLayoutSelection()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            SelectedPhotos = new ObservableCollection<Photo>();
         }
+        
+        public ObservableCollection<Photo> SelectedPhotos { get; set; }
 
         /// <summary>
         /// Stops auto scrolling of selected item into view. When selected item is partially visible stops the ListBox from auto scrolling to it.
@@ -31,6 +36,21 @@ namespace PhotoLayout.Views
         private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void allPhotosListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            System.Collections.IList eAdded = e.AddedItems;
+            System.Collections.IList eRemoved = e.RemovedItems;
+
+            if (eAdded.Count != 0)
+            {
+                SelectedPhotos.Add((Photo)eAdded[0]);
+            }
+            else if (eRemoved.Count != 0)
+            {
+                SelectedPhotos.Remove((Photo)eRemoved[0]);
+            }
         }
     }
 }

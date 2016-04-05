@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoLayout.Helpers;
 using PhotoLayout.Models;
 using PhotoLayout.ViewModels;
 using System;
@@ -32,7 +33,6 @@ namespace PhotoLayout
     {
         #region - Fields -
 
-        //private ImageSource image;
 
         #endregion
 
@@ -46,8 +46,7 @@ namespace PhotoLayout
 
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
 
-            AllPhotos = new ObservableCollection<BitmapSource>();
-            Photos = new ObservableCollection<Photo>();
+            AllPhotos = new ObservableCollection<Photo>();
         }
 
         #endregion  
@@ -67,18 +66,7 @@ namespace PhotoLayout
 
         #region - Properties -
 
-        //public ImageSource Image
-        //{
-        //    get { return image; }
-        //    set
-        //    {
-        //        this.image = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
-        public ObservableCollection<BitmapSource> AllPhotos { get; set; }
-        public List<BitmapImage> StoredPhotos { get; set; }
+        public ObservableCollection<Photo> AllPhotos { get; set; }
 
         #endregion  
 
@@ -92,7 +80,7 @@ namespace PhotoLayout
             {
                 var imagePaths = openDialog.FileNames;
 
-                // TODO Is this the best way of updating UI?
+                // TODO Is this the best way of updating UI? Additional checks needed to see if the file is indeed a valid image (photo)
                 var worker = new BackgroundWorker();
 
                 worker.DoWork += (s, workerArgs) =>
@@ -100,7 +88,13 @@ namespace PhotoLayout
                     foreach (var imagePath in imagePaths)
                     {
                         BitmapSource bitmap = CreateImage(imagePath);
-                        Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(bitmap)), DispatcherPriority.Background);
+                        Dispatcher.BeginInvoke((Action)(() =>
+                        {
+                            Photo photo = new Photo(new Uri(imagePath), "some pic", ".jpg"); // TODO get photo name from the image path first, or change Photo constructor
+                            photo.UpdateBitmapSources();
+                            AllPhotos.Add(photo);
+                        }
+                        ), DispatcherPriority.Background);
                     }
                 };
 
@@ -128,6 +122,16 @@ namespace PhotoLayout
         {
             GC.Collect();
         }
+
+        private void ClearAllPhotos(object sender, RoutedEventArgs e)
+        {
+            if (AllPhotos != null)
+            {
+                AllPhotos.Clear();                
+            }
+        }
+
+        #region - Temp test methods -
 
         // ***************************************************************
         // ******** NOT INTENDED FOR DIRECT LOADING OF PHOTOS ************
@@ -169,16 +173,6 @@ namespace PhotoLayout
             bitmapImage.Freeze(); // TODO Check if the images can be resized after this
 
             return bitmapImage;
-        }
-
-        #region - Temp test methods -
-
-        private void ClearAllPhotos(object sender, RoutedEventArgs e)
-        {
-            if (AllPhotos != null)
-            {
-                AllPhotos.Clear();                
-            }
         }
 
         private void CreatePhotosAndAddToLayoutGrid(object sender, RoutedEventArgs e)
