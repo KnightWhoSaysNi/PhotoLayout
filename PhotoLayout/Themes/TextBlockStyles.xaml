@@ -6,6 +6,7 @@
     <Style x:Key="ButtonTextBlock" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}" />
         <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="0,8,0,0" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsPressed}" Value="True">

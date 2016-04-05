@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,8 +60,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\LayoutGrid.cs" />
-    <Compile Include="Converters\SelectedItemCountToColorConverter.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\Photo.cs" />
     <Compile Include="ViewModels\BindableBase.cs" />
@@ -68,6 +69,11 @@
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PhotoManipulationViewModel.cs" />
     <Compile Include="ViewModels\TestViewModel.cs" />
+    <Compile Include="Controls\LayoutGrid.cs" />
+    <Compile Include="Converters\SelectedItemCountToColorConverter.cs" />
+    <Compile Include="Views\FileSourceView.xaml.cs">
+      <DependentUpon>FileSourceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PhotoLayoutSelection.xaml.cs">
       <DependentUpon>PhotoLayoutSelection.xaml</DependentUpon>
     </Compile>
@@ -89,27 +95,35 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Resources\BorderStyles.xaml">
+    <Page Include="Themes\BorderStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Brushes.xaml">
+    <Page Include="Themes\Brushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\ButtonStyles.xaml">
+    <Page Include="Themes\ButtonStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\PathStyles.xaml">
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\PathStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Shapes.xaml">
+    <Page Include="Themes\Geometry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\TextBlockStyles.xaml">
+    <Page Include="Themes\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileSourceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -153,10 +167,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Icons\temp layout icon.ico" />
   </ItemGroup>

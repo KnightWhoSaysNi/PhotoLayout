@@ -90,11 +90,11 @@ namespace PhotoLayout
                         BitmapSource bitmap = CreateImage(imagePath);
                         Dispatcher.BeginInvoke((Action)(() =>
                         {
-                            Photo photo = new Photo(new Uri(imagePath), "some pic", ".jpg"); // TODO get photo name from the image path first, or change Photo constructor
+                            Photo photo = new Photo(new Uri(imagePath), "some pic", ".jpg"); // TODO Get photo name from the image path first, or change Photo constructor
                             photo.UpdateBitmapSources();
                             AllPhotos.Add(photo);
                         }
-                        ), DispatcherPriority.Background);
+                        ), DispatcherPriority.ApplicationIdle);
                     }
                 };
 
