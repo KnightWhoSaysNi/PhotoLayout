@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -70,6 +71,9 @@
     <Compile Include="ViewModels\TestViewModel.cs" />
     <Compile Include="Controls\LayoutGrid.cs" />
     <Compile Include="Converters\SelectedItemCountToColorConverter.cs" />
+    <Compile Include="Views\FileSourceView.xaml.cs">
+      <DependentUpon>FileSourceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PhotoLayoutSelection.xaml.cs">
       <DependentUpon>PhotoLayoutSelection.xaml</DependentUpon>
     </Compile>
@@ -111,11 +115,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Shapes.xaml">
+    <Page Include="Themes\Geometry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileSourceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

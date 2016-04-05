@@ -8,12 +8,13 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- First 2 ways can produce a bug in VS2015, where the source path is not recognized for some reason -->
                 <!-- Could be that build-delete-retype is enough to fix the bug -->
-                <ResourceDictionary Source="Themes/Shapes.xaml" />
+                <ResourceDictionary Source="Themes/Geometry.xaml" />
                 <ResourceDictionary Source="Themes/ButtonStyles.xaml" />
                 <ResourceDictionary Source="/PhotoLayout;component/Themes/PathStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/PhotoLayout;component/Themes/Brushes.xaml" />
                 <ResourceDictionary Source="/PhotoLayout;component/Themes/TextBlockStyles.xaml" />
                 <ResourceDictionary Source="/PhotoLayout;component/Themes/BorderStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/Brushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

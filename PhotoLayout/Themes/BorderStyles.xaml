@@ -5,8 +5,9 @@
     <!-- Border for the content of a button -->
     <Style x:Key="ButtonContentBorder" TargetType="Border">
         <Setter Property="BorderBrush" Value="White" />
-        <Setter Property="BorderThickness" Value="0.4" />
+        <Setter Property="BorderThickness" Value="0.6" />
         <Setter Property="Padding" Value="10" />
+        <Setter Property="Width" Value="230" />
         <Setter Property="CornerRadius" Value="5" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsPressed}" Value="True">

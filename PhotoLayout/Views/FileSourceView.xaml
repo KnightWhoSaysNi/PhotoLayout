@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="PhotoLayout.Views.FileSourceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PhotoLayout.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="300"
+             Background="{StaticResource BackgroundDark}">
+    <UserControl.Resources>
+        <!-- Default path style -->
+        <Style TargetType="Path" BasedOn="{StaticResource ButtonPath}">
+            <Setter Property="Height" Value="50" />
+            <Setter Property="Stretch" Value="Uniform" />
+        </Style>
+        
+        <!-- Default button style -->
+        <Style TargetType="Button" BasedOn="{StaticResource EmptyButton}">
+            <Setter Property="Margin" Value="20,10" />
+        </Style>
+        
+        <!-- Default TextBlock style -->
+        <Style TargetType="TextBlock" BasedOn="{StaticResource ButtonTextBlock}" />
+    </UserControl.Resources>
+        
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <!-- Facebook -->
+        <Button>
+            <Border Style="{StaticResource ButtonContentBorder}">
+                <StackPanel>
+                    <Path Data="{StaticResource Facebook}" />
+                    <TextBlock Text="Facebook" />
+                </StackPanel>
+            </Border>
+        </Button>
+        
+        <!-- Instagram -->
+        <Button Grid.Row="1">
+            <Border Style="{StaticResource ButtonContentBorder}">
+                <StackPanel>
+                    <Path Data="{StaticResource Instagram}" />
+                    <TextBlock Text="Instagram" />
+                </StackPanel>
+            </Border>
+        </Button>
+        
+        <!-- Usb storage -->
+        <Button Grid.Row="2">
+            <Border Style="{StaticResource ButtonContentBorder}">
+                <StackPanel>
+                    <Path Data="{StaticResource Usb}" />
+                    <TextBlock Text="Usb storage device" />
+                </StackPanel>
+            </Border>
+        </Button>
+        
+        <!-- Email code -->
+        <Button Grid.Row="3">
+            <Border Style="{StaticResource ButtonContentBorder}">
+                <StackPanel>
+                    <Path Data="{StaticResource EmailCode}" />
+                    <TextBlock Text="Email code" />
+                </StackPanel>
+            </Border>
+        </Button>
+        
+        <!-- Dropbox -->
+        <Button Grid.Row="4">
+            <Border Style="{StaticResource ButtonContentBorder}">
+                <StackPanel>
+                    <Path Data="{StaticResource Dropbox}" />
+                    <TextBlock Text="Dropbox" />
+                </StackPanel>
+            </Border>
+        </Button>
+        
+        <!-- Google drive -->
+        <Button Grid.Row="5">
+            <Border Style="{StaticResource ButtonContentBorder}">
+                <StackPanel>
+                    <Path Data="{StaticResource GoogleDrive}" />
+                    <TextBlock Text="Google drive" />
+                </StackPanel>
+            </Border>
+        </Button>
+
+    </Grid>
+</UserControl>
