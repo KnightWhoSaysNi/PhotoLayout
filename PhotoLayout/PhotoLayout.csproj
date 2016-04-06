@@ -74,8 +74,8 @@
     <Compile Include="Views\FileSourceView.xaml.cs">
       <DependentUpon>FileSourceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PhotoLayoutSelection.xaml.cs">
-      <DependentUpon>PhotoLayoutSelection.xaml</DependentUpon>
+    <Compile Include="Views\PhotoLayoutSelectionView.xaml.cs">
+      <DependentUpon>PhotoLayoutSelectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PhotoManipulationView.xaml.cs">
       <DependentUpon>PhotoManipulationView.xaml</DependentUpon>
@@ -103,9 +103,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\ButtonStyles.xaml">
+    <Page Include="Themes\ButtonBase\RadioButtonStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\ButtonBase\ButtonStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -127,7 +131,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PhotoLayoutSelection.xaml">
+    <Page Include="Views\PhotoLayoutSelectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

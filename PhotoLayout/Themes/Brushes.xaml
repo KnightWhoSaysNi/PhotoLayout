@@ -3,11 +3,11 @@
                     xmlns:local="clr-namespace:PhotoLayout">
 
     <SolidColorBrush x:Key="Accent" Color="#FF6ACDF4" />
+    <SolidColorBrush x:Key="AccentDark" Color="#FF4FB7DE" />
 
-    <SolidColorBrush x:Key="Background" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="Background" Color="#FFE2E2E2" />
     <SolidColorBrush x:Key="BackgroundDark" Color="#FF2C2F36" />
     <SolidColorBrush x:Key="BackgroundLight" Color="#FF808080" />
-    <SolidColorBrush x:Key="BackgroundDisabled" Color="#FFE2E2E2" />
 
     <SolidColorBrush x:Key="Foreground" Color="#FF2C2F36" />
     <SolidColorBrush x:Key="ForegroundLight" Color="#FF808080" />
