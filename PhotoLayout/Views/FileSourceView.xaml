@@ -8,90 +8,92 @@
              d:DesignHeight="800" d:DesignWidth="300"
              Background="{StaticResource BackgroundDark}">
     <UserControl.Resources>
-        <!-- Default path style -->
-        <Style TargetType="Path" BasedOn="{StaticResource ButtonPath}">
+        <!-- Default Path style -->
+        <Style TargetType="Path" BasedOn="{StaticResource RadioButtonPath}">
             <Setter Property="Height" Value="50" />
             <Setter Property="Stretch" Value="Uniform" />
         </Style>
         
-        <!-- Default button style -->
-        <Style TargetType="Button" BasedOn="{StaticResource EmptyButton}">
+        <!-- Default RadioButton style -->
+        <Style TargetType="RadioButton" BasedOn="{StaticResource FileSourceRadioButton}">
             <Setter Property="Margin" Value="20,10" />
         </Style>
         
         <!-- Default TextBlock style -->
-        <Style TargetType="TextBlock" BasedOn="{StaticResource ButtonTextBlock}" />
+        <Style TargetType="TextBlock" BasedOn="{StaticResource RadioButtonTextBlock}" />
     </UserControl.Resources>
-        
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        
-        <!-- Facebook -->
-        <Button>
-            <Border Style="{StaticResource ButtonContentBorder}">
+
+    <!-- ****************************************************************************************************** -->
+    <!--                     VIEWBOX PUT FOR TESTING PURPOSES. REMOVE AFTER TESTING (or not...)                 -->
+    <!-- ****************************************************************************************************** -->
+    <Viewbox MaxWidth="300">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!-- Facebook -->
+            <RadioButton>
                 <StackPanel>
                     <Path Data="{StaticResource Facebook}" />
                     <TextBlock Text="Facebook" />
                 </StackPanel>
-            </Border>
-        </Button>
-        
-        <!-- Instagram -->
-        <Button Grid.Row="1">
-            <Border Style="{StaticResource ButtonContentBorder}">
+            </RadioButton>
+            <Ellipse Fill="White" Height="10" Width="10" HorizontalAlignment="Right" Stroke="White" />
+
+            <!-- Instagram -->
+            <RadioButton Grid.Row="1">
                 <StackPanel>
                     <Path Data="{StaticResource Instagram}" />
                     <TextBlock Text="Instagram" />
                 </StackPanel>
-            </Border>
-        </Button>
-        
-        <!-- Usb storage -->
-        <Button Grid.Row="2">
-            <Border Style="{StaticResource ButtonContentBorder}">
+            </RadioButton>
+
+            <!-- Usb storage -->
+            <RadioButton Grid.Row="2">
                 <StackPanel>
                     <Path Data="{StaticResource Usb}" />
                     <TextBlock Text="Usb storage device" />
                 </StackPanel>
-            </Border>
-        </Button>
-        
-        <!-- Email code -->
-        <Button Grid.Row="3">
-            <Border Style="{StaticResource ButtonContentBorder}">
+            </RadioButton>
+
+            <!-- Email code -->
+            <RadioButton Grid.Row="3">
                 <StackPanel>
                     <Path Data="{StaticResource EmailCode}" />
                     <TextBlock Text="Email code" />
                 </StackPanel>
-            </Border>
-        </Button>
-        
-        <!-- Dropbox -->
-        <Button Grid.Row="4">
-            <Border Style="{StaticResource ButtonContentBorder}">
+            </RadioButton>
+
+            <!-- Dropbox -->
+            <RadioButton Grid.Row="4">
                 <StackPanel>
                     <Path Data="{StaticResource Dropbox}" />
                     <TextBlock Text="Dropbox" />
                 </StackPanel>
-            </Border>
-        </Button>
-        
-        <!-- Google drive -->
-        <Button Grid.Row="5">
-            <Border Style="{StaticResource ButtonContentBorder}">
+            </RadioButton>
+
+            <!-- Google drive -->
+            <RadioButton Grid.Row="5">
                 <StackPanel>
                     <Path Data="{StaticResource GoogleDrive}" />
                     <TextBlock Text="Google drive" />
                 </StackPanel>
-            </Border>
-        </Button>
-
-    </Grid>
+            </RadioButton>
+            
+            <!-- Recent images -->
+            <RadioButton Grid.Row="6">
+                <StackPanel>
+                    <Path Data="{StaticResource CircleOk}" />
+                    <TextBlock Text="Recent images" />
+                </StackPanel>
+            </RadioButton>
+        </Grid>
+    </Viewbox>
 </UserControl>

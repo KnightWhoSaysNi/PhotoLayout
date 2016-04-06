@@ -1,18 +1,22 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PhotoLayout">
-
-    <!-- Path set as a content for a button -->
-    <Style x:Key="ButtonPath" TargetType="Path">
+    
+    <!-- Path base style -->
+    <Style x:Key="PathBase" TargetType="Path">
         <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="Stroke" Value="White" />
-        <Setter Property="Fill" Value="White" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsPressed}" Value="True">
-                <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-            </DataTrigger>
-        </Style.Triggers>
+    </Style>
+
+    <!-- Path set as content for a button -->
+    <Style x:Key="ButtonPath" TargetType="Path" BasedOn="{StaticResource PathBase}">        
+        <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />        
+    </Style>
+    
+    <!-- Path set as content for a radio button -->
+    <Style x:Key="RadioButtonPath" TargetType="Path" BasedOn="{StaticResource PathBase}">
+        <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}" />
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}" />
     </Style>
     
 </ResourceDictionary>

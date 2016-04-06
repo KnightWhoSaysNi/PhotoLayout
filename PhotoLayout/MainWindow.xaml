@@ -11,7 +11,14 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <!-- GRID ROWS FOR TESTING PURPOSES -->
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
         <Grid x:Name="oldGrid" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -43,7 +50,7 @@
 
             <!-- Photo and layout selection -->
             <Border Grid.Row="1" BorderBrush="LightSalmon" BorderThickness="1" Margin="10" CornerRadius="5" Padding="15">
-                <views:PhotoLayoutSelection x:Name="photoLayoutSelectiony" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+                <views:PhotoLayoutSelectionView x:Name="photoLayoutSelectiony" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
             </Border>
 
             <!-- Photo manipulation controls -->
@@ -59,6 +66,30 @@
             </StackPanel>
         </Grid>
 
-        <views:FileSourceView Grid.Column="0" />
+        <!-- FileSource selection  -->
+        <views:FileSourceView />
+
+        <!-- Photo and layout selection -->
+        <Border Grid.Column="1" BorderBrush="LightSalmon" BorderThickness="0,0,1,0" Padding="15">
+            <views:PhotoLayoutSelectionView />
+        </Border>
+
+        <!-- BUTTONS FOR TESTING -->
+        <StackPanel Background="{StaticResource BackgroundLight}" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" VerticalAlignment="Center">
+            <Button Command="ApplicationCommands.Open" Style="{StaticResource EmptyButton}">
+                <Border Style="{StaticResource ButtonContentBorder}">
+                    <StackPanel>
+                        <Path Style="{StaticResource ButtonPath}" Data="{StaticResource MoreImages}" StrokeThickness="0.1">
+                            <Path.LayoutTransform>
+                                <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
+                            </Path.LayoutTransform>
+                        </Path>
+                        <TextBlock Margin="0,8,0,0" Text="More images" Style="{StaticResource ButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </Button>
+            <Button Content="Call GC" FontSize="22" Click="CallGC" Margin="5" />
+            <Button Visibility="Visible" Content="Clear AllPhotos" FontSize="22" Click="ClearAllPhotos" Margin="5" />
+        </StackPanel>
     </Grid>
 </Window>
