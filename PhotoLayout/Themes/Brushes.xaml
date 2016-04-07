@@ -5,12 +5,13 @@
     <SolidColorBrush x:Key="Accent" Color="#FF6ACDF4" />
     <SolidColorBrush x:Key="AccentDark" Color="#FF4FB7DE" />
 
-    <SolidColorBrush x:Key="Background" Color="#FFE2E2E2" />
-    <SolidColorBrush x:Key="BackgroundDark" Color="#FF2C2F36" />
+    <SolidColorBrush x:Key="BackgroundBlack" Color="#FF1A1B1F" />
+    <SolidColorBrush x:Key="BackgroundDark" Color="#FF2C2F36" /> 
+    <SolidColorBrush x:Key="Background" Color="#FF3D414B" />
     <SolidColorBrush x:Key="BackgroundLight" Color="#FF808080" />
 
-    <SolidColorBrush x:Key="Foreground" Color="#FF2C2F36" />
-    <SolidColorBrush x:Key="ForegroundLight" Color="#FF808080" />
+    <SolidColorBrush x:Key="Foreground" Color="#FF2C2F36" /> <!-- same as BackgroundDark -->
+    <SolidColorBrush x:Key="ForegroundLight" Color="#FF808080" /> <!-- same as BackgroundLight-->
     <SolidColorBrush x:Key="ForegroundDisabled" Color="LightGray" />
     <SolidColorBrush x:Key="ForegroundInvert" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="ForegroundInvertDisabled" Color="#555555" />

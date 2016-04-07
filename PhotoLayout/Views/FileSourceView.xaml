@@ -6,27 +6,25 @@
              xmlns:local="clr-namespace:PhotoLayout.Views"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="300"
-             Background="{StaticResource BackgroundDark}">
+             Background="{StaticResource BackgroundBlack}" SnapsToDevicePixels="True">
     <UserControl.Resources>
-        <!-- Default Path style -->
-        <Style TargetType="Path" BasedOn="{StaticResource RadioButtonPath}">
-            <Setter Property="Height" Value="50" />
-            <Setter Property="Stretch" Value="Uniform" />
-        </Style>
-        
         <!-- Default RadioButton style -->
         <Style TargetType="RadioButton" BasedOn="{StaticResource FileSourceRadioButton}">
-            <Setter Property="Margin" Value="20,10" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
         </Style>
         
+        <!-- Default Path style -->
+        <Style TargetType="Path" BasedOn="{StaticResource RadioButtonPath}" />
+
         <!-- Default TextBlock style -->
         <Style TargetType="TextBlock" BasedOn="{StaticResource RadioButtonTextBlock}" />
+        
     </UserControl.Resources>
-
+    
     <!-- ****************************************************************************************************** -->
     <!--                     VIEWBOX PUT FOR TESTING PURPOSES. REMOVE AFTER TESTING (or not...)                 -->
     <!-- ****************************************************************************************************** -->
-    <Viewbox MaxWidth="300">
+    <Viewbox MaxWidth="200">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -45,7 +43,7 @@
                     <TextBlock Text="Facebook" />
                 </StackPanel>
             </RadioButton>
-            <Ellipse Fill="White" Height="10" Width="10" HorizontalAlignment="Right" Stroke="White" />
+            <Ellipse Fill="White" Height="15" Width="15" HorizontalAlignment="Right" Stroke="White" />
 
             <!-- Instagram -->
             <RadioButton Grid.Row="1">
@@ -55,11 +53,11 @@
                 </StackPanel>
             </RadioButton>
 
-            <!-- Usb storage -->
+            <!-- Usb -->
             <RadioButton Grid.Row="2">
                 <StackPanel>
                     <Path Data="{StaticResource Usb}" />
-                    <TextBlock Text="Usb storage device" />
+                    <TextBlock Text="Usb device" />
                 </StackPanel>
             </RadioButton>
 

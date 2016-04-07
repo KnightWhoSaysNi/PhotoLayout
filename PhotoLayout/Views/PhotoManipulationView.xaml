@@ -4,104 +4,190 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PhotoLayout.Views"
+             xmlns:controls="clr-namespace:PhotoLayout.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="300" SnapsToDevicePixels="True"
+             Background="{StaticResource BackgroundBlack}">
     <UserControl.Resources>
         <!-- Default button style -->
         <Style TargetType="Button" BasedOn="{StaticResource EmptyButton}">
-            <Setter Property="Margin" Value="20,0" />
-            <Setter Property="Grid.Row" Value="2" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="20,15" />
+            <Setter Property="HorizontalAlignment" Value="Center" />            
+        </Style>  
+        
+        <!-- Default toggle button style -->
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource EmptyToggleButton}">
+            <Setter Property="Margin" Value="20,15" />
         </Style>
 
-        <!-- Default text block style -->
-        <Style TargetType="TextBlock" BasedOn="{StaticResource ButtonTextBlock}">
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0,5,0,0" />
-        </Style>
-
-        <!-- Default path style -->
-        <Style TargetType="Path" BasedOn="{StaticResource ButtonPath}">
-            <Setter Property="Fill" Value="White" />
-        </Style>
-
-        <!-- Default border for button content -->
-        <Style x:Key="ButtonContentBorder" TargetType="Border" BasedOn="{StaticResource ButtonContentBorder}">
-            <Setter Property="Width" Value="160" />
-        </Style>
-                
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
 
-        <!-- Get more images -->
-        <Button Grid.Column="0" Command="ApplicationCommands.Open">
-            <Border Style="{StaticResource ButtonContentBorder}">
-                <StackPanel>
-                    <Path Data="{StaticResource MoreImages}" StrokeThickness="0.1">
-                        <Path.LayoutTransform>
-                            <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
-                        </Path.LayoutTransform>
-                    </Path>
-                    <TextBlock Margin="0,8,0,0" Text="More images" />
-                </StackPanel>
-            </Border>
-        </Button>
+    <!-- ****************************************************************************************************** -->
+    <!--                     VIEWBOX PUT FOR TESTING PURPOSES. REMOVE AFTER TESTING (or not...)                 -->
+    <!-- ****************************************************************************************************** -->
+    <Viewbox MaxWidth="200">
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-        <!-- Replace image -->
-        <Button Grid.Column="1">
-            <Border Style="{StaticResource ButtonContentBorder}">
-                <StackPanel>
-                    <Path Data="{StaticResource ReplaceImage}" Fill="Transparent">
-                        <Path.LayoutTransform>
-                            <ScaleTransform ScaleX="3.5" ScaleY="3.5" />
-                        </Path.LayoutTransform>
-                    </Path>
-                    <TextBlock Text="Replace" />
-                </StackPanel>
-            </Border>
-        </Button>
+            <Grid x:Name="oldGrid" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-        <!-- Flip horizontally -->
-        <Button Grid.Column="2">
-            <Border Style="{StaticResource ButtonContentBorder}">
-                <StackPanel>
-                    <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
-                        <Path.LayoutTransform>
-                            <ScaleTransform ScaleX="1.8" ScaleY="1.8" />
-                        </Path.LayoutTransform>
-                    </Path>
-                    <TextBlock Text="Horizontal flip" />
-                </StackPanel>
-            </Border>
-        </Button>
+                <!-- Get more images -->
+                <Button Grid.Column="0" Command="ApplicationCommands.Open">
+                    <Border Style="{StaticResource ButtonContentBorder}">
+                        <StackPanel>
+                            <Path Data="{StaticResource MoreImages}" StrokeThickness="0.1">
+                                <Path.LayoutTransform>
+                                    <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
+                                </Path.LayoutTransform>
+                            </Path>
+                            <TextBlock Margin="0,8,0,0" Text="More images" />
+                        </StackPanel>
+                    </Border>
+                </Button>
 
-        <!-- Flip vertically -->
-        <Button Grid.Column="3">
-            <Border Style="{StaticResource ButtonContentBorder}">
-                <StackPanel>
-                    <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
-                        <Path.LayoutTransform>
-                            <TransformGroup>
-                                <ScaleTransform ScaleX="1.8" ScaleY="1.8" />
-                                <RotateTransform Angle="90" />
-                            </TransformGroup>
-                        </Path.LayoutTransform>
-                    </Path>
-                    <TextBlock Text="Vertical flip" />
-                </StackPanel>
-            </Border>
-        </Button>
-    </Grid>
+                <!-- Replace image -->
+                <Button Grid.Column="1">
+                    <Border Style="{StaticResource ButtonContentBorder}">
+                        <StackPanel>
+                            <Path Data="{StaticResource ReplaceImage}" Fill="Transparent">
+                                <Path.LayoutTransform>
+                                    <ScaleTransform ScaleX="3.5" ScaleY="3.5" />
+                                </Path.LayoutTransform>
+                            </Path>
+                            <TextBlock Text="Replace" />
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+                <!-- Flip horizontally -->
+                <Button Grid.Column="2">
+                    <Border Style="{StaticResource ButtonContentBorder}">
+                        <StackPanel>
+                            <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
+                                <Path.LayoutTransform>
+                                    <ScaleTransform ScaleX="1.8" ScaleY="1.8" />
+                                </Path.LayoutTransform>
+                            </Path>
+                            <TextBlock Text="Horizontal flip" />
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+                <!-- Flip vertically -->
+                <Button Grid.Column="3">
+                    <Border Style="{StaticResource ButtonContentBorder}">
+                        <StackPanel>
+                            <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
+                                <Path.LayoutTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.8" ScaleY="1.8" />
+                                        <RotateTransform Angle="90" />
+                                    </TransformGroup>
+                                </Path.LayoutTransform>
+                            </Path>
+                            <TextBlock Text="Vertical flip" />
+                        </StackPanel>
+                    </Border>
+                </Button>
+            </Grid>
+
+            <!-- Print -->
+            <Button>
+                <Border Style="{StaticResource ButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource Printer}" Style="{StaticResource ButtonPath}" />
+                        <TextBlock Text="Print" Style="{StaticResource ButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </Button>
+
+            <!-- Options -->
+            <ToggleButton Grid.Row="1">
+                <Border Style="{StaticResource ToggleButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource MoreImages}" Style="{StaticResource ToggleButtonPath}" />
+                        <TextBlock Text="Options" Style="{StaticResource ToggleButtonTextBlock}"  />
+                    </StackPanel>
+                </Border>
+            </ToggleButton>
+            <Rectangle Height="4" Fill="LightGray" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="150" Grid.Row="1" />
+            
+            <!-- New -->
+            <Button Grid.Row="2">
+                <Border Style="{StaticResource ButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource MoreImages}" Style="{StaticResource ButtonPath}" />
+                        <TextBlock Text="New image" Style="{StaticResource ButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </Button>
+
+            <!-- Save -->
+            <Button Grid.Row="3">
+                <Border Style="{StaticResource ButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource Save}" Style="{StaticResource ButtonPath}" />
+                        <TextBlock Text="Save image" Style="{StaticResource ButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </Button>
+            <Rectangle Height="4" Fill="LightGray" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="150" Grid.Row="3" />
+
+            <!-- Replace -->
+            <Button Grid.Row="4">
+                <Border Style="{StaticResource ButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource ReplaceImage}" Style="{StaticResource ButtonPath}" />
+                        <TextBlock Text="Replace" Style="{StaticResource ButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </Button>
+
+            <!-- Flip horizontally  -->
+            <ToggleButton Grid.Row="5">
+                <Border Style="{StaticResource ToggleButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource Flip}" Style="{StaticResource ToggleButtonPath}" />
+                        <TextBlock Text="Flip horizontally" Style="{StaticResource ToggleButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </ToggleButton>
+
+            <!-- Flip vertically  -->
+            <ToggleButton Grid.Row="6">
+                <Border Style="{StaticResource ToggleButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource Flip}" Style="{StaticResource ToggleButtonPath}">
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleX="-1" />
+                            </Path.LayoutTransform>
+                        </Path>
+                        <TextBlock Text="Flip vertically" Style="{StaticResource ToggleButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </ToggleButton>
+        </Grid>
+    </Viewbox>
+
 </UserControl>

@@ -5,6 +5,8 @@
     <!-- Path base style -->
     <Style x:Key="PathBase" TargetType="Path">
         <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Height" Value="50" />
+        <Setter Property="Stretch" Value="Uniform" />
     </Style>
 
     <!-- Path set as content for a button -->
@@ -17,6 +19,12 @@
     <Style x:Key="RadioButtonPath" TargetType="Path" BasedOn="{StaticResource PathBase}">
         <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}" />
         <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}" />
+    </Style>
+    
+    <!-- Path set as content for a toggle button -->
+    <Style x:Key="ToggleButtonPath" TargetType="Path" BasedOn="{StaticResource PathBase}">
+        <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=Foreground}" />
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=Foreground}" />
     </Style>
     
 </ResourceDictionary>
