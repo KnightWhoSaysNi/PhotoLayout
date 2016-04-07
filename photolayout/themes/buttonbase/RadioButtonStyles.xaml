@@ -4,12 +4,13 @@
         <ResourceDictionary Source="/PhotoLayout;component/Themes/Brushes.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
-    <!-- RadioButton style for FileSourceView -->
+    <!-- Default RadioButton style -->
     <Style x:Key="FileSourceRadioButton" TargetType="RadioButton">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="22" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Margin" Value="20,15" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
@@ -32,7 +33,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-
     </Style>
-    
+
 </ResourceDictionary>

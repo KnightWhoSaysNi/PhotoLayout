@@ -1,38 +1,34 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:PhotoLayout">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/PhotoLayout;component/Themes/Brushes.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
-    <!-- Button with transparent background and border -->
-    <Style x:Key="EmptyButton" TargetType="Button">
+    <!-- ToggleButton with transparent background and border -->
+    <Style x:Key="EmptyToggleButton" TargetType="ToggleButton">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="22" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}">
                         <ContentPresenter Margin="{TemplateBinding Padding}"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Foreground" Value="{StaticResource Accent}" />
                         </Trigger>
-                        <!--<Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{StaticResource ForegroundDisabled}" />
-                        </Trigger>-->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource Accent}" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
     
 </ResourceDictionary>

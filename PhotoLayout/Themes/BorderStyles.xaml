@@ -6,8 +6,9 @@
     <Style x:Key="BorderBase" TargetType="Border">
         <Setter Property="BorderThickness" Value="0.8" />
         <Setter Property="Padding" Value="10" />
-        <Setter Property="Width" Value="230" />
+        <Setter Property="Width" Value="200" />
         <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="Background" Value="{StaticResource Background}" />
     </Style>
 
     <!-- Border for the content of a button -->
@@ -26,7 +27,12 @@
 
     <!-- Border for the content of a radio button -->
     <Style x:Key="RadioButtonContentBorder" TargetType="Border" BasedOn="{StaticResource BorderBase}">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="5,15,15,5" />
         <Setter Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}" />        
+    </Style>
+    
+    <!-- Border for the content of a toggle button -->
+    <Style x:Key="ToggleButtonContentBorder" TargetType="Border" BasedOn="{StaticResource BorderBase}">
+        <Setter Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=Foreground}" />
     </Style>
 </ResourceDictionary>

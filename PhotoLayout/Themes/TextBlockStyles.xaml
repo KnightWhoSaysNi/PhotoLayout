@@ -18,4 +18,10 @@
         <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=FontSize}" />
         <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}" />
     </Style>
+    
+    <!-- TextBlock set as content for a toggle button -->
+    <Style x:Key="ToggleButtonTextBlock" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=FontSize}" />
+        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=Foreground}" />
+    </Style>
 </ResourceDictionary>
