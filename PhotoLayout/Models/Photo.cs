@@ -150,11 +150,16 @@ namespace PhotoLayout.Models
             return this.Name;
         }
 
-        public void UpdateBitmapSources()
+        public void RefreshBitmapSources()
         {
-            OriginalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
-            Thumbnail = GetBitmapSource(DecodePixelWidth.ThumbnailPixelWidth);
-            PreviewBitmap = GetBitmapSource(DecodePixelWidth.PreviewPixelWidth);
+            if(originalBitmap == null)
+                OriginalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
+
+            if (thumbnail == null)
+                Thumbnail = GetBitmapSource(DecodePixelWidth.ThumbnailPixelWidth);
+
+            if (previewBitmap == null)
+                PreviewBitmap = GetBitmapSource(DecodePixelWidth.PreviewPixelWidth);
         }
 
         #endregion
