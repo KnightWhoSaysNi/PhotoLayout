@@ -150,7 +150,7 @@ namespace PhotoLayout.Models
             return this.Name;
         }
 
-        public void UpdateBitmapSources()
+        public void RefreshBitmapSources()
         {
             OriginalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
             Thumbnail = GetBitmapSource(DecodePixelWidth.ThumbnailPixelWidth);
