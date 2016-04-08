@@ -91,7 +91,7 @@ namespace PhotoLayout
                         Dispatcher.BeginInvoke((Action)(() =>
                         {
                             Photo photo = new Photo(new Uri(imagePath), "some pic", ".jpg"); // TODO Get photo name from the image path first, or change Photo constructor
-                            photo.UpdateBitmapSources();
+                            photo.RefreshBitmapSources();
                             AllPhotos.Add(photo);
                         }
                         ), DispatcherPriority.ApplicationIdle);
@@ -183,11 +183,11 @@ namespace PhotoLayout
             Photo p3 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Desktop-Wallpaper-HD2.jpg", UriKind.Absolute), "pic 3", ".jpg");
             Photo p4 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\Penguins.jpg", UriKind.Absolute), "pic 4", ".jpg");
             Photo p5 = new Photo(new Uri(@"C:\Users\bsod\Desktop\Sample Pictures\23-animation-wallpaper.preview.jpg", UriKind.Absolute), "pic 5", ".jpg");
-            p1.UpdateBitmapSources();
-            p2.UpdateBitmapSources();
-            p3.UpdateBitmapSources();
-            p4.UpdateBitmapSources();
-            p5.UpdateBitmapSources();
+            p1.RefreshBitmapSources();
+            p2.RefreshBitmapSources();
+            p3.RefreshBitmapSources();
+            p4.RefreshBitmapSources();
+            p5.RefreshBitmapSources();
 
             Photos.Add(p1);
             Photos.Add(p2);
