@@ -37,6 +37,9 @@
   <PropertyGroup>
     <ApplicationIcon>Icons\temp layout icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>PhotoLayout.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -62,8 +65,10 @@
     </ApplicationDefinition>
     <Compile Include="Converters\CheckedToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\ObjectToBitmapSourceConverter.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Models\Folder.cs" />
     <Compile Include="Models\Photo.cs" />
     <Compile Include="ViewModels\BindableBase.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
