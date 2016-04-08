@@ -1,4 +1,5 @@
-﻿using PhotoLayout.Models;
+﻿using PhotoLayout.Helpers;
+using PhotoLayout.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,6 +41,12 @@ namespace PhotoLayout.Views
 
         private void allPhotosListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (allPhotosListBox.SelectedItems.Count > Constants.MaxPhotosInLayoutGrid)
+            {
+                allPhotosListBox.SelectedItems.RemoveAt(allPhotosListBox.SelectedItems.Count - 1);
+                return;
+            }    
+
             System.Collections.IList eAdded = e.AddedItems;
             System.Collections.IList eRemoved = e.RemovedItems;
 

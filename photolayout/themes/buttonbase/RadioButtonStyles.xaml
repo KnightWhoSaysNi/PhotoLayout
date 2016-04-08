@@ -16,7 +16,7 @@
                 <ControlTemplate TargetType="RadioButton">
                     <Border Style="{StaticResource RadioButtonContentBorder}">
                         <ContentPresenter Margin="{TemplateBinding Padding}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Border>
                     <ControlTemplate.Triggers>

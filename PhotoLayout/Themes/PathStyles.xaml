@@ -12,7 +12,7 @@
     <!-- Path set as content for a button -->
     <Style x:Key="ButtonPath" TargetType="Path" BasedOn="{StaticResource PathBase}">        
         <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />        
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
     </Style>
     
     <!-- Path set as content for a radio button -->
