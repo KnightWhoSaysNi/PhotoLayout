@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:PhotoLayout">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/PhotoLayout;component/Themes/Brushes.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -14,25 +13,23 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                    <Border x:Name="bd" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
                             BorderThickness="{TemplateBinding BorderThickness}" 
                             Background="{TemplateBinding Background}">
                         <ContentPresenter Margin="{TemplateBinding Padding}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />  
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Foreground" Value="{StaticResource Accent}" />
+                            <Setter Property="Foreground" Value="{StaticResource Accent}" />                            
                         </Trigger>
-                        <!--<Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{StaticResource ForegroundDisabled}" />
-                        </Trigger>-->
-                    </ControlTemplate.Triggers>
+                    </ControlTemplate.Triggers>                    
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>      
     
     
 </ResourceDictionary>

@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <!-- New photo name -->
-        <TextBlock Text="This is where the name will be (if there is one)" FontSize="22" Foreground="White" />
+        <TextBlock Text="This is where the name will be (if there is one)" FontSize="22" Foreground="White" HorizontalAlignment="Center" />
 
         <Grid Grid.Row="1">
             <controls:LayoutGrid />

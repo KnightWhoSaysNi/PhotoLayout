@@ -36,6 +36,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
 
             <Grid x:Name="oldGrid" Visibility="Collapsed">
@@ -56,7 +57,7 @@
                 <Button Grid.Column="0" Command="ApplicationCommands.Open">
                     <Border Style="{StaticResource ButtonContentBorder}">
                         <StackPanel>
-                            <Path Data="{StaticResource MoreImages}" StrokeThickness="0.1">
+                            <Path Data="{StaticResource NewImage}" StrokeThickness="0.1">
                                 <Path.LayoutTransform>
                                     <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
                                 </Path.LayoutTransform>
@@ -126,7 +127,7 @@
             <ToggleButton Grid.Row="1">
                 <Border Style="{StaticResource ToggleButtonContentBorder}">
                     <StackPanel>
-                        <Path Data="{StaticResource MoreImages}" Style="{StaticResource ToggleButtonPath}" />
+                        <Path Data="{StaticResource Options}" Style="{StaticResource ToggleButtonPath}" />
                         <TextBlock Text="Options" Style="{StaticResource ToggleButtonTextBlock}"  />
                     </StackPanel>
                 </Border>
@@ -137,7 +138,7 @@
             <Button Grid.Row="2">
                 <Border Style="{StaticResource ButtonContentBorder}">
                     <StackPanel>
-                        <Path Data="{StaticResource MoreImages}" Style="{StaticResource ButtonPath}" />
+                        <Path Data="{StaticResource NewImage}" Style="{StaticResource ButtonPath}" />
                         <TextBlock Text="New image" Style="{StaticResource ButtonTextBlock}" />
                     </StackPanel>
                 </Border>
@@ -153,9 +154,19 @@
                 </Border>
             </Button>
             <Rectangle Height="4" Fill="LightGray" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="150" Grid.Row="3" />
+            
+            <!-- Remove -->
+            <Button Grid.Row="4">
+                <Border Style="{StaticResource ButtonContentBorder}">
+                    <StackPanel>
+                        <Path Data="{StaticResource Remove}" Style="{StaticResource ButtonPath}" />
+                        <TextBlock Text="Remove" Style="{StaticResource ButtonTextBlock}" />
+                    </StackPanel>
+                </Border>
+            </Button>
 
             <!-- Replace -->
-            <Button Grid.Row="4">
+            <Button Grid.Row="5">
                 <Border Style="{StaticResource ButtonContentBorder}">
                     <StackPanel>
                         <Path Data="{StaticResource ReplaceImage}" Style="{StaticResource ButtonPath}" />
@@ -165,7 +176,7 @@
             </Button>
 
             <!-- Flip horizontally  -->
-            <ToggleButton Grid.Row="5">
+            <ToggleButton Grid.Row="6">
                 <Border Style="{StaticResource ToggleButtonContentBorder}">
                     <StackPanel>
                         <Path Data="{StaticResource Flip}" Style="{StaticResource ToggleButtonPath}" />
@@ -175,12 +186,12 @@
             </ToggleButton>
 
             <!-- Flip vertically  -->
-            <ToggleButton Grid.Row="6">
+            <ToggleButton Grid.Row="7">
                 <Border Style="{StaticResource ToggleButtonContentBorder}">
                     <StackPanel>
                         <Path Data="{StaticResource Flip}" Style="{StaticResource ToggleButtonPath}">
                             <Path.LayoutTransform>
-                                <ScaleTransform ScaleX="-1" />
+                                <RotateTransform Angle="90" />
                             </Path.LayoutTransform>
                         </Path>
                         <TextBlock Text="Flip vertically" Style="{StaticResource ToggleButtonTextBlock}" />

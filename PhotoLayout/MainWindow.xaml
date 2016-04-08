@@ -83,17 +83,10 @@
         <views:PhotoManipulationView Grid.Column="3" Grid.RowSpan="2"/>
 
         <!-- BUTTONS FOR TESTING -->
-        <StackPanel Visibility="Collapsed" Background="{StaticResource BackgroundLight}" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" VerticalAlignment="Center">
+        <StackPanel Visibility="Visible" Background="{StaticResource BackgroundLight}" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" VerticalAlignment="Center">
             <Button Command="ApplicationCommands.Open" Style="{StaticResource EmptyButton}">
                 <Border Style="{StaticResource ButtonContentBorder}">
-                    <StackPanel>
-                        <Path Style="{StaticResource ButtonPath}" Data="{StaticResource MoreImages}" StrokeThickness="0.1">
-                            <Path.LayoutTransform>
-                                <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
-                            </Path.LayoutTransform>
-                        </Path>
-                        <TextBlock Margin="0,8,0,0" Text="More images" Style="{StaticResource ButtonTextBlock}" />
-                    </StackPanel>
+                    <TextBlock Margin="0,8,0,0" Text="More images" Style="{StaticResource ButtonTextBlock}" />                   
                 </Border>
             </Button>
             <Button Content="Call GC" FontSize="22" Click="CallGC" Margin="5" />
