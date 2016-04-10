@@ -33,6 +33,8 @@ namespace PhotoLayout
     {
         #region - Fields -
 
+        private Folder currentFolder;
+        private Dictionary<Folder, ObservableCollection<Photo>> PhotosByFolders { get; set; }
 
         #endregion
 
@@ -44,12 +46,16 @@ namespace PhotoLayout
             
             this.DataContext = this;
 
-            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpen));
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenPartitions));
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.New, OnNew));
+            this.CommandBindings.Add(new CommandBinding(NavigationCommands.BrowseBack, OnBack));
 
             AllPhotos = new ObservableCollection<Photo>();
+            AllFolders = new ObservableCollection<Folder>();
+            PhotosByFolders = new Dictionary<Folder, ObservableCollection<Photo>>();
         }
 
-        #endregion  
+        #endregion
 
         #region - Events -
 
@@ -66,9 +72,106 @@ namespace PhotoLayout
 
         #region - Properties -
 
-        public ObservableCollection<Photo> AllPhotos { get; set; }
+        public Folder CurrentFolder
+        {
+            get { return currentFolder; }
+            set
+            {
+                currentFolder = value;
+                OnPropertyChanged();
+            }
+        }
 
-        #endregion  
+        public ObservableCollection<Photo> AllPhotos { get; set; }
+        public ObservableCollection<Folder> AllFolders { get; set; }
+
+        #endregion
+
+        #region  - Private methods - 
+
+        private void OnBack(object sender, ExecutedRoutedEventArgs e)
+        {
+            AllFolders.Clear();
+            CurrentFolder = currentFolder.Parent == null ? null : currentFolder.Parent;
+            if (currentFolder == null) // TODO Change logic for this - It must not be null
+            {
+                return;
+            }
+
+            foreach (var folder in currentFolder.SubFolders)
+            {
+                AllFolders.Add(folder);
+            }
+
+            AllPhotos.Clear();
+            foreach (var item in PhotosByFolders[CurrentFolder])
+            {
+                Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(item)), DispatcherPriority.ApplicationIdle);
+            }
+        }
+
+        private void OnNew(object sender, ExecutedRoutedEventArgs e)
+        {
+            Folder fold = e.Parameter as Folder;
+            CurrentFolder = fold;
+
+            AllFolders.Clear();
+            foreach (var item in fold.SubFolders)
+            {
+                AllFolders.Add(item);
+            }
+
+            AllPhotos.Clear();
+            if (!PhotosByFolders.ContainsKey(fold))
+            {
+                PhotosByFolders[fold] = new ObservableCollection<Photo>();
+                foreach (var item in CurrentFolder.Files)
+                {
+                    Photo newPhoto = new Photo(new Uri(item.FullName), item.Name, item.Extension);
+                    newPhoto.RefreshBitmapSources();
+                    PhotosByFolders[fold].Add(newPhoto);
+                    //Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(newPhoto)), DispatcherPriority.ApplicationIdle);
+                }
+                //AllPhotos = PhotosByFolders[fold];
+            }
+            
+            foreach (var item in PhotosByFolders[fold])
+            {
+                Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(item)), DispatcherPriority.ApplicationIdle);    
+            }            
+        }
+      
+        private void OnOpenPartitions(object sender, ExecutedRoutedEventArgs e)
+        {
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += Worker_DoWork;
+            worker.RunWorkerAsync();
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string[] partitions = Environment.GetLogicalDrives();
+            Folder partitionE = new Folder(@"E:\", null, new List<string>() { ".jpg" });           
+
+            // FIles in sub folders
+            PopulateAllPhotos(partitionE);
+        }
+
+        private void PopulateAllPhotos(Folder root)
+        {
+            foreach (var file in root.Files)
+            {
+                Photo newPhoto = new Photo(new Uri(file.FullName), file.Name, file.Extension);
+                newPhoto.RefreshBitmapSources();
+                Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(newPhoto)), DispatcherPriority.ApplicationIdle);
+            }
+
+            foreach (var folder in root.SubFolders)
+            {
+                //PopulateAllPhotos(folder);
+                Dispatcher.BeginInvoke((Action)(() => AllFolders.Add(folder)), DispatcherPriority.ApplicationIdle);
+            }
+        }
 
         private void OnOpen(object sender, ExecutedRoutedEventArgs e)
         {
@@ -110,13 +213,7 @@ namespace PhotoLayout
                 //    }), DispatcherPriority.ApplicationIdle);
                 //}
             }
-        }        
-
-        private void ShowTopBar(object sender, RoutedEventArgs e)
-        {
-            topBorder.Visibility = Visibility.Visible;
-            showTop.Visibility = Visibility.Collapsed;
-        }
+        }               
 
         private void CallGC(object sender, RoutedEventArgs e)
         {
@@ -131,7 +228,15 @@ namespace PhotoLayout
             }
         }
 
+        #endregion
+
         #region - Temp test methods -
+
+        private void ShowTopBar(object sender, RoutedEventArgs e)
+        {
+            topBorder.Visibility = Visibility.Visible;
+            showTop.Visibility = Visibility.Collapsed;
+        }
 
         // ***************************************************************
         // ******** NOT INTENDED FOR DIRECT LOADING OF PHOTOS ************
