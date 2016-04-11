@@ -151,18 +151,20 @@ namespace PhotoLayout
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             string[] partitions = Environment.GetLogicalDrives();
-            Folder partitionE = new Folder(@"E:\", null, new List<string>() { ".jpg" });           
+            Folder partitionD = new Folder(@"D:\", null, new List<string>() { ".jpg" });           
 
             // FIles in sub folders
-            PopulateAllPhotos(partitionE);
+            PopulateAllPhotos(partitionD);
         }
 
         private void PopulateAllPhotos(Folder root)
         {
+            PhotosByFolders[root] = new ObservableCollection<Photo>();
             foreach (var file in root.Files)
             {
                 Photo newPhoto = new Photo(new Uri(file.FullName), file.Name, file.Extension);
                 newPhoto.RefreshBitmapSources();
+                PhotosByFolders[root].Add(newPhoto);
                 Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(newPhoto)), DispatcherPriority.ApplicationIdle);
             }
 
