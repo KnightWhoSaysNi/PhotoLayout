@@ -150,16 +150,30 @@ namespace PhotoLayout
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string[] partitions = Environment.GetLogicalDrives();
-            Folder partitionD = new Folder(@"D:\", null, new List<string>() { ".jpg" });           
+            var drives = DriveInfo.GetDrives();
+            Folder root = new Folder("root", null, new List<string>() { ".jpg", ".png" }); // All logical drives get this folder as root
+            
+            foreach (DriveInfo drive in drives)
+            {
+                //if (drive.DriveType == DriveType.Removable)
+                //{
+                Folder driveFolder = new Folder(drive.Name, root, new List<string>() { ".jpg", ".png" });
+                root.SubFolders.Add(driveFolder);
+                //}
+            }
 
-            // FIles in sub folders
-            PopulateAllPhotos(partitionD);
+            PopulateAllPhotos(root);
         }
 
         private void PopulateAllPhotos(Folder root)
         {
             PhotosByFolders[root] = new ObservableCollection<Photo>();
+
+            foreach (var folder in root.SubFolders)
+            {
+                Dispatcher.BeginInvoke((Action)(() => AllFolders.Add(folder)), DispatcherPriority.ApplicationIdle);
+            }
+
             foreach (var file in root.Files)
             {
                 Photo newPhoto = new Photo(new Uri(file.FullName), file.Name, file.Extension);
@@ -168,11 +182,6 @@ namespace PhotoLayout
                 Dispatcher.BeginInvoke((Action)(() => AllPhotos.Add(newPhoto)), DispatcherPriority.ApplicationIdle);
             }
 
-            foreach (var folder in root.SubFolders)
-            {
-                //PopulateAllPhotos(folder);
-                Dispatcher.BeginInvoke((Action)(() => AllFolders.Add(folder)), DispatcherPriority.ApplicationIdle);
-            }
         }
 
         private void OnOpen(object sender, ExecutedRoutedEventArgs e)
