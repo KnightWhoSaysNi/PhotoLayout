@@ -51,6 +51,7 @@ namespace PhotoLayout.Models
                 else
                 {
                     // TODO Determine what to do if the directory doesn't exist
+                    // In situation where all partitions need a root, a "virtual Folder" is needed
                 }
             }
         }
@@ -82,6 +83,7 @@ namespace PhotoLayout.Models
             {
                 if (subFolders == null)
                 {
+                    subFolders = new ObservableCollection<Folder>();
                     PopulateSubFolders();
                 }
                 return subFolders;
@@ -94,6 +96,7 @@ namespace PhotoLayout.Models
             {
                 if (files == null)
                 {
+                    files = new ObservableCollection<FileInfo>();
                     PopulateFiles();
                 }
                 return files;
@@ -106,7 +109,10 @@ namespace PhotoLayout.Models
             
         private void PopulateSubFolders()
         {
-            subFolders = new ObservableCollection<Folder>();
+            if (this.folder == null)
+            {
+                return;
+            }
 
             try
             {
@@ -129,7 +135,10 @@ namespace PhotoLayout.Models
 
         private void PopulateFiles()
         {
-            files = new ObservableCollection<FileInfo>();
+            if (this.folder == null)
+            {
+                return;
+            }
 
             try
             {

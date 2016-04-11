@@ -74,11 +74,12 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PhotoManipulationViewModel.cs" />
+    <Compile Include="ViewModels\SelectionViewModel.cs" />
     <Compile Include="ViewModels\TestViewModel.cs" />
     <Compile Include="Controls\LayoutGrid.cs" />
     <Compile Include="Converters\SelectedItemCountToColorConverter.cs" />
     <Compile Include="Views\FileSourceView.xaml.cs">
-      <DependentUpon>FileSourceView.xaml</DependentUpon>
+      <DependentUpon>FileSourceSelectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PhotoLayoutSelectionView.xaml.cs">
       <DependentUpon>PhotoLayoutSelectionView.xaml</DependentUpon>
@@ -144,7 +145,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FileSourceView.xaml">
+    <Page Include="Views\FileSourceSelectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

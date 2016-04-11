@@ -150,6 +150,7 @@ namespace PhotoLayout.Models
             return this.Name;
         }
 
+        // TODO Remove this and refactor properties if VirtualizingWrapPanel doesn't need to use this method
         public void RefreshBitmapSources()
         {
             if(originalBitmap == null)
@@ -168,19 +169,30 @@ namespace PhotoLayout.Models
 
         private BitmapSource GetBitmapSource(DecodePixelWidth decodeWidth)
         {
-            BitmapImage source = new BitmapImage();
-            source.BeginInit();
-            source.CacheOption = BitmapCacheOption.None; // TODO Check if this should be OnLoad
-            //source.DecodeFailed
-            if (decodeWidth != DecodePixelWidth.OriginalPixelWidth)
+            try
             {
-                source.DecodePixelWidth = (int)decodeWidth;
-            }
-            source.UriSource = PhotoUri;
-            source.EndInit();
-            source.Freeze();
+                BitmapImage source = new BitmapImage();
+                source.BeginInit();
+                source.CacheOption = BitmapCacheOption.None; // TODO Check if this should be OnLoad
+                //source.DecodeFailed
+                if (decodeWidth != DecodePixelWidth.OriginalPixelWidth)
+                {
+                    source.DecodePixelWidth = (int)decodeWidth;
+                }
+                source.UriSource = PhotoUri;
+                source.EndInit();
+                source.Freeze();
 
-            return source;
+                return source;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e.StackTrace);
+                System.Diagnostics.Trace.WriteLine(e.Source);
+                System.Diagnostics.Trace.WriteLine(e.Message);
+                return null;
+            }
+            
         }
 
         /// <summary>

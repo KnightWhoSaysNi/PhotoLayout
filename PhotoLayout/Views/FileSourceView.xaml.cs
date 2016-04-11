@@ -18,11 +18,11 @@ namespace PhotoLayout.Views
     /// <summary>
     /// Interaction logic for FileSourceView.xaml 
     /// </summary>
-    public partial class FileSourceView : UserControl
+    public partial class FileSourceSelectionView : UserControl
     {
         // TODO In FileSourceView.xaml mayhaps bind radio buttons' IsChecked properties to UserControl/Window Visibility or some other property
         // so that every radio button is unchecked for each new visit to the photograph printing view (for Easy2U)
-        public FileSourceView()
+        public FileSourceSelectionView()
         {
             InitializeComponent();
         }
