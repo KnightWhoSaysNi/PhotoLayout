@@ -29,6 +29,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />            
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -40,7 +41,7 @@
         <!-- File source info -->
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Foreground="{StaticResource Accent}" Style="{StaticResource EmptyButton}" Content="Back" Margin="0,0,10,0" />
+                <Button Style="{StaticResource EmptyButton}" Content="Back" Margin="0,0,10,0" Command="NavigationCommands.BrowseBack" />
                 <TextBlock Text="Images on your instagram account" FontSize="22" Foreground="{StaticResource Accent}" VerticalAlignment="Center"/>            
             </StackPanel>
             <Rectangle Height="4" Fill="LightGray" />
@@ -50,8 +51,44 @@
             </StackPanel>
         </StackPanel>
         
+        <!-- Folders -->
+        <Border BorderBrush="#4F000000" BorderThickness="0,0.7,0,0" Padding="5" Grid.Row="1"  Margin="10">
+            <ListBox Background="Transparent" BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ItemsSource="{Binding AllFolders}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Height="100">
+                            <Button Style="{StaticResource EmptyButton}" Command="ApplicationCommands.New" CommandParameter="{Binding }">
+                                <StackPanel>
+                                    <Path Data="{StaticResource NewImage}" Style="{StaticResource ButtonPath}" Stretch="Uniform" />
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource ButtonTextBlock}" />
+                                </StackPanel>
+                            </Button>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Border>
+        
         <!-- Photo selection -->
-        <Border Visibility="Visible" BorderBrush="#4F000000" BorderThickness="0,0.7" Padding="5" Grid.Row="1"  Margin="10">
+        <Border Visibility="Visible" BorderBrush="#4F000000" BorderThickness="0,0.7" Padding="5" Grid.Row="2"  Margin="10">
             <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding AllPhotos}" SelectionChanged="allPhotosListBox_SelectionChanged">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -115,7 +152,7 @@
         </Border>
                 
         <!-- Layout selection -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20">
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="20">
             <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="MediumVioletRed" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="SlateBlue" />
