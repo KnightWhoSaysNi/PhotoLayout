@@ -153,7 +153,7 @@ namespace PhotoLayout.Models
         // TODO Remove this and refactor properties if VirtualizingWrapPanel doesn't need to use this method
         public void RefreshBitmapSources()
         {
-            if(originalBitmap == null)
+            if (originalBitmap == null)
                 OriginalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
 
             if (thumbnail == null)
@@ -187,9 +187,24 @@ namespace PhotoLayout.Models
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.WriteLine(e.StackTrace);
-                System.Diagnostics.Trace.WriteLine(e.Source);
-                System.Diagnostics.Trace.WriteLine(e.Message);
+                //System.Diagnostics.Trace.WriteLine(e.StackTrace);
+                //System.Diagnostics.Trace.WriteLine(e.Source);
+                //System.Diagnostics.Trace.WriteLine(e.Message);
+
+                string property = string.Empty;
+                switch (decodeWidth)
+                {
+                    case DecodePixelWidth.OriginalPixelWidth:
+                        property = "an Original BitmapSource";
+                        break;
+                    case DecodePixelWidth.ThumbnailPixelWidth:
+                        property = "a Thumbnail BitmapSource";
+                        break;
+                    case DecodePixelWidth.PreviewPixelWidth:
+                        property = "a Preview BitmapSource";
+                        break;                    
+                }
+                System.Diagnostics.Trace.WriteLine($"\t- Could not create {property} from '{PhotoUri}'");
                 return null;
             }
             

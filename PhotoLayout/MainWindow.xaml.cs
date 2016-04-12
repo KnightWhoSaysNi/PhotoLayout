@@ -34,7 +34,7 @@ namespace PhotoLayout
         #region - Fields -
 
         private Folder currentFolder;
-        private Dictionary<Folder, ObservableCollection<Photo>> PhotosByFolders { get; set; }
+        private Dictionary<Folder, ObservableCollection<Photo>> PhotosByFolders { get; set; }        
 
         #endregion
 
@@ -43,7 +43,7 @@ namespace PhotoLayout
         public MainWindow()
         {
             InitializeComponent();
-            
+
             this.DataContext = this;
 
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenPartitions));
@@ -52,7 +52,7 @@ namespace PhotoLayout
 
             AllPhotos = new ObservableCollection<Photo>();
             AllFolders = new ObservableCollection<Folder>();
-            PhotosByFolders = new Dictionary<Folder, ObservableCollection<Photo>>();
+            PhotosByFolders = new Dictionary<Folder, ObservableCollection<Photo>>();            
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace PhotoLayout
 
         #endregion
 
-        #region - Properties -
+        #region - Properties -        
 
         public Folder CurrentFolder
         {
@@ -243,11 +243,7 @@ namespace PhotoLayout
 
         #region - Temp test methods -
 
-        private void ShowTopBar(object sender, RoutedEventArgs e)
-        {
-            topBorder.Visibility = Visibility.Visible;
-            showTop.Visibility = Visibility.Collapsed;
-        }
+       
 
         // ***************************************************************
         // ******** NOT INTENDED FOR DIRECT LOADING OF PHOTOS ************
