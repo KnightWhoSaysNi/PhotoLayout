@@ -22,11 +22,12 @@ namespace PhotoLayout.Views
     /// Interaction logic for PhotoLayoutSelection.xaml
     /// </summary>
     public partial class PhotoLayoutSelectionView : UserControl
-    {
+    {        
         public PhotoLayoutSelectionView()
         {
             InitializeComponent();
             SelectedPhotos = new ObservableCollection<Photo>();
+
         }
         
         public ObservableCollection<Photo> SelectedPhotos { get; set; }
