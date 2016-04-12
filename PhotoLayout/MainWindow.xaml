@@ -4,10 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:PhotoLayout.Views"
+        xmlns:vm="clr-namespace:PhotoLayout.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1600" 
         Icon="Icons/temp layout icon.ico"
-        Background="{StaticResource BackgroundDark}"> 
+        Background="{StaticResource BackgroundDark}">
+    <Window.Resources>
+        <vm:SelectionViewModel x:Key="SelectionViewModel" />
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -19,61 +23,14 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        
-        <Grid x:Name="oldGrid" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <!-- Top bar -->
-            <Border x:Name="topBorder" BorderBrush="LightBlue" BorderThickness="0.5" Margin="-10,-100,0,0">
-                <!-- Slide down animation -->
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Visibility}" Value="Visible">
-                                <DataTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ThicknessAnimation Duration="0:0:0.3" To="0,0,0,2" Storyboard.TargetProperty="Margin" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.EnterActions>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <views:TopBar />
-            </Border>
-
-            <!-- Photo and layout selection -->
-            <Border Grid.Row="1" BorderBrush="LightSalmon" BorderThickness="1" Margin="10" CornerRadius="5" Padding="15">
-                <views:PhotoLayoutSelectionView x:Name="photoLayoutSelectiony" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
-            </Border>
-
-            <!-- Photo manipulation controls -->
-            <Border Grid.Row="2" BorderBrush="LightCyan" BorderThickness="1" CornerRadius="5" Padding="15" VerticalAlignment="Bottom">
-                <views:PhotoManipulationView />
-            </Border>
-
-            <StackPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="5" HorizontalAlignment="Center">
-                <Button x:Name="showTop" Padding="5" Content="Show top bar" Foreground="Black" FontSize="22" Click="ShowTopBar" Margin="5" />
-                <Button Content="Call GC" FontSize="22" Click="CallGC" Margin="5" />
-                <Button Visibility="Visible" Content="Clear AllPhotos" FontSize="22" Click="ClearAllPhotos" Margin="5" />
-                <Button Visibility="Collapsed" Content="Create photos and show them in LayoutGrid" FontSize="22" Click="CreatePhotosAndAddToLayoutGrid" Margin="5" />
-            </StackPanel>
-        </Grid>
-
+        </Grid.RowDefinitions>  
+      
         <!-- FileSource selection  -->
-        <views:FileSourceSelectionView />
+        <views:FileSourceSelectionView DataContext="{StaticResource SelectionViewModel}"/>
 
         <!-- Photo and layout selection -->
         <Border Grid.Column="1" BorderBrush="LightSalmon" BorderThickness="0,0,1,0" Padding="15">
-            <views:PhotoLayoutSelectionView />
+            <views:PhotoLayoutSelectionView DataContext="{StaticResource SelectionViewModel}" />
         </Border>
         
         <!-- Photo preview -->
