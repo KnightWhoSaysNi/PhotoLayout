@@ -148,7 +148,7 @@ namespace PhotoLayout.Models
                 {
                     // this.Files will return only files with the correct extension
                     fileInfos = from file in this.folder.EnumerateFiles()
-                                where this.extensions.Contains(file.Extension)
+                                where this.extensions.Contains(file.Extension, StringComparer.CurrentCultureIgnoreCase)
                                 select file;
                 }
                 else
