@@ -1,4 +1,5 @@
-﻿using PhotoLayout.Helpers;
+﻿using PhotoLayout.Enums;
+using PhotoLayout.Helpers;
 using PhotoLayout.Models;
 using System;
 using System.Collections.Generic;
@@ -21,19 +22,17 @@ namespace PhotoLayout.ViewModels
         private Dictionary<Folder, List<Photo>> photoDictionary;
         private IList<string> photoExtensions;
 
+        private BackgroundWorker refreshWorker;
+        private BackgroundWorker photoCollectionWorker;
+
         #endregion
 
         #region - Constructors -
 
         public SelectionViewModel()
-        {
-            photoDictionary = new Dictionary<Folder, List<Photo>>();
-            Folders = new ObservableCollection<Folder>();
-            Photos = new ObservableCollection<Photo>();
-
-            // TODO Check which extensions can be used and mayhaps put them somewhere else
-            photoExtensions = new List<string>() { ".jpg", ".png", ".gif", ".jpeg" };
-
+        {   
+            InitializeFields();
+            InitializeWorkers();
             InitializeCommands();            
         }
 
@@ -46,6 +45,7 @@ namespace PhotoLayout.ViewModels
         public ICommand OpenFolder { get; set; }
         public ICommand PreviousFolder { get; set; }
         public ICommand PhotoCollect { get; set; }
+        public ICommand TestCancelWorkers { get; set; }
 
         #endregion
 
@@ -66,12 +66,49 @@ namespace PhotoLayout.ViewModels
 
         #region - Private methods -
 
+        #region - Constructor initializations -
+
+        private void InitializeFields()
+        {
+            // TODO Check which extensions can be used and mayhaps put them somewhere else
+            this.photoExtensions=new List<string>() { ".jpg", ".jpeg", ".png", ".bmp", ".tiff" };
+            this.photoDictionary = new Dictionary<Folder, List<Photo>>();
+                        
+            Folders = new ObservableCollection<Folder>();
+            Photos = new ObservableCollection<Photo>();
+        }
+
+        private void InitializeWorkers()
+        {
+            photoCollectionWorker = new BackgroundWorker();
+            photoCollectionWorker.WorkerSupportsCancellation = true; // TODO Write cancellation logic
+            photoCollectionWorker.DoWork += PhotoCollectionWorkerDoWork;
+            photoCollectionWorker.RunWorkerCompleted += RunPhotoCollectionWorkerCompleted;
+
+            refreshWorker = new BackgroundWorker();
+            refreshWorker.WorkerReportsProgress = true;
+            refreshWorker.WorkerSupportsCancellation = true; // TODO Write cancellation logic
+            refreshWorker.DoWork += RefreshWorkerDoWork;
+            refreshWorker.ProgressChanged += OnRefreshWorkerProgressChanged;
+        }
+
         private void InitializeCommands()
         {
             OpenFolder = new RelayCommand(OnOpenFolder);
             PreviousFolder = new RelayCommand(x => OnPreviousFolder(), x => HasPreviousFolder());
             PhotoCollect = new RelayCommand(OnPhotoCollect);
+
+            TestCancelWorkers = new RelayCommand(x =>
+              {
+                  if (refreshWorker.IsBusy || photoCollectionWorker.IsBusy)
+                  {
+                      refreshWorker.CancelAsync();
+                      photoCollectionWorker.CancelAsync();
+                  }
+              });
         }
+
+        #endregion
 
         #region - OpenFolder Command -
 
@@ -81,6 +118,7 @@ namespace PhotoLayout.ViewModels
             if (selectedFolder != null)
             {
                 CurrentFolder = selectedFolder;
+
                 RefreshCurrentFolder();
             }
         }
@@ -91,8 +129,14 @@ namespace PhotoLayout.ViewModels
 
         private void OnPreviousFolder()
         {
+            if (refreshWorker.IsBusy)
+            {
+                refreshWorker.CancelAsync();
+            }
+
             CurrentFolder = CurrentFolder.Parent;
-            RefreshCurrentFolder();
+
+            RefreshCurrentFolder();            
         }
 
         private bool HasPreviousFolder()
@@ -107,22 +151,42 @@ namespace PhotoLayout.ViewModels
 
         private void OnPhotoCollect(object parameter)
         {
+            // Background worker way
             // TODO Initial collecting from a file source -> Some animation should be enabled
-            BackgroundWorker worker = new BackgroundWorker();
-            worker.DoWork += Worker_DoWork;
-            // TODO Enable cancelling of photo collection (additions to Photos)
-            worker.WorkerSupportsCancellation = true;
-            worker.RunWorkerAsync(parameter);
-            worker.ProgressChanged += Worker_ProgressChanged;                      
+            this.photoCollectionWorker.RunWorkerAsync(parameter);
             // TODO Stop loading/photo collecting animation at this point   
+
+            // Threadpool way            
         }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void RunPhotoCollectionWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            RefreshCurrentFolder();
+            // TODO Stop animation ^
+        }
+
+        /*************************************************************************************
+        ******************   Threadpool methods   ********************************************
+        *************************************************************************************/
+
+        private void CollectPhotosWithTaskFactory()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                foreach (var item in photoDictionary[CurrentFolder])
+                {
+                    Photos.Add(item);
+                }
+            });
             
         }
 
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+
+        /*************************************************************************************
+        ****************** Background worker methods *****************************************
+        *************************************************************************************/
+
+        private void PhotoCollectionWorkerDoWork(object sender, DoWorkEventArgs e)
         {
             string source = e.Argument as string;
             
@@ -182,13 +246,12 @@ namespace PhotoLayout.ViewModels
             Folder virtualRoot = new Folder("root", null, photoExtensions);
 
             foreach (DriveInfo drive in localDrives)
-            {
+            {                
                 Folder driveAsFolder = new Folder(drive.Name, virtualRoot, photoExtensions);
                 virtualRoot.SubFolders.Add(driveAsFolder);
             }
 
             CurrentFolder = virtualRoot;
-            RefreshCurrentFolder();
 
             #endregion
 
@@ -201,7 +264,6 @@ namespace PhotoLayout.ViewModels
             //        // In Easy2U there can be only 1 usb device in the machine
             //        Folder usb = new Folder(drive.Name, null, photoExtensions);
             //        CurrentFolder = usb;
-            //        RefreshCurrentFolder();
 
             //        return;
             //    }
@@ -222,7 +284,6 @@ namespace PhotoLayout.ViewModels
             // TODO Refactor this so it works
             Folder recentFolder = new Folder(recentFolderPath, null, photoExtensions);
             CurrentFolder = recentFolder;
-            RefreshCurrentFolder();
         }
 
         #endregion
@@ -234,18 +295,34 @@ namespace PhotoLayout.ViewModels
         /// </summary>
         private void RefreshCurrentFolder()
         {
-            UpdateFolders();
-            UpdatePhotos();            
+            while (this.refreshWorker.IsBusy)
+            {
+                System.Windows.Forms.Application.DoEvents();
+            }
+
+            this.refreshWorker.RunWorkerAsync();
+        }       
+
+        private void RefreshWorkerDoWork(object sender, DoWorkEventArgs e)
+        {
+            UpdateFolders(e); 
+            UpdatePhotos(e);           
         }
 
         /// <summary>
         /// Updates <see cref="Folders"/> so it holds the CurrentFolder's SubFolders.
         /// </summary>
-        private void UpdateFolders()
+        private void UpdateFolders(DoWorkEventArgs e)
         {
             System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Folders.Clear()), DispatcherPriority.Background);
+
             foreach (Folder folder in CurrentFolder.SubFolders)
             {
+                if (refreshWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
                 System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Folders.Add(folder)), DispatcherPriority.Background);
             }
         }
@@ -253,29 +330,51 @@ namespace PhotoLayout.ViewModels
         /// <summary>
         /// Updates <see cref="Photos"/> so it holds the CurrentFolder's Files - Photos.
         /// </summary>
-        private void UpdatePhotos()
+        private void UpdatePhotos(DoWorkEventArgs e)
         {
             System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Photos.Clear()), DispatcherPriority.Background);
+
             if (!this.photoDictionary.ContainsKey(CurrentFolder))
             {
                 // First time initialization of the CurrentFolder's Photos OR the dictionary has released some memory and needs reinitialization
                 this.photoDictionary[CurrentFolder] = new List<Photo>();
-                foreach (FileInfo file in CurrentFolder.Files)
-                {
-                    Photo photo = new Photo(new Uri(file.FullName), file.Name, file.Extension);
-                    photo.RefreshBitmapSources();
-                    this.photoDictionary[CurrentFolder].Add(photo);                    
-                }
             }
 
-            foreach (Photo photo in this.photoDictionary[CurrentFolder])
+            for (int i = 0; i < CurrentFolder.Files.Count; i++)
             {
-                System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Photos.Add(photo)), DispatcherPriority.ApplicationIdle);
+                if (refreshWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                FileInfo file = CurrentFolder.Files[i];
+                Photo photo = new Photo(new Uri(file.FullName), file.Name, file.Extension);
+
+                if (this.photoDictionary[CurrentFolder].Contains(photo))
+                {
+                    // Work was cancelled, but photo was already inserted, so no need to do it twice. Check the next photo
+                    continue;
+                }
+                photo.RefreshBitmapSource(BitmapType.Thumbnail);
+                this.photoDictionary[CurrentFolder].Add(photo);
+
+                int percentProgress = i + 1 / CurrentFolder.Files.Count;
+                this.refreshWorker.ReportProgress(percentProgress, photo);
+            }
+        }
+
+        private void OnRefreshWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Photo photo = e.UserState as Photo;
+            if (photo != null)
+            {
+                System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Photos.Add(photo)), DispatcherPriority.Background);
+                //Photos.Add(photo); // Weird stuff happens with this
             }
         }
 
         #endregion
-
 
         #endregion
 

@@ -162,6 +162,7 @@
                 
         <!-- Layout selection -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="20">
+            <Button Content="Cancel workers" Width="50" Height="50" Command="{Binding TestCancelWorkers}" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="MediumVioletRed" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="SlateBlue" />
