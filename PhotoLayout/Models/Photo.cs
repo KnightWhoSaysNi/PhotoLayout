@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Drawing;
+using PhotoLayout.Enums;
 
 namespace PhotoLayout.Models
 {
@@ -51,19 +52,7 @@ namespace PhotoLayout.Models
             }
         }
 
-        #endregion
-
-        #region - Enums -
-
-        // TODO Check if these are optimal values
-        enum DecodePixelWidth
-        {
-            OriginalPixelWidth = 0,
-            ThumbnailPixelWidth = 300,
-            PreviewPixelWidth = 1920
-        }
-
-        #endregion
+        #endregion        
 
         #region - Properties -
 
@@ -74,6 +63,10 @@ namespace PhotoLayout.Models
         {
             get
             {
+                //if (originalBitmap == null)
+                //{
+                //    originalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
+                //}
                 return originalBitmap;
             }
             set
@@ -87,6 +80,10 @@ namespace PhotoLayout.Models
         {
             get
             {
+                //if (thumbnail == null)
+                //{
+                //    thumbnail = GetBitmapSource(DecodePixelWidth.ThumbnailPixelWidth);
+                //}
                 return thumbnail;
             }
             set
@@ -100,6 +97,10 @@ namespace PhotoLayout.Models
         {
             get
             {
+                //if (previewBitmap == null)
+                //{
+                //    previewBitmap = GetBitmapSource(DecodePixelWidth.PreviewPixelWidth);
+                //}
                 return previewBitmap;
             }
             set
@@ -151,33 +152,37 @@ namespace PhotoLayout.Models
         }
 
         // TODO Remove this and refactor properties if VirtualizingWrapPanel doesn't need to use this method
-        public void RefreshBitmapSources()
+        public void RefreshBitmapSource(BitmapType bitmapType)
         {
-            if (originalBitmap == null)
-                OriginalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
-
-            if (thumbnail == null)
-                Thumbnail = GetBitmapSource(DecodePixelWidth.ThumbnailPixelWidth);
-
-            if (previewBitmap == null)
-                PreviewBitmap = GetBitmapSource(DecodePixelWidth.PreviewPixelWidth);
+            switch (bitmapType)
+            {
+                case BitmapType.OriginalBitmap:
+                    OriginalBitmap = GetBitmapSource(bitmapType);
+                    break;
+                case BitmapType.Thumbnail:
+                    Thumbnail = GetBitmapSource(bitmapType);
+                    break;                
+                case BitmapType.PreviewBitmap:
+                    PreviewBitmap = GetBitmapSource(bitmapType);
+                    break;
+            }
         }
 
         #endregion
 
         #region - Private methods -
 
-        private BitmapSource GetBitmapSource(DecodePixelWidth decodeWidth)
+        private BitmapSource GetBitmapSource(BitmapType bitmapType)
         {
             try
             {
                 BitmapImage source = new BitmapImage();
                 source.BeginInit();
-                source.CacheOption = BitmapCacheOption.None; // TODO Check if this should be OnLoad
+                source.CacheOption = BitmapCacheOption.OnLoad; // TODO Check if this should be OnLoad
                 //source.DecodeFailed
-                if (decodeWidth != DecodePixelWidth.OriginalPixelWidth)
+                if (bitmapType != BitmapType.OriginalBitmap)
                 {
-                    source.DecodePixelWidth = (int)decodeWidth;
+                    source.DecodePixelWidth = (int)bitmapType;
                 }
                 source.UriSource = PhotoUri;
                 source.EndInit();
@@ -192,22 +197,21 @@ namespace PhotoLayout.Models
                 //System.Diagnostics.Trace.WriteLine(e.Message);
 
                 string property = string.Empty;
-                switch (decodeWidth)
+                switch (bitmapType)
                 {
-                    case DecodePixelWidth.OriginalPixelWidth:
+                    case BitmapType.OriginalBitmap:
                         property = "an Original BitmapSource";
                         break;
-                    case DecodePixelWidth.ThumbnailPixelWidth:
+                    case BitmapType.Thumbnail:
                         property = "a Thumbnail BitmapSource";
                         break;
-                    case DecodePixelWidth.PreviewPixelWidth:
+                    case BitmapType.PreviewBitmap:
                         property = "a Preview BitmapSource";
                         break;                    
                 }
                 System.Diagnostics.Trace.WriteLine($"\t- Could not create {property} from '{PhotoUri}'");
                 return null;
-            }
-            
+            }            
         }
 
         /// <summary>
