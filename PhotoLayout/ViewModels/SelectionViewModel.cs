@@ -117,8 +117,12 @@ namespace PhotoLayout.ViewModels
             Folder selectedFolder = parameter as Folder;
             if (selectedFolder != null)
             {
-                CurrentFolder = selectedFolder;
+                if (refreshWorker.IsBusy)
+                {
+                    refreshWorker.CancelAsync();
+                }
 
+                CurrentFolder = selectedFolder;
                 RefreshCurrentFolder();
             }
         }
@@ -135,7 +139,6 @@ namespace PhotoLayout.ViewModels
             }
 
             CurrentFolder = CurrentFolder.Parent;
-
             RefreshCurrentFolder();            
         }
 
@@ -151,40 +154,23 @@ namespace PhotoLayout.ViewModels
 
         private void OnPhotoCollect(object parameter)
         {
-            // Background worker way
-            // TODO Initial collecting from a file source -> Some animation should be enabled
-            this.photoCollectionWorker.RunWorkerAsync(parameter);
-            // TODO Stop loading/photo collecting animation at this point   
-
-            // Threadpool way            
-        }
-
-        private void RunPhotoCollectionWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            RefreshCurrentFolder();
-            // TODO Stop animation ^
-        }
-
-        /*************************************************************************************
-        ******************   Threadpool methods   ********************************************
-        *************************************************************************************/
-
-        private void CollectPhotosWithTaskFactory()
-        {
-            Task.Factory.StartNew(() =>
+            if (this.photoCollectionWorker.IsBusy || this.refreshWorker.IsBusy)
             {
-                foreach (var item in photoDictionary[CurrentFolder])
+                // The user chose a different file source while the first one is still collecting information and/or photos are
+                // still being displayed on screen so work is cancelled for both workers so they can be restarted with new values
+                this.photoCollectionWorker.CancelAsync();
+                this.refreshWorker.CancelAsync();
+
+                while (this.photoCollectionWorker.IsBusy || this.refreshWorker.IsBusy)
                 {
-                    Photos.Add(item);
+                    System.Windows.Forms.Application.DoEvents();
                 }
-            });
-            
+            }
+
+            // TODO Initial collecting from a file source -> Some animation should be enabled
+            this.photoCollectionWorker.RunWorkerAsync(parameter); // Calls PhotoCollectionWorkerDoWork below
+            // TODO Stop loading/photo collecting animation at this point   
         }
-
-
-        /*************************************************************************************
-        ****************** Background worker methods *****************************************
-        *************************************************************************************/
 
         private void PhotoCollectionWorkerDoWork(object sender, DoWorkEventArgs e)
         {
@@ -219,6 +205,12 @@ namespace PhotoLayout.ViewModels
                 }
             }
         }        
+
+        private void RunPhotoCollectionWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            RefreshCurrentFolder();
+            // TODO Stop animation ^
+        }
 
         private bool CanPhotoCollect(object parameter)
         {
@@ -349,6 +341,7 @@ namespace PhotoLayout.ViewModels
                 }
 
                 FileInfo file = CurrentFolder.Files[i];
+                
                 Photo photo = new Photo(new Uri(file.FullName), file.Name, file.Extension);
 
                 if (this.photoDictionary[CurrentFolder].Contains(photo))
@@ -367,7 +360,7 @@ namespace PhotoLayout.ViewModels
         private void OnRefreshWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Photo photo = e.UserState as Photo;
-            if (photo != null)
+            if (photo != null && photo.Thumbnail != null)
             {
                 System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Photos.Add(photo)), DispatcherPriority.Background);
                 //Photos.Add(photo); // Weird stuff happens with this
