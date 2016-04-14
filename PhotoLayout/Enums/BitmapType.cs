@@ -11,16 +11,23 @@ namespace PhotoLayout.Enums
     /// </summary>
     public enum BitmapType 
     {
-        // Bitmap is decoded with original pixel width. 
-        // Used for saving the photo to hdd and/or sending it to a specified location
+        
+        /// <summary>
+        /// Bitmap is decoded with original pixel width. 
+        /// Used for saving the photo to hdd and/or sending it to a specified location.
+        /// </summary>
         OriginalBitmap = 0,
-
-        // Bitmap is decoded with specified pixel width
-        // Used for showing thumbnails of the original
+        
+        /// <summary>
+        /// Bitmap is decoded with specified pixel width.
+        /// Used for showing thumbnails of the original.
+        /// </summary>
         Thumbnail = 300,
 
-        // Bitmap is decoded with specified pixel width
-        // Used for previewing/manipulating photos in LayoutGrid
+        /// <summary>
+        /// Bitmap is decoded with specified pixel width.
+        /// Used for previewing/manipulating photos in LayoutGrid.
+        /// </summary>        
         PreviewBitmap = 1920
     }
 }
