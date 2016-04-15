@@ -49,7 +49,7 @@ namespace PhotoLayout.Controls
     ///     <MyNamespace:LayoutGrid/>
     ///
     /// </summary>
-    public class LayoutGrid : Grid, INotifyPropertyChanged
+    public class LayoutGrid : Grid
     {
         #region - Fields -
 
@@ -71,20 +71,7 @@ namespace PhotoLayout.Controls
             Loaded += LayoutGrid_Loaded;
         }        
         
-        #endregion
-
-        #region - Events -
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        #endregion
+        #endregion        
 
         #region - Dependency Properties -
 
