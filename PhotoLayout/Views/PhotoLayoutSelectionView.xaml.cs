@@ -27,7 +27,6 @@ namespace PhotoLayout.Views
         {
             InitializeComponent();
             SelectedPhotos = new ObservableCollection<Photo>();
-
         }
         
         public ObservableCollection<Photo> SelectedPhotos { get; set; }
@@ -42,22 +41,28 @@ namespace PhotoLayout.Views
 
         private void allPhotosListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (allPhotosListBox.SelectedItems.Count > Constants.MaxPhotosInLayoutGrid)
-            {
-                allPhotosListBox.SelectedItems.RemoveAt(allPhotosListBox.SelectedItems.Count - 1);
-                return;
-            }    
+            ListBox listBox = sender as ListBox;
 
-            System.Collections.IList eAdded = e.AddedItems;
-            System.Collections.IList eRemoved = e.RemovedItems;
+            if (listBox != null)
+            {
+                if (listBox.SelectedItems.Count > Constants.MaxPhotosInLayoutGrid)
+                {
+                    listBox.SelectedItems.RemoveAt(listBox.SelectedItems.Count - 1);
+                    return;
+                }
 
-            if (eAdded.Count != 0)
-            {
-                SelectedPhotos.Add((Photo)eAdded[0]);
-            }
-            else if (eRemoved.Count != 0)
-            {
-                SelectedPhotos.Remove((Photo)eRemoved[0]);
+                System.Collections.IList eAdded = e.AddedItems;
+                System.Collections.IList eRemoved = e.RemovedItems;
+                ObservableCollection<object> selectedItems = AttachedProperties.GetSelectedItems(listBox);
+
+                if (eAdded.Count != 0)
+                {
+                    selectedItems.Add(eAdded[0]);
+                }
+                else if (eRemoved.Count != 0)
+                {
+                    selectedItems.Remove(eRemoved[0]);
+                }
             }
         }
     }

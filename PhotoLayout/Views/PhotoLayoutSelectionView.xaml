@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:PhotoLayout.Views"
              xmlns:converters="clr-namespace:PhotoLayout.Converters"
              xmlns:controls="clr-namespace:PhotoLayout.Controls"
+             xmlns:helpers="clr-namespace:PhotoLayout.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800"
              UseLayoutRounding="True">
@@ -98,7 +99,8 @@
         
         <!-- Photo selection -->
         <Border Visibility="Visible" BorderBrush="#4F000000" BorderThickness="0,0.7" Padding="5" Grid.Row="2"  Margin="10,0,10,10">
-            <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding Photos}" SelectionChanged="allPhotosListBox_SelectionChanged">
+            <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding Photos}" 
+                     SelectionChanged="allPhotosListBox_SelectionChanged" helpers:AttachedProperties.SelectedItems="{Binding SelectedPhotos}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
@@ -161,7 +163,8 @@
         </Border>
                 
         <!-- Layout selection -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="20">
+        <StackPanel Visibility="Collapsed" Grid.Row="3" Orientation="Horizontal" Margin="20">
+            <Button Content="Cancel workers" Width="50" Height="50" Command="{Binding TestCancelWorkers}" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="MediumVioletRed" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="SlateBlue" />
@@ -174,7 +177,71 @@
             <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
             <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
         </StackPanel>
-        
+
+        <Border Visibility="Visible" BorderBrush="#4F000000" BorderThickness="0,0.7" Padding="5" Grid.Row="3"  Margin="10,0,10,10">
+            <ListBox Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding SelectedPhotos}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="bd" CornerRadius="4" Width="135" Height="135">
+                            <Border.OpacityMask>
+                                <VisualBrush>
+                                    <VisualBrush.Visual>
+                                        <!-- Binding ElementName=bd, Path=*** doesn't work for some reason - it's created after opacity mask? -->
+                                        <Border Background="White" CornerRadius="4" Width="150" Height="150" />
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Border.OpacityMask>
+                            <!-- Thumbnail image -->
+                            <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="bd" BorderThickness="3" BorderBrush="Transparent" CornerRadius="4" Margin="-0.8">
+                                        <Grid>
+                                            <ContentPresenter />
+                                            <Path x:Name="pathy" 
+                                                  Data="{StaticResource CircleOk}" 
+                                                  Opacity="0.8" 
+                                                  Stroke="Black" 
+                                                  StrokeThickness="0.6"
+                                                  Visibility="Collapsed" 
+                                                  HorizontalAlignment="Right" 
+                                                  VerticalAlignment="Bottom" 
+                                                  Height="40" 
+                                                  Width="40"
+                                                  Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=SelectedItems.Count, 
+                                                Converter={StaticResource SelectedItemCountToColor}, ConverterParameter={StaticResource AccentDark}}"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="bd" Property="BorderBrush" 
+                                                    Value="{Binding ElementName=pathy, Path=Fill}" />
+                                            <Setter TargetName="pathy" Property="Visibility" Value="Visible" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <EventSetter Event="RequestBringIntoView" Handler="OnRequestBringIntoView" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Border>
+
+
         <!-- LayoutGrid testing -->
         <Border Visibility="Collapsed" BorderBrush="White" BorderThickness="2" Height="500" Width="500">
             <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
