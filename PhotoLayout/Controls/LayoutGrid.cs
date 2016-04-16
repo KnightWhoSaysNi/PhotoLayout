@@ -180,6 +180,7 @@ namespace PhotoLayout.Controls
                     if (images[i].Source == photo.Thumbnail)
                     {
                         images[i].Source = null;
+                        return;
                     }
                 }
             }
@@ -199,11 +200,11 @@ namespace PhotoLayout.Controls
         #region - MinPhotoCount -
 
         public static DependencyProperty MinPhotoCountProperty = DependencyProperty.Register("MinPhotoCount", typeof(int), typeof(LayoutGrid),
-            new PropertyMetadata(0, OnMinPhotoCountChanged, OnMinPhotoCountCoerceValue));
+            new PropertyMetadata(0, null, OnMinPhotoCountCoerceValue));
 
         /// <summary>
         /// Coerces the MinPhotoCount property to acceptable value. If the value is below 0 coerces it to 0,
-        /// and if it's above MaxPhotoCount limits it to MaxPhotoCount.
+        /// and if it's above MaxPhotoCount limit is set to MaxPhotoCount.
         /// </summary>
         /// <param name="d">LayoutGrid whose property is being coerced.</param>
         /// <param name="baseValue">Specified value for the MinPhotoCount property.</param>
@@ -230,15 +231,8 @@ namespace PhotoLayout.Controls
         }
 
         /// <summary>
-        /// Empty method. No code/logic needed for OnMinPhotoCountChanged.
-        /// </summary>        
-        private static void OnMinPhotoCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {            
-        }
-
-        /// <summary>
         /// Gets or sets the minimum count of photographs needed for LayoutGrid to be visible. If LayoutGrid has less photos 
-        /// than the MinPhotoCount property's value the Visibility of LayoutGrid should be set to Collapsed.
+        /// than MinPhotoCount's value the Visibility of LayoutGrid should be set to Collapsed.
         /// </summary>
         public int MinPhotoCount
         {

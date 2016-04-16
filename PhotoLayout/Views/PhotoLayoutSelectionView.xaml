@@ -243,9 +243,9 @@
 
 
         <!-- LayoutGrid testing -->
-        <Border Visibility="Collapsed" BorderBrush="White" BorderThickness="2" Height="500" Width="500">
-            <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                 x:Name="layouty" Margin="0"
+        <Border Visibility="Visible" BorderBrush="White" BorderThickness="2" Height="500" Width="500">
+            <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"  
+                                 Margin="0"
                                  RowCount="6" ColumnCount="2" MinPhotoCount="2" MaxPhotoCount="10" 
                                  Photos="{Binding SelectedPhotos}" />
         </Border>
