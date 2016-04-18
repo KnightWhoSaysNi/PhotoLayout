@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PhotoLayout.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace PhotoLayout.Helpers
 {
     public class AttachedProperties
     {
-        #region - ListBox SelectedItems -
+        #region - ListBox SelectedPhotos -
 
-        public static readonly DependencyProperty SelectedItemsProperty =
-            DependencyProperty.RegisterAttached("SelectedItems", 
-                typeof(ObservableCollection<object>), 
+        public static readonly DependencyProperty SelectedPhotosProperty =
+            DependencyProperty.RegisterAttached("SelectedPhotos", 
+                typeof(ObservableCollection<Photo>), 
                 typeof(AttachedProperties), 
                 new PropertyMetadata(null, OnPropertyChanged));
 
@@ -24,14 +25,14 @@ namespace PhotoLayout.Helpers
             
         }
 
-        public static ObservableCollection<object> GetSelectedItems(ListBox obj)
+        public static ObservableCollection<Photo> GetSelectedPhotos(ListBox obj)
         {
-            return (ObservableCollection<object>)obj.GetValue(SelectedItemsProperty);
+            return (ObservableCollection<Photo>)obj.GetValue(SelectedPhotosProperty);
         }
 
-        public static void SetSelectedItems(DependencyObject obj, ObservableCollection<object> value)
+        public static void SetSelectedPhotos(DependencyObject obj, ObservableCollection<Photo> value)
         {
-            obj.SetValue(SelectedItemsProperty, value);
+            obj.SetValue(SelectedPhotosProperty, value);
         }
 
 

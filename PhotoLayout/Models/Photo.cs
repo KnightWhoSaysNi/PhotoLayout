@@ -183,11 +183,12 @@ namespace PhotoLayout.Models
                 if (bitmapType != BitmapType.OriginalBitmap)
                 {
                     source.DecodePixelWidth = (int)bitmapType;
-                }
+                }                
                 source.UriSource = PhotoUri;
                 source.EndInit();
                 source.Freeze();
-
+                     
+                    
                 return source;
             }
             catch (Exception e)

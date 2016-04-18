@@ -55,6 +55,7 @@ namespace PhotoLayout.Controls
 
         private static int maxPhotoCount;
         private static List<Image> images;
+        private static List<Border> borders;
 
         #endregion
 
@@ -68,7 +69,8 @@ namespace PhotoLayout.Controls
         public LayoutGrid()
         {
             images = new List<Image>();
-            Loaded += LayoutGrid_Loaded;
+            borders = new List<Border>();
+            Loaded += LayoutGrid_Loaded;            
         }        
         
         #endregion        
@@ -149,21 +151,21 @@ namespace PhotoLayout.Controls
 
         private static void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var action = e.Action;
+            var action = e.Action;            
             Photo photo;
 
             // New Photo added
             if (action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 photo = e.NewItems[0] as Photo;
-                System.Diagnostics.Debug.WriteLine($"OnCollectionChanged ->  Added: {photo}");
+                System.Diagnostics.Debug.WriteLine($"OnCollectionChanged ->  Added: {photo} \nHeight: {photo.Thumbnail.Height}, Width: {photo.Thumbnail.Width}");
 
                 for (int i = 0; i < images.Count; i++)
                 {
                     if (images[i].Source == null)
                     {
                         // Depending on how the LayoutGrid is supposed to work this might have to be changed to photo.PreviewBitmap
-                        images[i].Source = photo.Thumbnail; 
+                        images[i].Source = photo.Thumbnail;
                         return;
                     }
                 }                
@@ -277,7 +279,8 @@ namespace PhotoLayout.Controls
                 for (int i = 0; i < rows; i++)
                 {
                     RowDefinition row = new RowDefinition();
-                    row.Height = GridLength.Auto;
+                    //row.Height = GridLength.Auto;
+                    row.Height = new GridLength(1, GridUnitType.Star);
                     layoutGrid.RowDefinitions.Add(row);
                 }
             }
@@ -325,7 +328,8 @@ namespace PhotoLayout.Controls
                 for (int i = 0; i < columns; i++)
                 {
                     ColumnDefinition column = new ColumnDefinition();
-                    column.Width = GridLength.Auto;
+                    //column.Width = GridLength.Auto;
+                    column.Width = new GridLength(1, GridUnitType.Star);
                     layoutGrid.ColumnDefinitions.Add(column);
                 }
             }
@@ -371,18 +375,27 @@ namespace PhotoLayout.Controls
 
         private void LayoutGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            CreateImageControls();
-
-            int index = 0;
-            for (int row = 0; row < RowCount; row++)
+            Dispatcher.BeginInvoke((Action)(() =>
             {
-                for (int col = 0; col < ColumnCount; col++, index++)
+                CreateBorderControls();
+                CreateImageControls();
+
+                int index = 0;
+                for (int row = 0; row < RowCount; row++)
                 {
-                    // TODO Add a "ZoomBorder" that holds images
-                    Grid.SetRow(images[index], row);
-                    Grid.SetColumn(images[index], col);
+                    for (int col = 0; col < ColumnCount; col++, index++)
+                    {
+                        // TODO Add a "ZoomBorder" that holds images
+                        Grid.SetRow(borders[index], row);
+                        Grid.SetColumn(borders[index], col);
+
+                        borders[index].Child = images[index];
+
+                        //Grid.SetRow(images[index], row);
+                        //Grid.SetColumn(images[index], col);
+                    }
                 }
-            }
+            }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
         /// <summary>
@@ -397,7 +410,7 @@ namespace PhotoLayout.Controls
                 //img.HorizontalAlignment = HorizontalAlignment.Stretch;
                 //img.VerticalAlignment = VerticalAlignment.Stretch;
 
-                // If img.Source==null img.Visibility=Visibility.Collapsed
+                //// If img.Source == null img.Visibility = Visibility.Collapsed
                 //Binding visibilityBinding = new Binding();
                 //visibilityBinding.Source = img;
                 //visibilityBinding.Path = new PropertyPath("Source");
@@ -407,7 +420,7 @@ namespace PhotoLayout.Controls
                 //img.SetBinding(VisibilityProperty, visibilityBinding);
 
                 images.Add(img);
-                this.Children.Add(img);
+                //Children.Add(img);
             }
         }
 
@@ -416,9 +429,11 @@ namespace PhotoLayout.Controls
         {
             for (int i = 0; i < CellCount; i++)
             {
-                Border bd = new Border();
-                //bd.hei
-            }
+                Border bd = new Border();             
+                
+                borders.Add(bd);
+                this.Children.Add(bd);
+            }           
         }
 
         #endregion
