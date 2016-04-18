@@ -47,21 +47,22 @@ namespace PhotoLayout.Views
             {
                 if (listBox.SelectedItems.Count > Constants.MaxPhotosInLayoutGrid)
                 {
+                    // Maximum number of selected photos reached
                     listBox.SelectedItems.RemoveAt(listBox.SelectedItems.Count - 1);
                     return;
                 }
 
                 System.Collections.IList eAdded = e.AddedItems;
                 System.Collections.IList eRemoved = e.RemovedItems;
-                ObservableCollection<object> selectedItems = AttachedProperties.GetSelectedItems(listBox);
+                ObservableCollection<Photo> selectedItems = AttachedProperties.GetSelectedPhotos(listBox);
 
                 if (eAdded.Count != 0)
                 {
-                    selectedItems.Add(eAdded[0]);
+                    selectedItems.Add((Photo)eAdded[0]);
                 }
                 else if (eRemoved.Count != 0)
                 {
-                    selectedItems.Remove(eRemoved[0]);
+                    selectedItems.Remove((Photo)eRemoved[0]);
                 }
             }
         }

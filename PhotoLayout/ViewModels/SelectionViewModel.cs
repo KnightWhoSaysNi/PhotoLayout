@@ -35,7 +35,7 @@ namespace PhotoLayout.ViewModels
             InitializeWorkers();
             InitializeCommands();
 
-            SelectedPhotos = new ObservableCollection<object>();         
+            SelectedPhotos = new ObservableCollection<Photo>();         
         }
 
         #endregion
@@ -53,7 +53,7 @@ namespace PhotoLayout.ViewModels
 
         public ObservableCollection<Folder> Folders { get; set; }
         public ObservableCollection<Photo> Photos { get; set; }
-        public ObservableCollection<object> SelectedPhotos { get; set; }
+        public ObservableCollection<Photo> SelectedPhotos { get; set; }
 
         public Folder CurrentFolder
         {
