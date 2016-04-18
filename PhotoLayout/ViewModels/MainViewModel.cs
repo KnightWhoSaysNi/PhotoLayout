@@ -21,14 +21,12 @@ namespace PhotoLayout.ViewModels
 
         public MainViewModel()
         {
-            TestVM = new TestViewModel();
         }
 
         #endregion
 
         #region - Properties -
 
-        public TestViewModel TestVM { get; private set; }
 
         #endregion
     }

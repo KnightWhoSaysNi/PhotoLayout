@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PhotoLayout.ViewModels
 {
-    public class PhotoManipulationViewModel
+    public class PhotoManipulationViewModel : BindableBase
     {
         
     }
