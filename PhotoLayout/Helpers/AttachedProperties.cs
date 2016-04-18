@@ -24,18 +24,24 @@ namespace PhotoLayout.Helpers
             
         }
 
+        /// <summary>
+        /// Gets a value of SelectedItems for the specified ListBox.
+        /// </summary>
+        /// <param name="obj">ListBox whose SelectedItems property you're getting.</param>
         public static ObservableCollection<object> GetSelectedItems(ListBox obj)
         {
             return (ObservableCollection<object>)obj.GetValue(SelectedItemsProperty);
         }
 
+        /// <summary>
+        /// Sets a value of SelectedItems for the specified ListBox.
+        /// </summary>
+        /// <param name="obj">ListBox whose SelectedItems property you're setting.</param>
+        /// <param name="value">Collection of items representing the SelectedItems.</param>
         public static void SetSelectedItems(DependencyObject obj, ObservableCollection<object> value)
         {
             obj.SetValue(SelectedItemsProperty, value);
         }
-
-
-
 
         #endregion
     }

@@ -12,8 +12,17 @@ using System.Windows.Media;
 
 namespace PhotoLayout.Converters
 {
+    /// <summary>
+    /// ListBox selected items count to specified color converter. When a certain number of items are selected, the selection changes color.
+    /// </summary>
     public class SelectedItemCountToColorConverter : IValueConverter
     {
+        /// <summary>
+        /// Converts the given integer value to a certain color.
+        /// </summary>
+        /// <param name="value">Number of selected items.</param>
+        /// <param name="parameter">Default color used for selection.</param>
+        /// <returns>Returns parameter specified color, or Red.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int count = (int)value;
@@ -25,6 +34,7 @@ namespace PhotoLayout.Converters
             }
             else
             {
+                // Max number of selected photos reached, so the selection color is Red
                 return Brushes.Red;
             }
         }

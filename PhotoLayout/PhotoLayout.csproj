@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icons\temp layout icon.ico</ApplicationIcon>
+    <ApplicationIcon>Images\temp layout icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>PhotoLayout.App</StartupObject>
@@ -65,7 +65,6 @@
     </ApplicationDefinition>
     <Compile Include="Converters\CheckedToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
-    <Compile Include="Converters\ObjectToBitmapSourceConverter.cs" />
     <Compile Include="Enums\BitmapType.cs" />
     <Compile Include="Helpers\AttachedProperties.cs" />
     <Compile Include="Helpers\Constants.cs" />
@@ -197,7 +196,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Resource Include="Icons\temp layout icon.ico" />
+    <Resource Include="Images\temp layout icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
