@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 namespace PhotoLayout.Enums
 {
     /// <summary>
-    /// Type of bitmap based on what it's used for with values for decoding pixel width.
+    /// Type of bitmap with decode pixel width value, based what the bitmap is used for.
     /// </summary>
     public enum BitmapType 
-    {
-        
+    {        
         /// <summary>
         /// Bitmap is decoded with original pixel width. 
         /// Used for saving the photo to hdd and/or sending it to a specified location.

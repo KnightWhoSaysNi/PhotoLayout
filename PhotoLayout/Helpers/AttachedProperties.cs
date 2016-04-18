@@ -1,5 +1,4 @@
-﻿using PhotoLayout.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,11 +11,11 @@ namespace PhotoLayout.Helpers
 {
     public class AttachedProperties
     {
-        #region - ListBox SelectedPhotos -
+        #region - ListBox SelectedItems -
 
-        public static readonly DependencyProperty SelectedPhotosProperty =
-            DependencyProperty.RegisterAttached("SelectedPhotos", 
-                typeof(ObservableCollection<Photo>), 
+        public static readonly DependencyProperty SelectedItemsProperty =
+            DependencyProperty.RegisterAttached("SelectedItems", 
+                typeof(ObservableCollection<object>), 
                 typeof(AttachedProperties), 
                 new PropertyMetadata(null, OnPropertyChanged));
 
@@ -25,18 +24,24 @@ namespace PhotoLayout.Helpers
             
         }
 
-        public static ObservableCollection<Photo> GetSelectedPhotos(ListBox obj)
+        /// <summary>
+        /// Gets a value of SelectedItems for the specified ListBox.
+        /// </summary>
+        /// <param name="obj">ListBox whose SelectedItems property you're getting.</param>
+        public static ObservableCollection<object> GetSelectedItems(ListBox obj)
         {
-            return (ObservableCollection<Photo>)obj.GetValue(SelectedPhotosProperty);
+            return (ObservableCollection<object>)obj.GetValue(SelectedItemsProperty);
         }
 
-        public static void SetSelectedPhotos(DependencyObject obj, ObservableCollection<Photo> value)
+        /// <summary>
+        /// Sets a value of SelectedItems for the specified ListBox.
+        /// </summary>
+        /// <param name="obj">ListBox whose SelectedItems property you're setting.</param>
+        /// <param name="value">Collection of items representing the SelectedItems.</param>
+        public static void SetSelectedItems(DependencyObject obj, ObservableCollection<object> value)
         {
-            obj.SetValue(SelectedPhotosProperty, value);
+            obj.SetValue(SelectedItemsProperty, value);
         }
-
-
-
 
         #endregion
     }
