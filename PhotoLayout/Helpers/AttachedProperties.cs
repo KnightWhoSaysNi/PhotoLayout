@@ -13,16 +13,14 @@ namespace PhotoLayout.Helpers
     {
         #region - ListBox SelectedItems -
 
+        /// <summary>
+        /// Attached property representing the selected items of a list box, as an ObservableCollection.
+        /// </summary>
         public static readonly DependencyProperty SelectedItemsProperty =
             DependencyProperty.RegisterAttached("SelectedItems", 
                 typeof(ObservableCollection<object>), 
                 typeof(AttachedProperties), 
-                new PropertyMetadata(null, OnPropertyChanged));
-
-        private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            
-        }
+                new PropertyMetadata(null, OnPropertyChanged));        
 
         /// <summary>
         /// Gets a value of SelectedItems for the specified ListBox.
@@ -41,6 +39,11 @@ namespace PhotoLayout.Helpers
         public static void SetSelectedItems(DependencyObject obj, ObservableCollection<object> value)
         {
             obj.SetValue(SelectedItemsProperty, value);
+        }
+
+        private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+
         }
 
         #endregion

@@ -15,11 +15,11 @@ namespace PhotoLayout.ViewModels
 
         #endregion
 
-        #region - Contructor -
+        #region - Contructors -
 
         public NavigationViewModel()
         {
-
+            
         }
 
         #endregion
@@ -27,20 +27,12 @@ namespace PhotoLayout.ViewModels
         #region - Properties - 
 
         #region = Commands =
-
-        public ICommand Discard { get; private set; }
-        public ICommand New { get; private set; }
-        public ICommand Rename { get; private set; }
-        public ICommand Save { get; private set; }
-        public ICommand Undo { get; private set; }
-        public ICommand Redo { get; private set; }
-        public ICommand PreviousLayout { get; private set; }
-        public ICommand NextLayout { get; private set; }
+        
 
         #endregion
 
 
-
+       
 
 
         #endregion
@@ -52,16 +44,8 @@ namespace PhotoLayout.ViewModels
         #endregion
 
         #region - Private methods -
+        
 
-        private void InitializeCommands()
-        {
-
-        }
-
-        private void OnCancel()
-        {
-                        
-        }
 
         #endregion
     }
