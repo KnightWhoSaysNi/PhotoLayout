@@ -8,16 +8,17 @@ using System.Threading.Tasks;
 
 namespace PhotoLayout.ViewModels
 {
+    /// <summary>
+    /// Base class for the view models.
+    /// </summary>
     public abstract class BindableBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName]string propertyName="")
         {
-            // var handler = PropertyChanged;
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                // handler(this, new PropertyChangedEventArgs(propertyName);
             }
         }
     }

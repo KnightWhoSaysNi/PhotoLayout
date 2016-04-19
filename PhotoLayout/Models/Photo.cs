@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Drawing;
 using PhotoLayout.Enums;
+using System.Runtime.CompilerServices;
 
 namespace PhotoLayout.Models
 {
@@ -18,7 +19,6 @@ namespace PhotoLayout.Models
         private string name;
         private string extension;
         private bool isSaved;
-        private bool isNewPhoto;
         private BitmapSource originalBitmap;
         private BitmapSource thumbnail;
         private BitmapSource previewBitmap;
@@ -28,13 +28,16 @@ namespace PhotoLayout.Models
         #region - Constructors -
         
         // On Save a name is given (extension as well, most likely) and an image is saved to temp folder with a specific uri.
-        // That uri is specified here, with the name and extension
-        public Photo(Uri uri, string name, string extension, bool isNewPhoto = false)
+        // Part of that uri is specified here, with the name and extension
+        /// <summary>
+        /// Creates a photo object; a representation of an image/photograph.
+        /// </summary>
+        /// <param name="uri">Uri of the photo.</param>
+        /// <param name="name">Name of the photo (file).</param>
+        /// <param name="extension">File extension of the photo: .jpg or .png or others.</param>
+        public Photo(Uri uri, string name, string extension)
         {
-            // If it's an existing photo no need for explanation
-            // If it's a complex photo then it's actually an already created image and technically there is no difference (YET!)
             this.PhotoUri = uri;
-            this.isNewPhoto = isNewPhoto;
             this.name = name;
             this.extension = extension;
         }
@@ -44,7 +47,7 @@ namespace PhotoLayout.Models
         #region - Events -
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName]string propertyName="")
         {
             if (PropertyChanged != null)
             {
@@ -52,65 +55,66 @@ namespace PhotoLayout.Models
             }
         }
 
-        #endregion        
+        #endregion
 
         #region - Properties -
 
-        //public Image ComplexImage { get; set; } // This should be the screenshot of the mixed images. It might need to be WriteableBitmap instead of Drawing.Image
-
+        /// <summary>
+        /// Gets or privately sets the uri of the photo.
+        /// </summary>
         public Uri PhotoUri { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the bitmap source of the original file that the photo has been made of, i.e. without decoded pixels.
+        /// </summary>
         public BitmapSource OriginalBitmap
         {
             get
             {
-                //if (originalBitmap == null)
-                //{
-                //    originalBitmap = GetBitmapSource(DecodePixelWidth.OriginalPixelWidth);
-                //}
                 return originalBitmap;
             }
             set
             {
                 originalBitmap = value;
-                OnPropertyChanged(nameof(OriginalBitmap));
+                OnPropertyChanged();
             }        
         }
 
+        /// <summary>
+        /// Gets or sets the bitmap source for the thumbnail of the photo, i.e. with decoded pixel width of a certain value.
+        /// </summary>
         public BitmapSource Thumbnail
         {
             get
             {
-                //if (thumbnail == null)
-                //{
-                //    thumbnail = GetBitmapSource(DecodePixelWidth.ThumbnailPixelWidth);
-                //}
                 return thumbnail;
             }
             set
             {
                 thumbnail = value;
-                OnPropertyChanged(nameof(Thumbnail));
+                OnPropertyChanged();
             }
         }     
-                   
+                           
+        /// <summary>
+        /// Gets or sets the bitmap source for the preview version of the photo, with decoded pixel width of a certain value.
+        /// </summary>
         public BitmapSource PreviewBitmap
         {
             get
             {
-                //if (previewBitmap == null)
-                //{
-                //    previewBitmap = GetBitmapSource(DecodePixelWidth.PreviewPixelWidth);
-                //}
                 return previewBitmap;
             }
             set
             {
                 previewBitmap = value;
-                OnPropertyChanged(nameof(PreviewBitmap));
+                OnPropertyChanged();
             }         
         } 
-        // public BitmapSource PrintBitmap { get; private set; } // TODO Determine if this property is also needed
 
+        /// <summary>
+        /// Gets or sets the name of the photo.
+        /// </summary>
         public string Name
         {
             get { return name; }
@@ -119,16 +123,13 @@ namespace PhotoLayout.Models
                 if (name != value)
                 {
                     name = value;
-                    OnPropertyChanged(nameof(Name));
-
-                    if (isNewPhoto)
-                    {
-                        SetPhotoUri();
-                    }
+                    OnPropertyChanged();
+                    SetPhotoUri();
                 }
             }
         }
         
+        // TODO Determine if/when this is/will be necessary
         public bool IsSaved
         {
             get { return isSaved; }
@@ -152,6 +153,10 @@ namespace PhotoLayout.Models
         }
 
         // TODO Remove this and refactor properties if VirtualizingWrapPanel doesn't need to use this method
+        /// <summary>
+        /// Refreshes the photo's bitmap source of the specified type. Used when bitmap source is needed, but the current value is null.
+        /// </summary>
+        /// <param name="bitmapType">Type of photo bitmap source being refreshed.</param>
         public void RefreshBitmapSource(BitmapType bitmapType)
         {
             switch (bitmapType)
@@ -172,6 +177,11 @@ namespace PhotoLayout.Models
 
         #region - Private methods -
 
+        /// <summary>
+        /// Gets the bitmap source for the specified bitmap type, i.e. with the specified decode pixel width value.
+        /// </summary>
+        /// <param name="bitmapType">Type for the bitmap source, with the value for the pixel width decoding.</param>
+        /// <returns></returns>
         private BitmapSource GetBitmapSource(BitmapType bitmapType)
         {
             try
@@ -211,7 +221,7 @@ namespace PhotoLayout.Models
                         break;                    
                 }
                 System.Diagnostics.Trace.WriteLine($"\t- Could not create {property} from '{PhotoUri}'");
-                return null;
+                return null; // TODO Determine if null should be returned
             }            
         }
 
@@ -221,7 +231,7 @@ namespace PhotoLayout.Models
         private void SetPhotoUri()
         {
             // TODO Resolve different extensions already in name
-            // TODO Check if 1 folder up is the place to put the temp 
+            // TODO Determine where to put the TempPhoto folder
             string tempPhotoUri = $"../TempPhoto/{name}{extension}"; 
             PhotoUri = new Uri(tempPhotoUri, UriKind.Relative); 
         }
