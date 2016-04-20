@@ -165,7 +165,9 @@ namespace PhotoLayout.Controls
                     if (images[i].Source == null)
                     {
                         // Depending on how the LayoutGrid is supposed to work this might have to be changed to photo.PreviewBitmap
-                        images[i].Source = photo.Thumbnail;
+                        //images[i].Source = photo.Thumbnail;
+                        images[i].SetCurrentValue(Image.SourceProperty, photo.Thumbnail);
+                        images[i].RenderTransform.Value.Scale(1.5, 1.5);
                         return;
                     }
                 }                
@@ -181,7 +183,9 @@ namespace PhotoLayout.Controls
                     // Depending on how the LayoutGrid is supposed to work this might also need an OR check for photo.PreviewBitmap
                     if (images[i].Source == photo.Thumbnail)
                     {
-                        images[i].Source = null;
+                        //images[i].Source = null;
+                        images[i].SetCurrentValue(Image.SourceProperty, null);
+                        images[i].RenderTransform = new MatrixTransform(); // Resets the transform values that may have been changed in ManipulationBorder's manipulation
                         return;
                     }
                 }
@@ -406,9 +410,9 @@ namespace PhotoLayout.Controls
             for (int i = 0; i < CellCount; i++)
             {
                 Image img = new Image();
-                img.Stretch = Stretch.UniformToFill;
-                //img.HorizontalAlignment = HorizontalAlignment.Stretch;
-                //img.VerticalAlignment = VerticalAlignment.Stretch;
+                //img.Stretch = Stretch.UniformToFill;
+                img.HorizontalAlignment = HorizontalAlignment.Center;
+                img.VerticalAlignment = VerticalAlignment.Center;
 
                 //// If img.Source == null img.Visibility = Visibility.Collapsed
                 //Binding visibilityBinding = new Binding();
@@ -429,10 +433,10 @@ namespace PhotoLayout.Controls
         {
             for (int i = 0; i < CellCount; i++)
             {
-                Border bd = new Border();             
+                ManipulationBorder border = new ManipulationBorder();
                 
-                borders.Add(bd);
-                this.Children.Add(bd);
+                borders.Add(border);
+                this.Children.Add(border);
             }           
         }
 

@@ -116,7 +116,8 @@ namespace PhotoLayout.Models
 
             try
             {
-                var dirInfos = this.folder.GetDirectories().Where(x => !(x.Attributes.HasFlag(FileAttributes.Hidden) || x.Attributes.HasFlag(FileAttributes.System))); // TODO Do not show certain folders
+                var dirInfos = this.folder.GetDirectories()
+                    .Where(x => !(x.Attributes.HasFlag(FileAttributes.Hidden) || x.Attributes.HasFlag(FileAttributes.System))); // TODO Do not show certain folders
                 foreach (DirectoryInfo directory in dirInfos)
                 {
                     Folder subFolder = new Folder(directory.FullName, this, extensions);
