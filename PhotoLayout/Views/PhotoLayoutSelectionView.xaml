@@ -163,30 +163,26 @@
         </Border>
                 
         <!-- Layout selection -->
-        <StackPanel Visibility="Collapsed" Grid.Row="3" Orientation="Horizontal" Margin="20">
-            <Button Content="Cancel workers" Width="50" Height="50" Command="{Binding TestCancelWorkers}" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="Indigo" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="MediumVioletRed" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="SlateBlue" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="Bisque" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="LightSteelBlue" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="Magenta" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="MintCream" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="Orange" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="BurlyWood" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="Green" />
-            <Rectangle Margin="20" Width="50" Height="50" Fill="LightGreen" />
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <!-- LayoutGrid testing -->
+            <Border Visibility="Visible" BorderBrush="White" BorderThickness="2" Height="300" Width="300">
+                <!--<Viewbox>-->
+                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
+                                     Margin="0"
+                                     MinPhotoCount="2" MaxPhotoCount="10" 
+                                     Photos="{Binding SelectedPhotos}" />
+                <!--</Viewbox>-->
+            </Border>
+
+            <!--<Border Visibility="Visible" BorderBrush="White" BorderThickness="2" Height="300" Width="300" Margin="10,0">
+                --><!--<Viewbox>--><!--
+                <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
+                                     Margin="0"
+                                     RowCount="2" ColumnCount="2" MinPhotoCount="2" MaxPhotoCount="10" 
+                                     Photos="{Binding SelectedPhotos}" />
+                --><!--</Viewbox>--><!--
+            </Border>-->
         </StackPanel>
 
-        <!-- LayoutGrid testing -->
-        <Border Visibility="Visible" Grid.Row="3" BorderBrush="White" BorderThickness="2" Height="300" Width="300">
-            <!--<Viewbox>-->
-                <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                 Margin="0"
-                                 RowCount="4" ColumnCount="2" MinPhotoCount="2" MaxPhotoCount="10" 
-                                 Photos="{Binding SelectedPhotos}" />
-            <!--</Viewbox>-->
-        </Border>
-        <!--<controls:LayoutGrid Photos="{Binding ElementName=allPhotosListBox, Path=ItemsSource}" />-->
     </Grid>
 </UserControl>

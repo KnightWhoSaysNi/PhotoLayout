@@ -45,7 +45,7 @@ namespace PhotoLayout.Views
 
             if (listBox != null)
             {
-                if (listBox.SelectedItems.Count > Constants.MaxPhotosInLayoutGrid)
+                if (listBox.SelectedItems.Count > Constants.MaxSelectedPhotos)
                 {
                     // Maximum number of selected photos reached
                     listBox.SelectedItems.RemoveAt(listBox.SelectedItems.Count - 1);

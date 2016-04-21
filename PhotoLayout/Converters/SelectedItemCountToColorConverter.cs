@@ -18,7 +18,7 @@ namespace PhotoLayout.Converters
         {
             int count = (int)value;
 
-            if (count < Constants.MaxPhotosInLayoutGrid)
+            if (count < Constants.MaxSelectedPhotos)
             {
                 var brush = (SolidColorBrush)parameter;
                 return brush;
