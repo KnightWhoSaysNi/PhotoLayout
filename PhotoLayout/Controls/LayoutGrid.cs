@@ -52,10 +52,8 @@ namespace PhotoLayout.Controls
     public class LayoutGrid : Grid
     {
         #region - Fields -
+        
 
-        private static int maxPhotoCount;
-        private static List<Image> images;
-        private static List<Border> borders;
 
         #endregion
 
@@ -64,14 +62,7 @@ namespace PhotoLayout.Controls
         static LayoutGrid()
         {
             //DefaultStyleKeyProperty.OverrideMetadata(typeof(LayoutGrid), new FrameworkPropertyMetadata(typeof(LayoutGrid))); // TODO Check if this will be necessary                   
-        }
-
-        public LayoutGrid()
-        {
-            images = new List<Image>();
-            borders = new List<Border>();
-            Loaded += LayoutGrid_Loaded;            
-        }        
+        }     
         
         #endregion        
 
@@ -80,10 +71,10 @@ namespace PhotoLayout.Controls
         #region - MaxPhotoCount -
 
         public static readonly DependencyProperty MaxPhotoCountProperty = DependencyProperty.Register("MaxPhotoCount", typeof(int), typeof(LayoutGrid), 
-            new PropertyMetadata(Constants.MaxPhotosInLayoutGrid, OnMaxPhotoCountChanged, OnMaxPhotoCoerceValue));
+            new PropertyMetadata(Constants.MaxSelectedPhotos, OnMaxPhotoCountChanged, OnMaxPhotoCoerceValue));
 
         /// <summary>
-        /// Coerces the value of MaxPhotoCount property to <see cref="Constants.MaxPhotosInLayoutGrid"/>
+        /// Coerces the value of MaxPhotoCount property to <see cref="Constants.MaxSelectedPhotos"/>
         /// if it's being set to a negative value or a number above 50.
         /// </summary>
         /// <param name="d">LayoutGrid whose MaxPhotoCount property's value is coerced.</param>
@@ -94,7 +85,7 @@ namespace PhotoLayout.Controls
             int count = (int)baseValue;
             if (count < 0 || count > 50)
             {
-                count = Constants.MaxPhotosInLayoutGrid;
+                count = Constants.MaxSelectedPhotos;
             }
             return count;
         }
@@ -133,63 +124,12 @@ namespace PhotoLayout.Controls
         /// </summary>        
         private static void OnPhotosChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            // TODO Check if this is necessary for releasing memory before new collection is assigned to the property
-            var oldCollection = e.OldValue as ObservableCollection<Photo>;
-            if (oldCollection != null)
-            {
-                oldCollection.CollectionChanged -= OnCollectionChanged;
-                oldCollection.Clear();
-                GC.Collect();
-            }
-
+            LayoutGrid layoutGrid = d as LayoutGrid;
             var newCollection = e.NewValue as ObservableCollection<Photo>;
-            if (newCollection != null)
-            {
-                newCollection.CollectionChanged += OnCollectionChanged;
-            }
-        }
 
-        private static void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            var action = e.Action;            
-            Photo photo;
-
-            // New Photo added
-            if (action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-            {
-                photo = e.NewItems[0] as Photo;
-                System.Diagnostics.Debug.WriteLine($"OnCollectionChanged ->  Added: {photo} \nHeight: {photo.Thumbnail.Height}, Width: {photo.Thumbnail.Width}");
-
-                for (int i = 0; i < images.Count; i++)
-                {
-                    if (images[i].Source == null)
-                    {
-                        // Depending on how the LayoutGrid is supposed to work this might have to be changed to photo.PreviewBitmap
-                        //images[i].Source = photo.Thumbnail;
-                        images[i].SetCurrentValue(Image.SourceProperty, photo.Thumbnail);
-                        images[i].RenderTransform.Value.Scale(1.5, 1.5);
-                        return;
-                    }
-                }                
-            }
-            // Photo(s) removed
-            else if (action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-            {
-                photo = e.OldItems[0] as Photo;
-                System.Diagnostics.Debug.WriteLine($"OnCollectionChanged -> Removed: {photo}");
-
-                for (int i = 0; i < images.Count; i++)
-                {
-                    // Depending on how the LayoutGrid is supposed to work this might also need an OR check for photo.PreviewBitmap
-                    if (images[i].Source == photo.Thumbnail)
-                    {
-                        //images[i].Source = null;
-                        images[i].SetCurrentValue(Image.SourceProperty, null);
-                        images[i].RenderTransform = new MatrixTransform(); // Resets the transform values that may have been changed in ManipulationBorder's manipulation
-                        return;
-                    }
-                }
-            }
+            Binding cellCountBinding = new Binding("Count");
+            cellCountBinding.Source = newCollection;
+            layoutGrid.SetBinding(CellCountProperty, cellCountBinding);
         }
 
         /// <summary>
@@ -248,101 +188,27 @@ namespace PhotoLayout.Controls
 
         #endregion
 
-        #region - RowCount -
+        #region - CellCount -
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RowCountProperty =
-            DependencyProperty.Register("RowCount", typeof(int), typeof(LayoutGrid), 
-                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, OnRowCountChanged, OnRowCountCoerceValue));
+        private static readonly DependencyProperty CellCountProperty =
+            DependencyProperty.Register("CellCount", typeof(int), typeof(LayoutGrid), new PropertyMetadata(0, OnCellCountChanged, CellCountCoerce));
 
-        private static object OnRowCountCoerceValue(DependencyObject d, object baseValue)
+        private static object CellCountCoerce(DependencyObject d, object baseValue)
         {
-            int rows = (int)baseValue;
-            if (rows < 0)
-            {
-                rows = 0;
-            }
-            // Just a precaution
-            else if (rows > 100)
-            {
-                rows = 100;
-            }
-            return rows;
+            int newCount = (int)baseValue;
+            // Since CellCount is bound to Photos.Count, if it's 0 (zero) the cound cell must be 1, as it can't drop below this value -> Default grid with 1 Row and 1 Column
+            return newCount == 0 ? 1 : newCount;
         }
 
-        private static void OnRowCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnCellCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            LayoutGrid layoutGrid = d as LayoutGrid;
-            int rows = (int)e.NewValue;            
-
-            if (layoutGrid != null)
-            {
-                // Clear previous RowDefinitions just in case this property is being set multiple times
-                layoutGrid.RowDefinitions.Clear();
-
-                for (int i = 0; i < rows; i++)
-                {
-                    RowDefinition row = new RowDefinition();
-                    //row.Height = GridLength.Auto;
-                    row.Height = new GridLength(1, GridUnitType.Star);
-                    layoutGrid.RowDefinitions.Add(row);
-                }
-            }
+            // TODO Do something with this   
         }
 
-        public int RowCount
+        private int CellCount
         {
-            get { return (int)GetValue(RowCountProperty); }
-            set { SetValue(RowCountProperty, value); }
-        }
-
-        #endregion
-
-        #region - ColumnCount -
-
-        public static readonly DependencyProperty ColumnCountProperty =
-            DependencyProperty.Register("ColumnCount", typeof(int), typeof(LayoutGrid), 
-                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, OnColumnCountChanged, OnColumnCountCoerceValue));
-
-        private static object OnColumnCountCoerceValue(DependencyObject d, object baseValue)
-        {
-            int columns = (int)baseValue;
-            if (columns < 0)
-            {
-                columns = 0;
-            }
-            // Just a precaution
-            else if (columns > 100)
-            {
-                columns = 100;
-            }
-            return columns;
-        }
-
-        private static void OnColumnCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            LayoutGrid layoutGrid = d as LayoutGrid;
-            int columns = (int)e.NewValue;
-
-            if (layoutGrid != null)
-            {
-                // Clear previous ColumnDefinitions just in case this property is being set multiple times
-                layoutGrid.ColumnDefinitions.Clear();
-
-                for (int i = 0; i < columns; i++)
-                {
-                    ColumnDefinition column = new ColumnDefinition();
-                    //column.Width = GridLength.Auto;
-                    column.Width = new GridLength(1, GridUnitType.Star);
-                    layoutGrid.ColumnDefinitions.Add(column);
-                }
-            }
-        }
-
-        public int ColumnCount
-        {
-            get { return (int)GetValue(ColumnCountProperty); }
-            set { SetValue(ColumnCountProperty, value); }
+            get { return (int)GetValue(CellCountProperty); }
+            set { SetValue(CellCountProperty, value); }
         }
 
         #endregion
@@ -350,14 +216,6 @@ namespace PhotoLayout.Controls
         #endregion
 
         #region - Properties -
-        
-        private int CellCount
-        {
-            get
-            {
-                return RowCount * ColumnCount;
-            }
-        }
 
         #endregion
 
@@ -377,68 +235,7 @@ namespace PhotoLayout.Controls
 
         #region - Private methods -
 
-        private void LayoutGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-            Dispatcher.BeginInvoke((Action)(() =>
-            {
-                CreateBorderControls();
-                CreateImageControls();
-
-                int index = 0;
-                for (int row = 0; row < RowCount; row++)
-                {
-                    for (int col = 0; col < ColumnCount; col++, index++)
-                    {
-                        // TODO Add a "ZoomBorder" that holds images
-                        Grid.SetRow(borders[index], row);
-                        Grid.SetColumn(borders[index], col);
-
-                        borders[index].Child = images[index];
-
-                        //Grid.SetRow(images[index], row);
-                        //Grid.SetColumn(images[index], col);
-                    }
-                }
-            }), System.Windows.Threading.DispatcherPriority.Background);
-        }
-
-        /// <summary>
-        /// Creates an Image control for every cell of the grid and sets a binding for that Image.
-        /// </summary>
-        private void CreateImageControls()
-        {
-            for (int i = 0; i < CellCount; i++)
-            {
-                Image img = new Image();
-                //img.Stretch = Stretch.UniformToFill;
-                img.HorizontalAlignment = HorizontalAlignment.Center;
-                img.VerticalAlignment = VerticalAlignment.Center;
-
-                //// If img.Source == null img.Visibility = Visibility.Collapsed
-                //Binding visibilityBinding = new Binding();
-                //visibilityBinding.Source = img;
-                //visibilityBinding.Path = new PropertyPath("Source");
-                //visibilityBinding.Converter = new NullToVisibilityConverter();
-                //visibilityBinding.Mode = BindingMode.OneWay;
-                //visibilityBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                //img.SetBinding(VisibilityProperty, visibilityBinding);
-
-                images.Add(img);
-                //Children.Add(img);
-            }
-        }
-
-        // Borders that will hold Image controls and force them to scale to the parent border
-        private void CreateBorderControls()
-        {
-            for (int i = 0; i < CellCount; i++)
-            {
-                ManipulationBorder border = new ManipulationBorder();
-                
-                borders.Add(border);
-                this.Children.Add(border);
-            }           
-        }
+      
 
         #endregion
     }

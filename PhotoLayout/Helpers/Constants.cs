@@ -9,7 +9,7 @@ namespace PhotoLayout.Helpers
     public static class Constants
     {
         // Number of photos that can be selected from the collection and added to the LayoutGrid
-        public const int MaxPhotosInLayoutGrid = 8;
+        public const int MaxSelectedPhotos = 8;
 
     }
 }

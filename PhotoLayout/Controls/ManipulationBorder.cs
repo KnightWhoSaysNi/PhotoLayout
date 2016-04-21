@@ -57,6 +57,30 @@ namespace PhotoLayout.Controls
 
         #endregion
 
+        #region - Protected methods -
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            //Size newSize;
+            //if (constraint.Width > constraint.Height)
+            //{
+            //    newSize = new Size(constraint.Width, constraint.Width);
+            //}
+            //else
+            //{
+            //    newSize = new Size(constraint.Height, constraint.Height);
+            //}
+            //return base.MeasureOverride(newSize);
+            return base.MeasureOverride(constraint);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            return base.ArrangeOverride(finalSize);
+        }
+
+        #endregion
+
         #region - Private methods - 
 
 
