@@ -10,6 +10,5 @@ namespace PhotoLayout.Helpers
     {
         // Number of photos that can be selected from the collection and added to the LayoutGrid
         public const int MaxSelectedPhotos = 8;
-
     }
 }
