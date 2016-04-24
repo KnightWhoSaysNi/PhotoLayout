@@ -68,6 +68,7 @@
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\ObjectToBitmapSourceConverter.cs" />
     <Compile Include="Enums\BitmapType.cs" />
+    <Compile Include="Enums\LayoutType.cs" />
     <Compile Include="Helpers\AttachedProperties.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
