@@ -69,8 +69,8 @@ namespace PhotoLayout.Controls
 
         public LayoutGrid()
         {
-            InitializeImages();
-            InitializeManipulationBorders();
+            CreateImages();
+            CreateManipulationBorders();
         }
 
         #endregion
@@ -318,11 +318,14 @@ namespace PhotoLayout.Controls
         }
 
         #endregion
-
+            
+        /****************************************************************************************************************
+                                                LayoutGrid's Layout Creator
+        *****************************************************************************************************************/    
         #region - CellCount private dependency property -
 
         private static readonly DependencyProperty CellCountProperty =
-            DependencyProperty.Register("CellCount", typeof(int), typeof(LayoutGrid), new PropertyMetadata(0, OnCellCountChanged, CellCountCoerce));
+            DependencyProperty.Register("CellCount", typeof(int), typeof(LayoutGrid), new PropertyMetadata(0, OnCellCountChanged));
 
         private static object CellCountCoerce(DependencyObject d, object baseValue)
         {
@@ -336,10 +339,36 @@ namespace PhotoLayout.Controls
             LayoutGrid layoutGrid = d as LayoutGrid;
             if (layoutGrid != null)
             {
-                int count = layoutGrid.CellCount;
-
-
+                CreateLayout(3, 3, layoutGrid.CellCount, layoutGrid);
             }
+        }
+
+        private static void CreateLayout(int rowCount, int columnCount, int cellCount, LayoutGrid layoutGrid)
+        {
+            int row = (cellCount - 1) / rowCount;
+            int col = (cellCount - 1) % columnCount;
+
+            if ((cellCount - 1) % rowCount == 0)
+            {
+                // Add new row to the layout grid
+                layoutGrid.RowDefinitions.Add(new RowDefinition());
+
+                // Add sub grid to the layout grid and set its row to the current row
+                Grid subGrid = new Grid();
+                Grid.SetRow(subGrid, row);
+                layoutGrid.Children.Add(subGrid);
+            }
+
+            // Add new column to the sub grid
+            (layoutGrid.Children[row] as Grid).ColumnDefinitions.Add(new ColumnDefinition());
+
+            // Remove first manipulation border from the layout grid and set it to the sub grid
+            ManipulationBorder border = layoutGrid.borders[0];
+            layoutGrid.borders.RemoveAt(0);
+            (layoutGrid.Children[row] as Grid).Children.Add(border);
+
+            // Set column for the manipulation border
+            Grid.SetColumn(border, col);
         }
 
         private int CellCount
@@ -354,7 +383,6 @@ namespace PhotoLayout.Controls
 
         #region - Properties -
 
-        public bool Is { get; set; }
 
         #endregion
 
@@ -374,7 +402,7 @@ namespace PhotoLayout.Controls
 
         #region - Private methods -
 
-        private void InitializeImages()
+        private void CreateImages()
         {
             this.images = new List<Image>();
             for (int i = 0; i < Constants.MaxSelectedPhotos; i++)
@@ -387,7 +415,7 @@ namespace PhotoLayout.Controls
             }
         }
 
-        private void InitializeManipulationBorders()
+        private void CreateManipulationBorders()
         {
             this.borders = new List<ManipulationBorder>();
             for (int i = 0; i < Constants.MaxSelectedPhotos; i++)
@@ -395,8 +423,6 @@ namespace PhotoLayout.Controls
                 this.borders.Add(new ManipulationBorder());
                 this.borders[i].Child = this.images[i];
                 this.borders[i].ClipToBounds = true;
-
-                this.Children.Add(this.borders[i]);
             }
         }
 
