@@ -67,7 +67,8 @@
     <Compile Include="Converters\CheckedToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Enums\BitmapType.cs" />
-    <Compile Include="Enums\LayoutType.cs" />
+    <Compile Include="Enums\LayoutAction.cs" />
+    <Compile Include="Enums\LayoutOrientation.cs" />
     <Compile Include="Helpers\AttachedProperties.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
