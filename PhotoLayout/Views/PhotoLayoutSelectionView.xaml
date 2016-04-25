@@ -26,7 +26,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+                
     </UserControl.Resources>
 
     <Grid>
@@ -161,28 +161,44 @@
                 </ListBox.ItemContainerStyle>
             </ListBox>
         </Border>
-                
+
         <!-- Layout selection -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal">
-            <!-- LayoutGrid testing -->
-            <Border Visibility="Visible" BorderBrush="White" BorderThickness="2" Height="300" Width="300">
-                <!--<Viewbox>-->
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                <!-- LayoutGrid testing -->
+                <Border BorderBrush="White" BorderThickness="2" Height="300" Width="300" Margin="10,0">
                     <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
                                      Margin="0"
                                      MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" />
-                <!--</Viewbox>-->
-            </Border>
+                                     Photos="{Binding SelectedPhotos}" 
+                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
+                </Border>
 
-            <!--<Border Visibility="Visible" BorderBrush="White" BorderThickness="2" Height="300" Width="300" Margin="10,0">
-                --><!--<Viewbox>--><!--
-                <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
+                <!--<Border BorderBrush="White" BorderThickness="2" Height="300" Width="300" Margin="10,0">
+                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
                                      Margin="0"
-                                     RowCount="2" ColumnCount="2" MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" />
-                --><!--</Viewbox>--><!--
-            </Border>-->
-        </StackPanel>
+                                     MinPhotoCount="2" MaxPhotoCount="10" 
+                                     Photos="{Binding SelectedPhotos}"
+                                     LayoutOrientation="RowFirst" LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
+                </Border>
 
+                <Border BorderBrush="White" BorderThickness="2" Height="300" Width="300" Margin="10,0">
+                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
+                                     Margin="0"
+                                     MinPhotoCount="2" MaxPhotoCount="10" 
+                                     Photos="{Binding SelectedPhotos}"
+                                     LayoutOrientation="RowFirst" LayoutMatrix="{x:Static helpers:Constants.FiveByTwoLayout}"/>
+                </Border>
+
+                <Border BorderBrush="White" BorderThickness="2" Height="300" Width="300" Margin="10,0">
+                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
+                                     Margin="0"
+                                     MinPhotoCount="2" MaxPhotoCount="10" 
+                                     Photos="{Binding SelectedPhotos}" 
+                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.FiveByTwoLayout}"/>
+                </Border>-->
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
