@@ -40,7 +40,7 @@
         <views:PhotoManipulationView Grid.Column="3" Grid.RowSpan="2"/>
 
         <!-- BUTTONS FOR TESTING -->
-        <StackPanel Visibility="Visible" Background="{StaticResource BackgroundLight}" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" VerticalAlignment="Center">            
+        <StackPanel Visibility="Collapsed" Background="{StaticResource BackgroundLight}" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" VerticalAlignment="Center">            
             <Button Content="Call GC" FontSize="22" Click="CallGC" Margin="5" />
             <Button Visibility="Visible" Content="Clear AllPhotos" FontSize="22" Click="ClearAllPhotos" Margin="5" />
         </StackPanel>

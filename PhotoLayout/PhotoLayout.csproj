@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icons\temp layout icon.ico</ApplicationIcon>
+    <ApplicationIcon>Images\temp layout icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>PhotoLayout.App</StartupObject>
@@ -66,7 +66,7 @@
     <Compile Include="Controls\ManipulationBorder.cs" />
     <Compile Include="Converters\CheckedToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
-    <Compile Include="Converters\ObjectToBitmapSourceConverter.cs" />
+    <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Enums\BitmapType.cs" />
     <Compile Include="Enums\LayoutAction.cs" />
     <Compile Include="Enums\LayoutOrientation.cs" />
@@ -80,9 +80,8 @@
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PhotoManipulationViewModel.cs" />
     <Compile Include="ViewModels\SelectionViewModel.cs" />
-    <Compile Include="ViewModels\TestViewModel.cs" />
     <Compile Include="Controls\LayoutGrid.cs" />
-    <Compile Include="Converters\SelectedItemCountToColorConverter.cs" />
+    <Compile Include="Converters\IntToColorConverter.cs" />
     <Compile Include="Views\FileSourceView.xaml.cs">
       <DependentUpon>FileSourceSelectionView.xaml</DependentUpon>
     </Compile>
@@ -191,9 +190,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Resource Include="Icons\temp layout icon.ico" />
+    <Resource Include="Images\Sand clock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\temp layout icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

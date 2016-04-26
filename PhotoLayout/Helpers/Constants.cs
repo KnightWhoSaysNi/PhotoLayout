@@ -32,5 +32,8 @@ namespace PhotoLayout.Helpers
         /// </summary>
         public static readonly byte[] FiveByTwoLayout = new byte[] { 5, 2 };
 
+        public static readonly byte[] FourByThreeLayout = new byte[] { 4, 3 };
+        public static readonly byte[] ThreeByFourLayout = new byte[] { 3, 4 };
+
     }
 }
