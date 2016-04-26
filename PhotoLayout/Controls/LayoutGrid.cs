@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -217,6 +218,10 @@ namespace PhotoLayout.Controls
             {
                 if (layoutGrid.images[i].Source == null)
                 {
+                    // Resets image control's scale and translate transforms
+                    layoutGrid.images[i].RenderTransform = new MatrixTransform();
+                    
+
                     if (layoutGrid.PhotoType == BitmapType.Thumbnail)
                     {
                         // This layout grid is one of many displaying possible layouts that the user can choose from
@@ -229,8 +234,13 @@ namespace PhotoLayout.Controls
                     }
                     else
                     {
+                        layoutGrid.images[i].Source = new BitmapImage(new Uri(Environment.CurrentDirectory + @"..\..\..\Images\Sand clock.png"));
                         // This layout grid is the one the user will be using for manipulating individual photos
-                        layoutGrid.images[i].Source = photo.PreviewBitmap;
+                        ThreadPool.QueueUserWorkItem((obj) =>
+                        {
+                            photo.RefreshBitmapSource(BitmapType.PreviewBitmap);
+                            Application.Current.Dispatcher.BeginInvoke((Action)(() => layoutGrid.images[i].Source = photo.PreviewBitmap), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        });                        
                     }
 
                     // Each individual photo can only be displayed once in the grid, so no need for continuation of the for loop -> the photo has been added
@@ -249,7 +259,8 @@ namespace PhotoLayout.Controls
                 if (layoutGrid.images[i].Source != null && (layoutGrid.images[i].Source == photo.Thumbnail || layoutGrid.images[i].Source == photo.PreviewBitmap))
                 {
                     RearangeImages(layoutGrid, i);
-                    
+                    photo.PreviewBitmap = null;
+
                     // Each individual photo can only be displayed once in the grid, so no need for continuation of the for loop -> the one photo has been removed
                     return;
                 }                
@@ -258,6 +269,11 @@ namespace PhotoLayout.Controls
 
         private static void RearangeImages(LayoutGrid layoutGrid, int photoIndex)
         {
+            if (photoIndex != layoutGrid.images.Count - 1)
+            {
+                layoutGrid.images[photoIndex].RenderTransform = layoutGrid.images[photoIndex + 1].RenderTransform;
+            }
+
             for (int i = photoIndex; i < layoutGrid.images.Count - 1; i++)
             {
                 layoutGrid.images[i].Source = layoutGrid.images[i + 1].Source;
@@ -364,7 +380,7 @@ namespace PhotoLayout.Controls
             }
             else
             {
-                UpdateLayoutRowFirst(rowCount, columnCount, cellCount, layoutGrid);
+                UpdateLayoutRowFirst(rowCount, columnCount, cellCount, layoutGrid, action);
             }
         }
 
@@ -402,7 +418,7 @@ namespace PhotoLayout.Controls
             if (col == 0)
             {
                 // Add new row to the layout grid
-                layoutGrid.RowDefinitions.Add(new RowDefinition());
+                layoutGrid.RowDefinitions.Add(new RowDefinition());                
 
                 // Add sub grid to the layout grid and set its row to the current row
                 Grid subGrid = new Grid();
@@ -422,10 +438,36 @@ namespace PhotoLayout.Controls
             Grid.SetColumn(border, col);
         }
 
-        private static void UpdateLayoutRowFirst(byte rowCount, byte columnCount, int cellCount, LayoutGrid layoutGrid)
+        private static void UpdateLayoutRowFirst(byte rowCount, byte columnCount, int cellCount, LayoutGrid layoutGrid, LayoutAction action)
         {
             int col = (cellCount - 1) / rowCount;
             int row = (cellCount - 1) % rowCount;
+
+            if (action == LayoutAction.Removal && (cellCount % rowCount == 0))
+            {
+                col = cellCount / rowCount;
+                ManipulationBorder removedBorder = (ManipulationBorder)((layoutGrid.Children[col] as Grid).Children[0]);
+                (layoutGrid.Children[col] as Grid).Children.RemoveAt(0);
+                layoutGrid.borders.Insert(0, removedBorder);
+
+                // Remove last child (sub-grid)
+                layoutGrid.Children.Remove(layoutGrid.Children[col] as Grid);
+
+                // Remove the last column
+                layoutGrid.ColumnDefinitions.RemoveAt(col);
+
+                return;
+            }
+
+            if (action == LayoutAction.Removal)
+            {
+                ManipulationBorder removedBorder = (ManipulationBorder)((layoutGrid.Children[col] as Grid).Children[(layoutGrid.Children[col] as Grid).RowDefinitions.Count - 1]);
+                (layoutGrid.Children[col] as Grid).Children.RemoveAt((layoutGrid.Children[col] as Grid).RowDefinitions.Count - 1);
+                (layoutGrid.Children[col] as Grid).RowDefinitions.RemoveAt((layoutGrid.Children[col] as Grid).RowDefinitions.Count - 1);
+                layoutGrid.borders.Insert(0, removedBorder);
+
+                return;
+            }
 
             if (row == 0)
             {
@@ -461,7 +503,27 @@ namespace PhotoLayout.Controls
         #region - LayoutOrientation -
 
         public static readonly DependencyProperty LayoutOrientationProperty =
-            DependencyProperty.Register("LayoutOrientation", typeof(LayoutOrientation), typeof(LayoutGrid), new PropertyMetadata(LayoutOrientation.ColumnFirst));
+            DependencyProperty.Register("LayoutOrientation", typeof(LayoutOrientation), typeof(LayoutGrid),
+                new PropertyMetadata(LayoutOrientation.ColumnFirst, null, CoerceLayoutOrientationValue));
+
+        private static object CoerceLayoutOrientationValue(DependencyObject d, object baseValue)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            if (layoutGrid == null)
+                return null;
+
+            LayoutOrientation orientation = (LayoutOrientation)baseValue;
+
+            if (layoutGrid.LayoutMatrix == Constants.JustRowsLayout)
+            {
+                orientation = LayoutOrientation.RowFirst;
+            }            
+            else if (layoutGrid.LayoutMatrix == Constants.JustColumnsLayout)
+            {
+                orientation = LayoutOrientation.ColumnFirst;
+            }
+            return orientation;
+        }
 
         public LayoutOrientation LayoutOrientation
         {
@@ -474,7 +536,23 @@ namespace PhotoLayout.Controls
         #region - LayoutMatrix -
 
         public static readonly DependencyProperty LayoutMatrixProperty =
-            DependencyProperty.Register("LayoutMatrix", typeof(byte[]), typeof(LayoutGrid), new PropertyMetadata(Constants.ThreeByThreeLayout));
+            DependencyProperty.Register("LayoutMatrix", typeof(byte[]), typeof(LayoutGrid), new PropertyMetadata(Constants.ThreeByThreeLayout, OnLayoutMatrixChanged));
+
+        private static void OnLayoutMatrixChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            if (layoutGrid == null)
+                return;
+
+            if ((byte[])e.NewValue == Constants.JustColumnsLayout && layoutGrid.LayoutOrientation == LayoutOrientation.RowFirst)
+            {
+                layoutGrid.LayoutOrientation = LayoutOrientation.ColumnFirst;
+            }
+            else if((byte[])e.NewValue==Constants.JustRowsLayout && layoutGrid.LayoutOrientation == LayoutOrientation.ColumnFirst)
+            {
+                layoutGrid.LayoutOrientation = LayoutOrientation.RowFirst;
+            }
+        }
 
         public byte[] LayoutMatrix
         {
@@ -531,8 +609,8 @@ namespace PhotoLayout.Controls
                 this.borders[i].HorizontalAlignment = HorizontalAlignment.Stretch;
                 this.borders[i].VerticalAlignment = VerticalAlignment.Stretch;
 
-                this.borders[i].BorderBrush = Brushes.Red;
-                this.borders[i].BorderThickness = new Thickness(1);
+                //this.borders[i].BorderBrush = Brushes.Red;
+                //this.borders[i].BorderThickness = new Thickness(1);
             }
         }
 
