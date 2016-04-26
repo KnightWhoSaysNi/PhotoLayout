@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:PhotoLayout.Views"
              xmlns:controls="clr-namespace:PhotoLayout.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="300" SnapsToDevicePixels="True"
+             d:DesignHeight="800" d:DesignWidth="300" 
+             SnapsToDevicePixels="True"
              Background="{StaticResource BackgroundBlack}">
     <UserControl.Resources>
         <!-- Default button style -->
@@ -18,6 +19,15 @@
         <!-- Default toggle button style -->
         <Style TargetType="ToggleButton" BasedOn="{StaticResource EmptyToggleButton}">
             <Setter Property="Margin" Value="20,15" />
+        </Style>
+
+        <!-- Default rectangle separator style -->
+        <Style TargetType="Rectangle">
+            <Setter Property="Height" Value="4" />
+            <Setter Property="Fill" Value="LightGray" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Width" Value="150" />
         </Style>
 
     </UserControl.Resources>
@@ -37,81 +47,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <Grid x:Name="oldGrid" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <!-- Get more images -->
-                <Button Grid.Column="0" Command="ApplicationCommands.Open">
-                    <Border Style="{StaticResource ButtonContentBorder}">
-                        <StackPanel>
-                            <Path Data="{StaticResource NewImage}" StrokeThickness="0.1">
-                                <Path.LayoutTransform>
-                                    <ScaleTransform  ScaleX="2.5" ScaleY="2.5" />
-                                </Path.LayoutTransform>
-                            </Path>
-                            <TextBlock Margin="0,8,0,0" Text="More images" />
-                        </StackPanel>
-                    </Border>
-                </Button>
-
-                <!-- Replace image -->
-                <Button Grid.Column="1">
-                    <Border Style="{StaticResource ButtonContentBorder}">
-                        <StackPanel>
-                            <Path Data="{StaticResource ReplaceImage}" Fill="Transparent">
-                                <Path.LayoutTransform>
-                                    <ScaleTransform ScaleX="3.5" ScaleY="3.5" />
-                                </Path.LayoutTransform>
-                            </Path>
-                            <TextBlock Text="Replace" />
-                        </StackPanel>
-                    </Border>
-                </Button>
-
-                <!-- Flip horizontally -->
-                <Button Grid.Column="2">
-                    <Border Style="{StaticResource ButtonContentBorder}">
-                        <StackPanel>
-                            <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
-                                <Path.LayoutTransform>
-                                    <ScaleTransform ScaleX="1.8" ScaleY="1.8" />
-                                </Path.LayoutTransform>
-                            </Path>
-                            <TextBlock Text="Horizontal flip" />
-                        </StackPanel>
-                    </Border>
-                </Button>
-
-                <!-- Flip vertically -->
-                <Button Grid.Column="3">
-                    <Border Style="{StaticResource ButtonContentBorder}">
-                        <StackPanel>
-                            <Path Data="{StaticResource Flip}" Stretch="Uniform" Height="50">
-                                <Path.LayoutTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.8" ScaleY="1.8" />
-                                        <RotateTransform Angle="90" />
-                                    </TransformGroup>
-                                </Path.LayoutTransform>
-                            </Path>
-                            <TextBlock Text="Vertical flip" />
-                        </StackPanel>
-                    </Border>
-                </Button>
-            </Grid>
+            </Grid.RowDefinitions>            
 
             <!-- Print -->
             <Button>
@@ -132,7 +68,7 @@
                     </StackPanel>
                 </Border>
             </ToggleButton>
-            <Rectangle Height="4" Fill="LightGray" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="150" Grid.Row="1" />
+            <Rectangle Grid.Row="1" />
             
             <!-- New -->
             <Button Grid.Row="2">
@@ -153,7 +89,7 @@
                     </StackPanel>
                 </Border>
             </Button>
-            <Rectangle Height="4" Fill="LightGray" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="150" Grid.Row="3" />
+            <Rectangle Grid.Row="3" />
             
             <!-- Remove -->
             <Button Grid.Row="4">

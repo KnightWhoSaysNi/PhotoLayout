@@ -11,7 +11,8 @@
              d:DesignHeight="800" d:DesignWidth="800"
              UseLayoutRounding="True">
     <UserControl.Resources>
-        <converters:IntToColorConverter x:Key="SelectedItemCountToColor" />
+        <!-- Converters -->
+        <converters:IntToColorConverter x:Key="IntToColor" />
         <converters:IntToVisibilityConverter x:Key="IntToVisibility" />
 
         <!-- AllPhotosListBox style -->
@@ -57,25 +58,39 @@
         
         <!-- Folders -->
         <Border BorderBrush="#4F000000" BorderThickness="0,0.7,0,0" Padding="5" Grid.Row="1"  Margin="10,10,10,0">
-            <ListBox Background="Transparent" BorderBrush="Transparent" 
+            <ListBox Background="Transparent" 
+                     BorderBrush="Transparent" 
                      ScrollViewer.VerticalScrollBarVisibility="Disabled" 
                      ScrollViewer.CanContentScroll="False" 
                      ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                      ItemsSource="{Binding Folders}">
+                <!-- Items panel -->
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
 
+                <!-- Item template -->
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border>
-                            <Button Style="{StaticResource EmptyButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.OpenFolder}" CommandParameter="{Binding }">
+                            <Button Style="{StaticResource EmptyButton}" 
+                                    HorizontalContentAlignment="Center" 
+                                    VerticalContentAlignment="Top"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.OpenFolder}" 
+                                    CommandParameter="{Binding }">
                                 <StackPanel>
-                                    <Path Data="{StaticResource Folder}" Style="{StaticResource ButtonPath}" Stretch="Uniform" Width="40" />
-                                    <TextBlock Text="{Binding Name}" FontSize="14" MaxWidth="110" TextAlignment="Center" TextWrapping="Wrap" Height="40" 
+                                    <Path Data="{StaticResource Folder}" 
+                                          Style="{StaticResource ButtonPath}"
+                                          Stretch="Uniform" 
+                                          Width="40" />
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontSize="14" 
+                                               MaxWidth="110" 
+                                               TextAlignment="Center" 
+                                               TextWrapping="Wrap" 
+                                               Height="40" 
                                                TextTrimming="CharacterEllipsis"
                                                Style="{StaticResource ButtonTextBlock}" />
                                 </StackPanel>
@@ -84,6 +99,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
+                <!-- Item container style -->
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Template">
@@ -99,32 +115,44 @@
         </Border>
         
         <!-- Photo selection -->
-        <Border Visibility="Visible" BorderBrush="#4F000000" BorderThickness="0,0.7" Padding="5" Grid.Row="2"  Margin="10,0,10,10">
-            <ListBox x:Name="allPhotosListBox" Style="{StaticResource allPhotosListBox}" ItemsSource="{Binding Photos}" 
-                     SelectionChanged="allPhotosListBox_SelectionChanged" helpers:AttachedProperties.SelectedPhotos="{Binding SelectedPhotos}" >
+        <Border BorderBrush="#4F000000" BorderThickness="0,0.7" Padding="5" Grid.Row="2" Margin="10,0,10,10">
+            <ListBox x:Name="allPhotosListBox" 
+                     Style="{StaticResource allPhotosListBox}" 
+                     ItemsSource="{Binding Photos}" 
+                     SelectionChanged="allPhotosListBox_SelectionChanged" 
+                     helpers:AttachedProperties.SelectedPhotos="{Binding SelectedPhotos}" >
+                <!-- Items panel -->
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
 
+                <!-- Item template -->
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border x:Name="bd" CornerRadius="4" Width="135" Height="135">                           
+                        <Border x:Name="bd" 
+                                CornerRadius="4" 
+                                Width="135" 
+                                Height="135">                           
                             <Border.OpacityMask>
                                 <VisualBrush>
                                     <VisualBrush.Visual>
                                         <!-- Binding ElementName=bd, Path=*** doesn't work for some reason - it's created after opacity mask? -->
-                                        <Border Background="White" CornerRadius="4" Width="150" Height="150" />
+                                        <Border Background="White" 
+                                                CornerRadius="4" 
+                                                Width="150" 
+                                                Height="150" />
                                     </VisualBrush.Visual>
                                 </VisualBrush>
-                            </Border.OpacityMask>    
+                            </Border.OpacityMask>                       
                             <!-- Thumbnail image -->
                             <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
                         </Border>                           
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
+                <!-- Item container style -->
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Template">
@@ -133,6 +161,7 @@
                                     <Border x:Name="bd" BorderThickness="3" BorderBrush="Transparent" CornerRadius="4" Margin="-0.8">
                                         <Grid>
                                             <ContentPresenter />
+                                            <!-- Circled checkmark for selected photos -->
                                             <Path x:Name="pathy" 
                                                   Data="{StaticResource CircleOk}" 
                                                   Opacity="0.8" 
@@ -144,12 +173,14 @@
                                                   Height="40" 
                                                   Width="40"
                                                   Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=SelectedItems.Count, 
-                                                Converter={StaticResource SelectedItemCountToColor}, ConverterParameter={StaticResource AccentDark}}"/>
+                                                Converter={StaticResource IntToColor}, ConverterParameter={StaticResource AccentDark}}"/>
                                         </Grid>
                                     </Border>
+                                    <!-- OnSelected photo trigger -->
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">      
-                                            <Setter TargetName="bd" Property="BorderBrush" 
+                                            <Setter TargetName="bd" 
+                                                    Property="BorderBrush" 
                                                     Value="{Binding ElementName=pathy, Path=Fill}" />
                                             <Setter TargetName="pathy" Property="Visibility" Value="Visible" />
                                         </Trigger>
@@ -163,113 +194,93 @@
             </ListBox>
         </Border>
 
-        <!-- Layout selection -->
-        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" 
+        <!-- Layout selection NEEDS TO GO TO PhotoPreviewView! -->
+        <ScrollViewer Grid.Row="3" 
+                      VerticalScrollBarVisibility="Disabled" 
+                      HorizontalScrollBarVisibility="Auto" 
                       Visibility="{Binding SelectedPhotos.Count, Converter={StaticResource IntToVisibility}}">
-            <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
-                    <Style x:Key="borderStyle" TargetType="Border">
+                    <!-- Border around LayoutGrid style -->
+                    <Style x:Key="layoutGridBorder" TargetType="Border">
                         <Setter Property="Height" Value="200" />
                         <Setter Property="Width" Value="142" />
                         <Setter Property="Margin" Value="10, 2" />
                         <Setter Property="BorderThickness" Value="1" />
                         <Setter Property="BorderBrush" Value="White" />
                     </Style>
+
+                    <!-- LayoutGrid style -->
+                    <Style TargetType="controls:LayoutGrid">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Photos" Value="{Binding SelectedPhotos}" />                        
+                    </Style>
                 </StackPanel.Resources>
-                <!-- LayoutGrid testing -->
-                <!--<Border Style="{StaticResource borderStyle}" Height="500" Width="353">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                         PhotoType="PreviewBitmap"
-                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
+                <!-- Manipulating LayoutGrid preview -->
+                <!--<Border Style="{StaticResource layoutGridBorder}" Height="500" Width="353">
+                    <controls:LayoutGrid PhotoType="PreviewBitmap"
+                                         LayoutOrientation="ColumnFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
                 </Border>-->
-                
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
+
+                <!-- 3x3 ColumnFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="ColumnFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
                 </Border>
 
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}"
-                                     LayoutOrientation="RowFirst" LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
+                <!-- 3x3 RowFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="RowFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.ThreeByThreeLayout}" />
                 </Border>
 
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}"
-                                     LayoutOrientation="RowFirst" LayoutMatrix="{x:Static helpers:Constants.FiveByTwoLayout}"/>
-                </Border>
-
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.FiveByTwoLayout}"/>
-                </Border>
-
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="RowFirst" LayoutMatrix="{x:Static helpers:Constants.JustRowsLayout}"/>
-                </Border>
-
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.JustColumnsLayout}"/>
+                <!-- 5x2 ColumnFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="ColumnFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.FiveByTwoLayout}"/>
                 </Border>
                 
-                <!-- 4 x 3 ColumnFirst -->
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.FourByThreeLayout}"/>
+                <!-- 5x2 RowFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="RowFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.FiveByTwoLayout}"/>
                 </Border>
 
-                <!-- 4 x 3 RowFirst -->
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="RowFirst" LayoutMatrix="{x:Static helpers:Constants.FourByThreeLayout}"/>
+                <!-- 4x3 ColumnFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="ColumnFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.FourByThreeLayout}"/>
                 </Border>
 
-                <!-- 3 x 4 ColumnFirst -->
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="ColumnFirst" LayoutMatrix="{x:Static helpers:Constants.ThreeByFourLayout}"/>
+                <!-- 4x3 RowFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="RowFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.FourByThreeLayout}"/>
                 </Border>
 
-                <!-- 3 x 4 RowFirst -->
-                <Border Style="{StaticResource borderStyle}">
-                    <controls:LayoutGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                                     Margin="0"
-                                     MinPhotoCount="2" MaxPhotoCount="10" 
-                                     Photos="{Binding SelectedPhotos}" 
-                                     LayoutOrientation="RowFirst" LayoutMatrix="{x:Static helpers:Constants.ThreeByFourLayout}"/>
+                <!-- 3x4 ColumnFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="ColumnFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.ThreeByFourLayout}"/>
                 </Border>
 
+                <!-- 3x4 RowFirst Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutOrientation="RowFirst" 
+                                         LayoutMatrix="{x:Static helpers:Constants.ThreeByFourLayout}"/>
+                </Border>
+                
+                <!-- JustRows Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutMatrix="{x:Static helpers:Constants.JustRowsLayout}"/>
+                </Border>
+
+                <!-- JustColumns Layout -->
+                <Border Style="{StaticResource layoutGridBorder}">
+                    <controls:LayoutGrid LayoutMatrix="{x:Static helpers:Constants.JustColumnsLayout}"/>
+                </Border>
 
             </StackPanel>
         </ScrollViewer>
