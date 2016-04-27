@@ -49,7 +49,7 @@
                 </StackPanel>
             </RadioButton>
             <Ellipse Margin="230,0,5,0" Height="15" Width="15" Visibility="Hidden" />
-            <Ellipse Style="{StaticResource Decorator}" Visibility="{Binding ElementName=facebook, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            <Ellipse Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=facebook, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
 
             <!-- Instagram -->
             <RadioButton x:Name="instagram" Grid.Row="1">
@@ -58,7 +58,7 @@
                     <TextBlock Text="Instagram" />
                 </StackPanel>
             </RadioButton>
-            <Ellipse Grid.Row="1" Style="{StaticResource Decorator}" Visibility="{Binding ElementName=instagram, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            <Ellipse Grid.Row="1" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=instagram, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
 
             <!-- Usb -->
             <RadioButton x:Name="usb" Grid.Row="2" CommandParameter="Usb">
@@ -67,7 +67,7 @@
                     <TextBlock Text="Usb device" />
                 </StackPanel>
             </RadioButton>
-            <Ellipse Grid.Row="2" Style="{StaticResource Decorator}" Visibility="{Binding ElementName=usb, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            <Ellipse Grid.Row="2" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=usb, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
 
             <!-- Email code -->
             <RadioButton x:Name="emailCode" Grid.Row="3">
@@ -76,7 +76,7 @@
                     <TextBlock Text="Email code" />
                 </StackPanel>
             </RadioButton>
-            <Ellipse Grid.Row="3" Style="{StaticResource Decorator}" Visibility="{Binding ElementName=emailCode, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            <Ellipse Grid.Row="3" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=emailCode, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
 
             <!-- Dropbox -->
             <RadioButton x:Name="dropbox" Grid.Row="4">
@@ -85,7 +85,7 @@
                     <TextBlock Text="Dropbox" />
                 </StackPanel>
             </RadioButton>
-            <Ellipse Grid.Row="4" Style="{StaticResource Decorator}" Visibility="{Binding ElementName=dropbox, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            <Ellipse Grid.Row="4" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=dropbox, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
 
             <!-- Google drive -->
             <RadioButton x:Name="googleDrive" Grid.Row="5">
@@ -94,7 +94,7 @@
                     <TextBlock Text="Google drive" />
                 </StackPanel>
             </RadioButton>
-            <Ellipse Grid.Row="5" Style="{StaticResource Decorator}" Visibility="{Binding ElementName=googleDrive, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            <Ellipse Grid.Row="5" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=googleDrive, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
             
             <!-- Recent images -->
             <RadioButton x:Name="recentImages" Grid.Row="6" CommandParameter="Recent">
@@ -103,7 +103,7 @@
                     <TextBlock Text="Recent images" />
                 </StackPanel>
             </RadioButton>
-            <Ellipse Grid.Row="6" Style="{StaticResource Decorator}" Visibility="{Binding ElementName=recentImages, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            <Ellipse Grid.Row="6" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=recentImages, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
         </Grid>
     </Viewbox>
 </UserControl>
