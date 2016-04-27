@@ -2,12 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/PhotoLayout;component/Themes/Brushes.xaml" />
+        <ResourceDictionary Source="/PhotoLayout;component/Themes/Typography.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
     <!-- Default RadioButton style -->
     <Style x:Key="FileSourceRadioButton" TargetType="RadioButton">
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Margin" Value="20,15" />

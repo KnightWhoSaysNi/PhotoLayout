@@ -13,7 +13,7 @@ namespace PhotoLayout.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool isChecked= (bool)value;
+            bool isChecked = (bool)value;
             return isChecked ? Visibility.Visible : Visibility.Collapsed;
         }
 

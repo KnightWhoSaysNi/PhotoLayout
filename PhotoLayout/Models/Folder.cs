@@ -8,14 +8,16 @@ using System.Threading.Tasks;
 
 namespace PhotoLayout.Models
 {
+    /// <summary>
+    /// A class representing a folder structure with sub folders and files.
+    /// </summary>
     public class Folder
     {
         #region - Fields -
-                
         private DirectoryInfo folder;
         private ObservableCollection<Folder> subFolders;
         private ObservableCollection<FileInfo> files;
-        private IList<string> extensions;
+        private string[] extensions;
         private bool selectByExtension;
 
         #endregion
@@ -28,7 +30,7 @@ namespace PhotoLayout.Models
         /// <param name="fullPath">Full path to the folder.</param>
         /// <param name="parent">Parent folder.</param>
         /// <param name="extensions">Extensions for the files of the folder. Only files with certain extensions will be found.</param>
-        public Folder(string fullPath, Folder parent = null, IList<string> extensions = null)
+        public Folder(string fullPath, Folder parent = null, string[] extensions = null)
         {
             this.FullPath = fullPath;
             this.Parent = parent;
@@ -59,7 +61,7 @@ namespace PhotoLayout.Models
                 else
                 {
                     // TODO Determine what to do if the directory doesn't exist
-                    // In situation where all partitions need a root, a "virtual Folder" is needed
+                    // In situation where all partitions are used and need a root, a "virtual Folder" is created, without its DirectoryInfo                    
                 }
             }
         }
@@ -126,8 +128,8 @@ namespace PhotoLayout.Models
 
             try
             {
-                IEnumerable<DirectoryInfo> directories = this.folder.GetDirectories().
-                    Where(x => !(x.Attributes.HasFlag(FileAttributes.Hidden) || x.Attributes.HasFlag(FileAttributes.System))); // TODO Check which folders to ignore
+                IEnumerable<DirectoryInfo> directories = this.folder.GetDirectories()
+                    .Where(x => !(x.Attributes.HasFlag(FileAttributes.Hidden) || x.Attributes.HasFlag(FileAttributes.System))); // TODO Check which folders to ignore
 
                 foreach (DirectoryInfo directory in directories)
                 {

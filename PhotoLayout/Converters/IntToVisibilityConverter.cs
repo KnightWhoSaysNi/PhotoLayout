@@ -9,6 +9,9 @@ using System.Windows.Data;
 
 namespace PhotoLayout.Converters
 {
+    /// <summary>
+    /// Int to Hidden visibility converter.
+    /// </summary>
     public class IntToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

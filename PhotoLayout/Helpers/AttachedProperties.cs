@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PhotoLayout.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,39 +12,35 @@ namespace PhotoLayout.Helpers
 {
     public class AttachedProperties
     {
-        #region - ListBox SelectedItems -
+        // TODO Delete this if it's not being used
+        #region - ListBox SelectedPhotos -
 
         /// <summary>
-        /// Attached property representing the selected items of a list box, as an ObservableCollection.
-        /// </summary>
-        public static readonly DependencyProperty SelectedItemsProperty =
-            DependencyProperty.RegisterAttached("SelectedItems", 
-                typeof(ObservableCollection<object>), 
-                typeof(AttachedProperties), 
-                new PropertyMetadata(null, OnPropertyChanged));        
+        /// Attached property representing the selected photo items of a list box, as an ObservableCollection.
+        /// </summary>        
+        public static readonly DependencyProperty SelectedPhotosProperty =
+             DependencyProperty.RegisterAttached("SelectedPhotos",
+                 typeof(ObservableCollection<Photo>),
+                 typeof(AttachedProperties),
+                 new PropertyMetadata(new ObservableCollection<Photo>()));
 
         /// <summary>
-        /// Gets a value of SelectedItems for the specified ListBox.
+        /// Gets a value of SelectedPhotos for the specified ListBox.
         /// </summary>
-        /// <param name="obj">ListBox whose SelectedItems property you're getting.</param>
-        public static ObservableCollection<object> GetSelectedItems(ListBox obj)
+        /// <param name="obj">ListBox whose SelectedPhotos property you're getting.</param>
+        public static ObservableCollection<Photo> GetSelectedPhotos(ListBox obj)
         {
-            return (ObservableCollection<object>)obj.GetValue(SelectedItemsProperty);
+            return (ObservableCollection<Photo>)obj.GetValue(SelectedPhotosProperty);
         }
 
         /// <summary>
-        /// Sets a value of SelectedItems for the specified ListBox.
+        /// Sets a value of SelectedPhotos for the specified ListBox.
         /// </summary>
-        /// <param name="obj">ListBox whose SelectedItems property you're setting.</param>
-        /// <param name="value">Collection of items representing the SelectedItems.</param>
-        public static void SetSelectedItems(DependencyObject obj, ObservableCollection<object> value)
+        /// <param name="obj">ListBox whose SelectedPhotos property you're setting.</param>
+        /// <param name="value">Collection of items representing the SelectedPhotos.</param>
+        public static void SetSelectedPhotos(DependencyObject obj, ObservableCollection<Photo> value)
         {
-            obj.SetValue(SelectedItemsProperty, value);
-        }
-
-        private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-
+            obj.SetValue(SelectedPhotosProperty, value);
         }
 
         #endregion

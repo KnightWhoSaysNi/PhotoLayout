@@ -57,6 +57,9 @@ namespace PhotoLayout.Controls
         #region - Fields -
 
         private List<Image> images;
+        /// <summary>
+        /// Recycling borders which hold image controls. The number of borders is constant, new ones are never created for this layout grid.
+        /// </summary>        
         private List<ManipulationBorder> borders;
 
         #endregion
@@ -80,16 +83,43 @@ namespace PhotoLayout.Controls
 
         #region - PhotoType -
 
+        /// <summary>
+        /// Dependency property representing the type of photos that the layout grid will be displaying.
+        /// </summary>
         public static readonly DependencyProperty PhotoTypeProperty =
-            DependencyProperty.Register("PhotoType", typeof(BitmapType), typeof(LayoutGrid), new PropertyMetadata(BitmapType.Thumbnail, null, CoercePhotoTypeValue));
+            DependencyProperty.Register("PhotoType", typeof(BitmapType), typeof(LayoutGrid), new PropertyMetadata(BitmapType.Thumbnail, OnPhotoTypeChanged, CoercePhotoTypeValue));
 
+        /// <summary>
+        /// Checks if the photo type is Thumbnail and if it is disables manipulation of all image controls for the layout grid.
+        /// </summary>
+        private static void OnPhotoTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            BitmapType type = (BitmapType)e.NewValue;
+            if (layoutGrid != null && type == BitmapType.Thumbnail)
+            {
+                // This layout grid is one of many displaying possible layouts that the user can choose from
+                // and it must not have the option of manipulating individual photos
+                foreach (Image img in layoutGrid.images)
+                {
+                    img.IsHitTestVisible = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Coerces the value of PhotoType property to Thumbnail if it's set to Original as there is no need for a grid to hold original bitmap photograph.
+        /// </summary>
+        /// <returns>Thumbnail if it's set to Original, baseValue otherwise.</returns>
         private static object CoercePhotoTypeValue(DependencyObject d, object baseValue)
         {
             BitmapType type = (BitmapType)baseValue;
-            // If type is set to OriginalBitmap coerce it to Thumbnail, as there is no need for a grid to hold original bitmap photograph
             return type != BitmapType.OriginalBitmap ? type : BitmapType.Thumbnail;
         }
 
+        /// <summary>
+        /// Gets or sets the type of photos that the layout grid will display.
+        /// </summary>
         public BitmapType PhotoType
         {
             get { return (BitmapType)GetValue(PhotoTypeProperty); }
@@ -97,60 +127,17 @@ namespace PhotoLayout.Controls
         }
 
         #endregion
-
-        #region - MaxPhotoCount -
-
-        public static readonly DependencyProperty MaxPhotoCountProperty = DependencyProperty.Register("MaxPhotoCount", typeof(int), typeof(LayoutGrid), 
-            new PropertyMetadata(Constants.MaxSelectedPhotos, OnMaxPhotoCountChanged, OnMaxPhotoCoerceValue));
-
-        /// <summary>
-        /// Gets or sets the maximum count of photos that can be shown in LayoutGrid.
-        /// </summary>
-        public int MaxPhotoCount
-        {
-            get { return (int)GetValue(MaxPhotoCountProperty); }
-            set { SetValue(MaxPhotoCountProperty, value); }
-        }
-
-        /// <summary>
-        /// Coerces the value of MaxPhotoCount property to <see cref="Constants.MaxSelectedPhotos"/>
-        /// if it's being set to a negative value or a number above 50.
-        /// </summary>
-        /// <param name="d">LayoutGrid whose MaxPhotoCount property's value is coerced.</param>
-        /// <param name="baseValue">Base value of MaxPhotoCount property.</param>
-        /// <returns></returns>
-        private static object OnMaxPhotoCoerceValue(DependencyObject d, object baseValue)
-        {
-            int count = (int)baseValue;
-            if (count < 0 || count > 50)
-            {
-                count = Constants.MaxSelectedPhotos;
-            }
-            return count;
-        }
-
-        /// <summary>
-        /// If MinPhotoCount property has higher value than the new MaxPhotoCount this method limits the MinPhotoCount to MaxPhotoCount.
-        /// </summary>       
-        private static void OnMaxPhotoCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            LayoutGrid layoutGrid = d as LayoutGrid;
-            int count = (int)e.NewValue;
-            if (layoutGrid != null && layoutGrid.MinPhotoCount > count)
-            {
-                layoutGrid.MinPhotoCount = count;
-            }
-        }
-
-        #endregion
-
+        
         #region - Photos -
 
+        /// <summary>
+        /// Dependency property for the collection of photos that the layout grid is displaying.
+        /// </summary>
         public static DependencyProperty PhotosProperty = DependencyProperty.Register("Photos", typeof(ObservableCollection<Photo>), typeof(LayoutGrid), 
             new PropertyMetadata(new ObservableCollection<Photo>(), OnPhotosChanged));
 
         /// <summary>
-        /// Gets or sets the collection of photos that the layout grid is supposed to display in its Image controls (images static field).
+        /// Gets or sets the collection of photos that the layout grid is displaying.
         /// </summary>
         public ObservableCollection<Photo> Photos
         {
@@ -168,28 +155,28 @@ namespace PhotoLayout.Controls
             if (layoutGrid == null)
             {
                 return;
-            }           
+            }
 
             NotifyCollectionChangedEventHandler handler = (sender, collectionChangedEventArgs) =>
-              {
-                  var action = collectionChangedEventArgs.Action;
-                  Photo photo;
-                  switch (action)
-                  {
-                      case NotifyCollectionChangedAction.Add:
-                          photo = (Photo)collectionChangedEventArgs.NewItems[0];
-                          OnNewPhotoAdded(layoutGrid, photo);
-                          break;
-                      case NotifyCollectionChangedAction.Remove:
-                          photo = (Photo)collectionChangedEventArgs.OldItems[0];
-                          OnPhotoRemoved(layoutGrid, photo);
-                          break;
-                      case NotifyCollectionChangedAction.Move:
-                          // TODO Determine how to resolve Replace function, as there must always be 2 Move operations for swapping/replacing
-                          // Or if Remove, Add and another Remove, Add will be used to swap 2 Photos
-                          break;
-                  }
-              };
+            {
+                var action = collectionChangedEventArgs.Action;
+                Photo photo;
+                switch (action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        photo = (Photo)collectionChangedEventArgs.NewItems[0];
+                        OnNewPhotoAdded(layoutGrid, photo);
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        photo = (Photo)collectionChangedEventArgs.OldItems[0];
+                        OnPhotoRemoved(layoutGrid, photo);
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        // TODO Determine how to resolve Replace function, as there must always be 2 Move operations for swapping/replacing
+                        // Or if Remove, Add and another Remove, Add will be used to swap 2 Photos
+                        break;
+                }
+            };
 
             var oldCollection = e.OldValue as ObservableCollection<Photo>;
             if (oldCollection != null)
@@ -206,9 +193,14 @@ namespace PhotoLayout.Controls
                 newCollection.CollectionChanged += handler;
             }
 
-            BindCellCountToPhotosCount(d, newCollection);
+            BindCellCountToPhotosCount(layoutGrid, newCollection);
         }
 
+        /// <summary>
+        /// Sets Source for the first available image control on each new photo that's been added.
+        /// </summary>
+        /// <param name="layoutGrid">Layout grid whose Photo collection just got a new photo.</param>
+        /// <param name="photo">The photo being added.</param>
         private static void OnNewPhotoAdded(LayoutGrid layoutGrid, Photo photo)
         {
             System.Diagnostics.Debug.WriteLine($"PhotoCollectionChanged -> Added {photo}");
@@ -218,23 +210,18 @@ namespace PhotoLayout.Controls
             {
                 if (layoutGrid.images[i].Source == null)
                 {
-                    // Resets image control's scale and translate transforms
-                    layoutGrid.images[i].RenderTransform = new MatrixTransform();
-                    
+                    // Resets image control's scale and translate transforms so it doesn't use the last photo's values
+                    layoutGrid.images[i].RenderTransform = new MatrixTransform();                    
 
                     if (layoutGrid.PhotoType == BitmapType.Thumbnail)
-                    {
-                        // This layout grid is one of many displaying possible layouts that the user can choose from
-                        // and it must not have the option of manipulating individual photos
+                    {                        
                         layoutGrid.images[i].Source = photo.Thumbnail;
-                        foreach (Image img in layoutGrid.images)
-                        {
-                            //img.IsHitTestVisible = false;
-                        }
                     }
                     else
                     {
+                        // Display the Sand clock until the photo is loaded
                         layoutGrid.images[i].Source = new BitmapImage(new Uri(Environment.CurrentDirectory + @"..\..\..\Images\Sand clock.png"));
+
                         // This layout grid is the one the user will be using for manipulating individual photos
                         ThreadPool.QueueUserWorkItem((obj) =>
                         {
@@ -249,16 +236,22 @@ namespace PhotoLayout.Controls
             }
         }
 
+        /// <summary>
+        /// Sets Source to null for the image that previously held the specified photo.
+        /// </summary>
+        /// <param name="layoutGrid">Layout grid from whose Photo collection the photo is removed.</param>
+        /// <param name="photo">The photo being removed.</param>
         private static void OnPhotoRemoved(LayoutGrid layoutGrid, Photo photo)
         {
             System.Diagnostics.Debug.WriteLine($"PhotoCollectionChanged -> Removed {photo}");
 
-            // Go through every image control and set its Source to null if it hosts the photo (either a Thumbnail or a PreviewBitmap version)
+            // Go through every image control and set it hosts the photo (either a Thumbnail or a PreviewBitmap version) sets its Source to null 
             for (int i = 0; i < layoutGrid.images.Count; i++)
             {
                 if (layoutGrid.images[i].Source != null && (layoutGrid.images[i].Source == photo.Thumbnail || layoutGrid.images[i].Source == photo.PreviewBitmap))
                 {
                     RearangeImages(layoutGrid, i);
+                    layoutGrid.images[layoutGrid.images.Count - 1].Source = null; // After rearange the last image is redundant (in most cases it's a duplicate of the next to last)
                     photo.PreviewBitmap = null;
 
                     // Each individual photo can only be displayed once in the grid, so no need for continuation of the for loop -> the one photo has been removed
@@ -267,18 +260,20 @@ namespace PhotoLayout.Controls
             }
         }
 
+        /// <summary>
+        /// Rearanges images by moving every image source 1 image control to the left practically removing 
+        /// the photo on the starting image and making the last 2 image control Sources duplicates.       
+        /// </summary>
+        /// <param name="layoutGrid">Layout grid whose images are being rearanged.</param>
+        /// <param name="photoIndex">Starting index of the image whose Source is changing.</param>
         private static void RearangeImages(LayoutGrid layoutGrid, int photoIndex)
         {
-            if (photoIndex != layoutGrid.images.Count - 1)
-            {
-                layoutGrid.images[photoIndex].RenderTransform = layoutGrid.images[photoIndex + 1].RenderTransform;
-            }
-
             for (int i = photoIndex; i < layoutGrid.images.Count - 1; i++)
             {
+                // Sets render transform of the next image to the current one, because its Source will hold the next image's Source as well
+                layoutGrid.images[i].RenderTransform = layoutGrid.images[i + 1].RenderTransform;
                 layoutGrid.images[i].Source = layoutGrid.images[i + 1].Source;
             }
-            layoutGrid.images[layoutGrid.images.Count - 1].Source = null;
         }
 
         /// <summary>
@@ -286,9 +281,8 @@ namespace PhotoLayout.Controls
         /// </summary>
         /// <param name="d">LayoutGrid for which the binding is done.</param>
         /// <param name="collection">The collection of photos in Photos property.</param>
-        private static void BindCellCountToPhotosCount(DependencyObject d, ObservableCollection<Photo> collection)
+        private static void BindCellCountToPhotosCount(LayoutGrid layoutGrid, ObservableCollection<Photo> collection)
         {
-            LayoutGrid layoutGrid = d as LayoutGrid;
             if (layoutGrid != null)
             {
                 Binding cellCountBinding = new Binding("Count");
@@ -316,11 +310,11 @@ namespace PhotoLayout.Controls
 
         /// <summary>
         /// Coerces the MinPhotoCount property to acceptable value. If the value is below 0 coerces it to 0,
-        /// and if it's above MaxPhotoCount limit is set to MaxPhotoCount.
+        /// and if it's above <see cref="Constants.MaxSelectedPhotos"/> limit is set to that value.
         /// </summary>
         /// <param name="d">LayoutGrid whose property is being coerced.</param>
         /// <param name="baseValue">Specified value for the MinPhotoCount property.</param>
-        /// <returns>Returns 0 if the value is negative, or MaxPhotoCount if it's above that property.</returns>
+        /// <returns>Returns 0 if the value is negative, or <see cref="Constants.MaxSelectedPhotos"/> if it's above that value.</returns>
         private static object OnMinPhotoCountCoerceValue(DependencyObject d, object baseValue)
         {
             LayoutGrid layoutGrid = d as LayoutGrid;
@@ -335,45 +329,139 @@ namespace PhotoLayout.Controls
             {
                 count = 0;
             }
-            else if (count > layoutGrid.MaxPhotoCount)
+            else if (count > Constants.MaxSelectedPhotos)
             {
-                count = layoutGrid.MaxPhotoCount;
+                count = Constants.MaxSelectedPhotos;
             }
             return count;
         }
 
+        #endregion        
+
+        #region - LayoutOrientation -
+
+        public static readonly DependencyProperty LayoutOrientationProperty =
+            DependencyProperty.Register("LayoutOrientation", typeof(LayoutOrientation), typeof(LayoutGrid),
+                new PropertyMetadata(LayoutOrientation.ColumnFirst, null, CoerceLayoutOrientationValue));
+
+        /// <summary>
+        /// Gets or sets orientation of the layout, meaning whether it should populate its rows first or its columns.
+        /// </summary>
+        public LayoutOrientation LayoutOrientation
+        {
+            get { return (LayoutOrientation)GetValue(LayoutOrientationProperty); }
+            set { SetValue(LayoutOrientationProperty, value); }
+        }
+
+        /// <summary>
+        /// Coerces the orientation based on the LayoutMatrix of the layout grid.
+        /// </summary>
+        private static object CoerceLayoutOrientationValue(DependencyObject d, object baseValue)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            if (layoutGrid == null)
+                return null;
+
+            LayoutOrientation orientation = (LayoutOrientation)baseValue;
+
+            if (layoutGrid.LayoutMatrix == Constants.JustColumnsLayout)
+            {
+                // LayoutMatrix is set to JustColumnsLayout so LayoutOrientation must be set to ColumnFirst
+                orientation = LayoutOrientation.ColumnFirst;
+            }
+            else if (layoutGrid.LayoutMatrix == Constants.JustRowsLayout)
+            {
+                // LayoutMatrix is set to JustRowsLayout so LayoutOrientation must be set to RowFirst
+                orientation = LayoutOrientation.RowFirst;
+            }
+            return orientation;
+        }
+
         #endregion
-            
+
+        #region - LayoutMatrix -
+
+        public static readonly DependencyProperty LayoutMatrixProperty =
+            DependencyProperty.Register("LayoutMatrix", typeof(byte[]), typeof(LayoutGrid), new PropertyMetadata(Constants.ThreeByThreeLayout, OnLayoutMatrixChanged));
+
+        /// <summary>
+        /// Gets or sets a byte array representing the layout as rows and columns.
+        /// </summary>
+        public byte[] LayoutMatrix
+        {
+            get { return (byte[])GetValue(LayoutMatrixProperty); }
+            set { SetValue(LayoutMatrixProperty, value); }
+        }
+
+        /// <summary>
+        /// Changes LayoutOrientation if certain combination of LayoutMatrix and LayoutOrientation values are met.
+        /// </summary>
+        private static void OnLayoutMatrixChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            LayoutGrid layoutGrid = d as LayoutGrid;
+            if (layoutGrid == null)
+                return;
+
+            if ((byte[])e.NewValue == Constants.JustColumnsLayout && layoutGrid.LayoutOrientation == LayoutOrientation.RowFirst)
+            {
+                // LayoutMatrix is set to JustColumnsLayout and infers just a columns layout, so LayoutOrientation must be changed to ColumnFirst
+                layoutGrid.LayoutOrientation = LayoutOrientation.ColumnFirst;
+            }
+            else if ((byte[])e.NewValue == Constants.JustRowsLayout && layoutGrid.LayoutOrientation == LayoutOrientation.ColumnFirst)
+            {
+                // LayoutMatrix is set to JustRowssLayout and infers just a rows layout, so LayoutOrientation must be changed to RowFirst
+                layoutGrid.LayoutOrientation = LayoutOrientation.RowFirst;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
         /****************************************************************************************************************
                                                 LayoutGrid's Layout Creator
-        *****************************************************************************************************************/    
+        *****************************************************************************************************************/
         #region - CellCount private dependency property -
 
+        /// <summary>
+        /// A dependency property representing the number of cells in the layout grid, that is, the number of photos currently displayed in the grid.
+        /// </summary>
         private static readonly DependencyProperty CellCountProperty =
             DependencyProperty.Register("CellCount", typeof(int), typeof(LayoutGrid), new PropertyMetadata(0, OnCellCountChanged));
 
+        /// <summary>
+        /// Call update to layout depending on whether the cell count increased or decreased.
+        /// </summary>
         private static void OnCellCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             LayoutGrid layoutGrid = d as LayoutGrid;
             if (layoutGrid != null)
             {
                 if ((int)e.NewValue > (int)e.OldValue)
-                {                    
+                {
+                    // Cell count increased, meaning some photo was added
                     UpdateLayout(layoutGrid, LayoutAction.Addition);
                 }
                 else
                 {
+                    // Cell count decreased, meaning some photo was removed
                     UpdateLayout(layoutGrid, LayoutAction.Removal);
                 }
             }
         }
 
+        /// <summary>
+        /// Updates layout grid by specified action. Either by adding new rows/columns for the new photo or removing them.
+        /// </summary>
+        /// <param name="layoutGrid">LayoutGrid whose layout is updated.</param>
+        /// <param name="action">Action with which to update the layout.</param>
         private static void UpdateLayout(LayoutGrid layoutGrid, LayoutAction action)
         {
             int cellCount = layoutGrid.CellCount;
             byte rowCount = layoutGrid.LayoutMatrix[0];
             byte columnCount = layoutGrid.LayoutMatrix[1];
 
+            // Depending on the layout orientation, whether new columns are added first or new rows, different methods are called
             if (layoutGrid.LayoutOrientation == LayoutOrientation.ColumnFirst)
             {
                 UpdateLayoutColumnFirst(rowCount, columnCount, cellCount, layoutGrid, action);
@@ -384,114 +472,229 @@ namespace PhotoLayout.Controls
             }
         }
 
+        /// <summary>
+        /// Updates layout grid's layout, by columns, based on the action - either with addition of a new column or with the removal of the last one.
+        /// </summary>
+        /// <param name="rowCount">Max row count of the final layout.</param>
+        /// <param name="columnCount">Max column count of the final layout.</param>
+        /// <param name="cellCount">Number of cells - photos currently in the grid.</param>
+        /// <param name="layoutGrid">Layout grid whose layout is updating.</param>
+        /// <param name="action">Action which is done upon a layout.</param>
         private static void UpdateLayoutColumnFirst(byte rowCount, byte columnCount, int cellCount, LayoutGrid layoutGrid, LayoutAction action)
         {
-            int row = (cellCount - 1) / columnCount;
-            int col = (cellCount - 1) % columnCount;
+            int row = (cellCount - 1) / columnCount; // Find which row needs a column added/removed
+            int col = (cellCount - 1) % columnCount; // Find index of the next column in the above row
 
-            if (action == LayoutAction.Removal && (cellCount % columnCount == 0))
+            if (action == LayoutAction.Addition)
             {
-                row = cellCount / columnCount;
-                ManipulationBorder removedBorder = (ManipulationBorder)((layoutGrid.Children[row] as Grid).Children[0]);
-                (layoutGrid.Children[row] as Grid).Children.RemoveAt(0);
-                layoutGrid.borders.Insert(0, removedBorder);
-
-                // Remove last child (sub-grid)
-                layoutGrid.Children.Remove(layoutGrid.Children[row] as Grid);
-
-                // Remove the last row
-                layoutGrid.RowDefinitions.RemoveAt(row);
-
-                return;
+                AddColumnFirst(row, col, layoutGrid);
             }
-
-            if (action == LayoutAction.Removal)
+            else
             {
-                ManipulationBorder removedBorder = (ManipulationBorder)((layoutGrid.Children[row] as Grid).Children[(layoutGrid.Children[row] as Grid).ColumnDefinitions.Count - 1]);
-                (layoutGrid.Children[row] as Grid).Children.RemoveAt((layoutGrid.Children[row] as Grid).ColumnDefinitions.Count - 1);
-                (layoutGrid.Children[row] as Grid).ColumnDefinitions.RemoveAt((layoutGrid.Children[row] as Grid).ColumnDefinitions.Count - 1);
-                layoutGrid.borders.Insert(0, removedBorder);
-
-                return;
+                RemoveColumnFirst(columnCount, cellCount, row, layoutGrid);
             }
+        }
 
+        /// <summary>
+        /// Adds a new column to the specified layout grid. If the new column is at first position 
+        /// adds a new row first and a sub grid, which will hold the new column.
+        /// </summary>
+        /// <param name="row">Row in which the column will reside.</param>
+        /// <param name="col">Index of the new column.</param>
+        /// <param name="layoutGrid">Layout grid that is getting a new column.</param>
+        private static void AddColumnFirst(int row, int col, LayoutGrid layoutGrid)
+        {
+            Grid subGrid;
+
+            // Check if a new row should be added (column with index 0 is next)
             if (col == 0)
             {
                 // Add new row to the layout grid
-                layoutGrid.RowDefinitions.Add(new RowDefinition());                
+                layoutGrid.RowDefinitions.Add(new RowDefinition());
 
                 // Add sub grid to the layout grid and set its row to the current row
-                Grid subGrid = new Grid();
+                subGrid = new Grid();
                 Grid.SetRow(subGrid, row);
                 layoutGrid.Children.Add(subGrid);
             }
+            else
+            {
+                // Sub grid was already created and added to the layout grid's children
+                subGrid = layoutGrid.Children[row] as Grid;
+            }
 
             // Add new column to the sub grid
-            (layoutGrid.Children[row] as Grid).ColumnDefinitions.Add(new ColumnDefinition());
+            subGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-            // Remove first manipulation border from the layout grid and set it to the sub grid (the border cannot be a logical child of 2 panels)
+            // Remove first manipulation border from the layout grid and add it to the sub grid (the border cannot be a logical child of 2 panels)
             ManipulationBorder border = layoutGrid.borders[0];
             layoutGrid.borders.RemoveAt(0);
-            (layoutGrid.Children[row] as Grid).Children.Add(border);
+            subGrid.Children.Add(border);
 
             // Set column for the manipulation border
             Grid.SetColumn(border, col);
         }
 
+        /// <summary>
+        /// Removes the last column from the specified layout grid. If the column is at first position
+        /// removes the whole row with its sub grid.
+        /// </summary>
+        /// <param name="columnCount">Max column count of the final layout.</param>
+        /// <param name="cellCount">Number of cells - photos currently in the grid.</param>
+        /// <param name="row">Row in which the column resides.</param>
+        /// <param name="layoutGrid">Layout grid from which a column is removed.</param>
+        private static void RemoveColumnFirst(byte columnCount, int cellCount, int row, LayoutGrid layoutGrid)
+        {
+            Grid subGrid;
+            ManipulationBorder border;
+
+            // Check if with the last column addition a new row was also added (with a new sub grid)
+            if (cellCount % columnCount == 0)
+            {
+                // Row that was added in the last column addition           
+                row = cellCount / columnCount;
+                // Sub grid that was added to the above row in the last column addition
+                subGrid = layoutGrid.Children[row] as Grid;
+
+                // Remove sub grid's only child, which is a manipulation border, and give it back to the layout grid borders (insert at first position)
+                border = (ManipulationBorder)(subGrid.Children[0]);
+                subGrid.Children.RemoveAt(0);
+                layoutGrid.borders.Insert(0, border);
+
+                // Remove sub grid from layout grid (along with its column)
+                layoutGrid.Children.Remove(subGrid);
+
+                // Remove last row
+                layoutGrid.RowDefinitions.RemoveAt(row);
+            }
+            else // Entire row doesn't need to be removed, just its last column
+            {
+                // Sub grid of the layout grid which holds a column that needs to be removed
+                subGrid = layoutGrid.Children[row] as Grid;
+
+                // Remove sub grid's last child, which is a manipulation border, and give it back to the layout grid borders (insert at first position)
+                border = (ManipulationBorder)(subGrid.Children[subGrid.ColumnDefinitions.Count - 1]);
+                subGrid.Children.RemoveAt(subGrid.ColumnDefinitions.Count - 1);
+                layoutGrid.borders.Insert(0, border);
+
+                // Remove the last column from the sub grid
+                subGrid.ColumnDefinitions.RemoveAt(subGrid.ColumnDefinitions.Count - 1);
+            }
+        }
+
+        /// <summary>
+        /// Updates layout grid's layout, by rows, based on the action - either with addition of a new row or with the removal of the last one.
+        /// </summary>
+        /// <param name="rowCount">Max rows count of the final layout.</param>
+        /// <param name="columnCount">Max column count of the final layout.</param>
+        /// <param name="cellCount">Number of cells - photos currently in the grid.</param>
+        /// <param name="layoutGrid">Layout grid whose layout is updating.</param>
+        /// <param name="action">Action which is done upon a layout.</param>
         private static void UpdateLayoutRowFirst(byte rowCount, byte columnCount, int cellCount, LayoutGrid layoutGrid, LayoutAction action)
         {
             int col = (cellCount - 1) / rowCount;
             int row = (cellCount - 1) % rowCount;
 
-            if (action == LayoutAction.Removal && (cellCount % rowCount == 0))
+            if (action == LayoutAction.Addition)
             {
-                col = cellCount / rowCount;
-                ManipulationBorder removedBorder = (ManipulationBorder)((layoutGrid.Children[col] as Grid).Children[0]);
-                (layoutGrid.Children[col] as Grid).Children.RemoveAt(0);
-                layoutGrid.borders.Insert(0, removedBorder);
-
-                // Remove last child (sub-grid)
-                layoutGrid.Children.Remove(layoutGrid.Children[col] as Grid);
-
-                // Remove the last column
-                layoutGrid.ColumnDefinitions.RemoveAt(col);
-
-                return;
+                AddRowFirst(row, col, layoutGrid);
             }
-
-            if (action == LayoutAction.Removal)
+            else
             {
-                ManipulationBorder removedBorder = (ManipulationBorder)((layoutGrid.Children[col] as Grid).Children[(layoutGrid.Children[col] as Grid).RowDefinitions.Count - 1]);
-                (layoutGrid.Children[col] as Grid).Children.RemoveAt((layoutGrid.Children[col] as Grid).RowDefinitions.Count - 1);
-                (layoutGrid.Children[col] as Grid).RowDefinitions.RemoveAt((layoutGrid.Children[col] as Grid).RowDefinitions.Count - 1);
-                layoutGrid.borders.Insert(0, removedBorder);
 
-                return;
             }
+        }
 
+        /// <summary>
+        /// Adds a new row to the specified layout grid. If the new row is at first position
+        /// adds a new column first and a sub grid, which will hold the new row.
+        /// </summary>
+        /// <param name="row">Index of the new row.</param>
+        /// <param name="col">Column in which the row will reside.</param>
+        /// <param name="layoutGrid">Layout grid that is getting a new row.</param>
+        private static void AddRowFirst(int row, int col, LayoutGrid layoutGrid)
+        {
+            Grid subGrid;
+
+            // Check if a new column should be added (row with index 0 is next)
             if (row == 0)
             {
                 // Add new column to the layout grid
                 layoutGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
                 // Add sub grid to the layout grid and set its column to the current column
-                Grid subGrid = new Grid();
+                subGrid = new Grid();
                 Grid.SetColumn(subGrid, col);
                 layoutGrid.Children.Add(subGrid);
             }
+            else
+            {
+                // Sub grid was already created and added to the layout grid's children
+                subGrid = layoutGrid.Children[col] as Grid;
+            }
 
             // Add new row to the sub grid
-            (layoutGrid.Children[col] as Grid).RowDefinitions.Add(new RowDefinition());            
+            subGrid.RowDefinitions.Add(new RowDefinition());
 
-            // Remove first manipulation border from the layotu grid and set it to the sub grid (the border cannot be a logical child of 2 panles)
+            // Remove first manipulation border from the layotu grid and add it to the sub grid (the border cannot be a logical child of 2 panles)
             ManipulationBorder border = layoutGrid.borders[0];
             layoutGrid.borders.RemoveAt(0);
-            (layoutGrid.Children[col] as Grid).Children.Add(border);
+            subGrid.Children.Add(border);
 
             // Set row for the manipulation border
             Grid.SetRow(border, row);
         }
 
+        /// <summary>
+        /// Removes the last row from the specified layout grid. If the row is at first position
+        /// removes the whole column with its sub grid.
+        /// </summary>
+        /// <param name="rowCount">Max row count of the final layout.</param>
+        /// <param name="cellCount">Number of cells - photos currently in the grid.</param>
+        /// <param name="col">Column in which the row resides.</param>
+        /// <param name="layoutGrid">Layout grid from which a row is removed.</param>
+        private static void RemoveRowFirst(byte rowCount, int cellCount, int col, LayoutGrid layoutGrid)
+        {
+            Grid subGrid;
+            ManipulationBorder border;
+
+            // Check if with the last row addition a new column was also added (with a new sub grid)
+            if (cellCount % rowCount == 0)
+            {
+                // Column that was added in the last row addition
+                col = cellCount / rowCount;
+                // Sub grid that was added to the above column in the last row addition
+                subGrid = layoutGrid.Children[col] as Grid;
+
+                // Remove sub grid's only child, which is a manipulation border, and give it back to the layout grid borders (insert at first position)
+                border = (ManipulationBorder)(subGrid.Children[0]);
+                subGrid.Children.RemoveAt(0);
+                layoutGrid.borders.Insert(0, border);
+
+                // Remove sub grid from layout grid (along with its row)
+                layoutGrid.Children.Remove(subGrid);
+
+                // Remove the last column
+                layoutGrid.ColumnDefinitions.RemoveAt(col);
+            }
+            else // Entire column doesn't need to be removed, just its last row
+            {
+                // Sub grid of the layout grid which holds a row that needs to be removed
+                subGrid = layoutGrid.Children[col] as Grid;
+
+                // Remove sub grid's last child, which is a manipulation border, and give it back to the layout grid borderds (insert at first position)
+                border = (ManipulationBorder)(subGrid.Children[subGrid.RowDefinitions.Count - 1]);
+                subGrid.Children.RemoveAt(subGrid.RowDefinitions.Count - 1);
+                layoutGrid.borders.Insert(0, border);
+
+                // Remove the last row from the sub grid
+                subGrid.RowDefinitions.RemoveAt(subGrid.RowDefinitions.Count - 1);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the count of cells in the layout grid, i.e. the number of photos.
+        /// </summary>
         private int CellCount
         {
             get { return (int)GetValue(CellCountProperty); }
@@ -500,91 +703,16 @@ namespace PhotoLayout.Controls
 
         #endregion
 
-        #region - LayoutOrientation -
-
-        public static readonly DependencyProperty LayoutOrientationProperty =
-            DependencyProperty.Register("LayoutOrientation", typeof(LayoutOrientation), typeof(LayoutGrid),
-                new PropertyMetadata(LayoutOrientation.ColumnFirst, null, CoerceLayoutOrientationValue));
-
-        private static object CoerceLayoutOrientationValue(DependencyObject d, object baseValue)
-        {
-            LayoutGrid layoutGrid = d as LayoutGrid;
-            if (layoutGrid == null)
-                return null;
-
-            LayoutOrientation orientation = (LayoutOrientation)baseValue;
-
-            if (layoutGrid.LayoutMatrix == Constants.JustRowsLayout)
-            {
-                orientation = LayoutOrientation.RowFirst;
-            }            
-            else if (layoutGrid.LayoutMatrix == Constants.JustColumnsLayout)
-            {
-                orientation = LayoutOrientation.ColumnFirst;
-            }
-            return orientation;
-        }
-
-        public LayoutOrientation LayoutOrientation
-        {
-            get { return (LayoutOrientation)GetValue(LayoutOrientationProperty); }
-            set { SetValue(LayoutOrientationProperty, value); }
-        }
-
-        #endregion
-
-        #region - LayoutMatrix -
-
-        public static readonly DependencyProperty LayoutMatrixProperty =
-            DependencyProperty.Register("LayoutMatrix", typeof(byte[]), typeof(LayoutGrid), new PropertyMetadata(Constants.ThreeByThreeLayout, OnLayoutMatrixChanged));
-
-        private static void OnLayoutMatrixChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            LayoutGrid layoutGrid = d as LayoutGrid;
-            if (layoutGrid == null)
-                return;
-
-            if ((byte[])e.NewValue == Constants.JustColumnsLayout && layoutGrid.LayoutOrientation == LayoutOrientation.RowFirst)
-            {
-                layoutGrid.LayoutOrientation = LayoutOrientation.ColumnFirst;
-            }
-            else if((byte[])e.NewValue==Constants.JustRowsLayout && layoutGrid.LayoutOrientation == LayoutOrientation.ColumnFirst)
-            {
-                layoutGrid.LayoutOrientation = LayoutOrientation.RowFirst;
-            }
-        }
-
-        public byte[] LayoutMatrix
-        {
-            get { return (byte[])GetValue(LayoutMatrixProperty); }
-            set { SetValue(LayoutMatrixProperty, value); }
-        }
-
-        #endregion
-
-        #endregion
-
         #region - Properties -
 
 
-        #endregion
-
-        #region - Overriden methods: MeasureOverride and ArrangeOverride -
-
-        protected override Size MeasureOverride(Size constraint)
-        {
-            return base.MeasureOverride(constraint);
-        }
-
-        protected override Size ArrangeOverride(Size arrangeSize)
-        {
-            return base.ArrangeOverride(arrangeSize);
-        }
-
-        #endregion
+        #endregion        
 
         #region - Private methods -
 
+        /// <summary>
+        /// Creates a number of image controls (precisely Constants.MaxSelectedPhotos count).
+        /// </summary>
         private void CreateImages()
         {
             this.images = new List<Image>();
@@ -598,6 +726,10 @@ namespace PhotoLayout.Controls
             }
         }
 
+        /// <summary>
+        /// Creates a number of manipulation borders (precisely Constants.MaxSelectedPhotos count) 
+        /// and places an image in each border as its child.
+        /// </summary>
         private void CreateManipulationBorders()
         {
             this.borders = new List<ManipulationBorder>();

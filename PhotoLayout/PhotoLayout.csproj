@@ -64,6 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\ManipulationBorder.cs" />
+    <Compile Include="Controls\VirtualizingWrapPanel.cs" />
     <Compile Include="Converters\CheckedToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
@@ -77,7 +78,6 @@
     <Compile Include="Models\Photo.cs" />
     <Compile Include="ViewModels\BindableBase.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PhotoManipulationViewModel.cs" />
     <Compile Include="ViewModels\SelectionViewModel.cs" />
     <Compile Include="Controls\LayoutGrid.cs" />
@@ -143,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Typography.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

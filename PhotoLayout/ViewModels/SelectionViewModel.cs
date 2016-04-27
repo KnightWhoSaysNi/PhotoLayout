@@ -8,22 +8,32 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace PhotoLayout.ViewModels
 {
+    /* TODO
+    Work in conjunction with VirtualizingWrapPanel and its UI and  Data virtualization. 
+    Folder A loads 100 photos, then folders B and C load 150 photos each. Lets say that the limit is set to 300 photos to be held in memory.
+    When folder D tries to load its photos the ViewModel should go through the photosByFolders dictionary and empty the amount of photos that
+    D has or if it's above the max VirtualizingWrapPanel's value set it to that max value; or if D only wants to load 50photos, then only A needs to be cleared.
+    If D wants to load 200 photos, both A and B need to release memory -> photo.Thumbnail (and maybe other bitmap types) need to be set to null
+    and GC.Collect needs to be called before D actually starts loading its photos.
+    */
     public class SelectionViewModel : BindableBase
     {
         #region - Fields -
 
         private Folder currentFolder;
         /// <summary>
-        /// A collection of folders, each of which contains a list of photos
+        /// A collection of folders, each of which contains a list of photos.
         /// </summary>
         private Dictionary<Folder, List<Photo>> photoDictionary;
-        private IList<string> photoExtensions;
+        /// <summary>
+        /// Number of photos by folders. Used in data virtualization.
+        /// </summary>
+        private Dictionary<Folder, int> photosByFolders;        
 
         private BackgroundWorker refreshWorker;
         private BackgroundWorker photoCollectionWorker;
@@ -39,7 +49,7 @@ namespace PhotoLayout.ViewModels
         {   
             InitializeFields();
             InitializeWorkers();
-            InitializeCommands();                  
+            InitializeCommands();
         }
 
         #endregion
@@ -50,7 +60,7 @@ namespace PhotoLayout.ViewModels
 
         public ICommand OpenFolder { get; set; } // Command for opening the folder
         public ICommand PreviousFolder { get; set; } // Command for going up the folder hierarchy tree
-        public ICommand PhotoCollect { get; set; } // Command for collecting photos from a fiel source
+        public ICommand PhotoCollect { get; set; } // Command for collecting photos from a file source
 
         #endregion
 
@@ -67,7 +77,7 @@ namespace PhotoLayout.ViewModels
         /// <summary>
         /// Gets or sets a collection of selected photos.
         /// </summary>
-        public ObservableCollection<object> SelectedPhotos { get; set; }
+        public ObservableCollection<Photo> SelectedPhotos { get; set; }
 
         /// <summary>
         /// Gets or sets the currently selected folder.
@@ -97,28 +107,27 @@ namespace PhotoLayout.ViewModels
         /// </summary>
         private void InitializeFields()
         {
-            // TODO Check which extensions can be used and mayhaps put them somewhere else
-            this.photoExtensions = new List<string>() { ".jpg", ".jpeg", ".png", ".bmp", ".tiff" };
             this.photoDictionary = new Dictionary<Folder, List<Photo>>();
-                        
+            this.photosByFolders = new Dictionary<Folder, int>();        
+
             Folders = new ObservableCollection<Folder>();
             Photos = new ObservableCollection<Photo>();
-            SelectedPhotos = new ObservableCollection<object>();
+            SelectedPhotos = new ObservableCollection<Photo>();
         }
 
         /// <summary>
-        /// Initializes background workers for collecting new and refreshing current folders nad photos.
+        /// Initializes background workers for collecting new and refreshing current folders and photos.
         /// </summary>
         private void InitializeWorkers()
         {
             photoCollectionWorker = new BackgroundWorker();
-            photoCollectionWorker.WorkerSupportsCancellation = true; // TODO Write cancellation logic
+            photoCollectionWorker.WorkerSupportsCancellation = true; 
             photoCollectionWorker.DoWork += PhotoCollectionWorkerDoWork;
             photoCollectionWorker.RunWorkerCompleted += RunPhotoCollectionWorkerCompleted;
 
             refreshWorker = new BackgroundWorker();
             refreshWorker.WorkerReportsProgress = true;
-            refreshWorker.WorkerSupportsCancellation = true; // TODO Write cancellation logic
+            refreshWorker.WorkerSupportsCancellation = true;
             refreshWorker.DoWork += RefreshWorkerDoWork;
             refreshWorker.ProgressChanged += OnRefreshWorkerProgressChanged;
         }
@@ -148,7 +157,7 @@ namespace PhotoLayout.ViewModels
             {
                 if (this.refreshWorker.IsBusy)
                 {
-                    // Refresher worker is already working on something, so cancel the work as this method being called for the second time
+                    // Refresher worker is already working on something, so cancel the work as this method is being called for the second time
                     this.refreshWorker.CancelAsync();
                 }
 
@@ -176,6 +185,10 @@ namespace PhotoLayout.ViewModels
             RefreshCurrentFolder();            
         }
         
+        /// <summary>
+        /// Checks if CurrentFolder has a parent folder.
+        /// </summary>
+        /// <returns>True if CurrentFolder has a parent folder, false otherwise.</returns>
         private bool HasPreviousFolder()
         {
             bool hasPreviousFolder =  CurrentFolder?.Parent != null;
@@ -187,7 +200,7 @@ namespace PhotoLayout.ViewModels
         #region - PhotoCollect Command -        
 
         /// <summary>
-        /// Stops working workers and calls poto collection worker to collect photos from the specified file source.
+        /// Stops busy workers and calls poto collection worker to collect photos from the specified file source.
         /// </summary>
         /// <param name="parameter">Files source from which to get photos.</param>
         private void OnPhotoCollect(object parameter)
@@ -206,8 +219,7 @@ namespace PhotoLayout.ViewModels
             }
 
             // TODO Initial collecting from a file source -> Some animation should be enabled
-            this.photoCollectionWorker.RunWorkerAsync(parameter); // Calls PhotoCollectionWorkerDoWork
-            // TODO Stop loading/photo collecting animation at this point   
+            this.photoCollectionWorker.RunWorkerAsync(parameter); // PhotoCollectionWorkerDoWork
         }
 
         /// <summary>
@@ -253,7 +265,6 @@ namespace PhotoLayout.ViewModels
         private void RunPhotoCollectionWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             RefreshCurrentFolder();
-            // TODO Stop animation ^
         }
 
         private bool CanPhotoCollect(object parameter)
@@ -279,12 +290,12 @@ namespace PhotoLayout.ViewModels
             #region "TEST CODE"
 
             // All drives will be shown and have this folder as root (parent)        
-            Folder virtualRoot = new Folder("Root folder", null, photoExtensions);
+            Folder virtualRoot = new Folder("Root folder", null, Constants.PhotoExtensions);
 
             // Each drive is represented as a folder and added to virtualRoot, which represents the CurrentFolder
             foreach (DriveInfo drive in localDrives)
             {                
-                Folder driveAsFolder = new Folder(drive.Name, virtualRoot, photoExtensions);
+                Folder driveAsFolder = new Folder(drive.Name, virtualRoot, Constants.PhotoExtensions);
                 virtualRoot.SubFolders.Add(driveAsFolder);
             }
             CurrentFolder = virtualRoot;
@@ -297,8 +308,8 @@ namespace PhotoLayout.ViewModels
             //{
             //    if (drive.DriveType == DriveType.Removable)
             //    {
-            //        // In Easy2U there can be only 1 usb device in the machine
-            //        Folder usb = new Folder(drive.Name, null, photoExtensions);
+            //        // There can be only 1 usb device in the machine
+            //        Folder usb = new Folder(drive.Name, null, Constants.PhotoExtensions);
             //        CurrentFolder = usb;
 
             //        return;
@@ -319,9 +330,7 @@ namespace PhotoLayout.ViewModels
         {
             // TODO Create 'Recent Photos' folder somewhere, where saved photos will reside            
             string recentFolderPath = @"../Recent Photos/";
-
-            // TODO Refactor this so it works
-            Folder recentFolder = new Folder(recentFolderPath, null, photoExtensions);
+            Folder recentFolder = new Folder(recentFolderPath, null, Constants.PhotoExtensions);
             CurrentFolder = recentFolder;
         }
 
@@ -340,7 +349,7 @@ namespace PhotoLayout.ViewModels
                 System.Windows.Forms.Application.DoEvents();
             }
 
-            this.refreshWorker.RunWorkerAsync(); // Calling RefreshWorkerDoWork
+            this.refreshWorker.RunWorkerAsync(); // RefreshWorkerDoWork
         }
 
         /// <summary>
@@ -357,6 +366,7 @@ namespace PhotoLayout.ViewModels
         /// </summary>
         private void UpdateFolders(DoWorkEventArgs e)
         {
+            // First clear the current folders
             System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Folders.Clear()), DispatcherPriority.Background);
 
             foreach (Folder folder in CurrentFolder.SubFolders)
@@ -375,11 +385,13 @@ namespace PhotoLayout.ViewModels
         /// </summary>
         private void UpdatePhotos(DoWorkEventArgs e)
         {
+            // First clear the current photos
             System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Photos.Clear()), DispatcherPriority.Background);
-
+            
+            // Check if the folder was created/loaded before
             if (!this.photoDictionary.ContainsKey(CurrentFolder))
             {
-                // First time initialization of the CurrentFolder's Photos OR the dictionary has removed some key-value pairs and needs reinitialization
+                // This is the first time initialization of the CurrentFolder's Photos OR the dictionary has removed some key-value pairs and needs reinitialization
                 this.photoDictionary[CurrentFolder] = new List<Photo>();
             }
 
@@ -416,7 +428,7 @@ namespace PhotoLayout.ViewModels
             if (photo != null && photo.Thumbnail != null)
             {
                 System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => Photos.Add(photo)), DispatcherPriority.Background);
-                //Photos.Add(photo); // Weird stuff happens with this
+                //Photos.Add(photo); // Weird stuff happens with this even though ProgressChanged works in UI thread
             }
         }
 

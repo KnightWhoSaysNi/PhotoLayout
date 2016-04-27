@@ -8,6 +8,8 @@ namespace PhotoLayout.Helpers
 {
     public static class Constants
     {
+        public static readonly string[] PhotoExtensions = { ".jpg", ".jpeg", ".png", ".bmp", ".tiff" };    
+
         // Number of photos that can be selected from the collection and added to the LayoutGrid   
         // ***** If this value changes the Layout matrices below also need to be updated *******
         public const int MaxSelectedPhotos = 8;
@@ -32,7 +34,14 @@ namespace PhotoLayout.Helpers
         /// </summary>
         public static readonly byte[] FiveByTwoLayout = new byte[] { 5, 2 };
 
+        /// <summary>
+        /// Represents a layout that can have 4 rows and 3 columns (max 12 photos).
+        /// </summary>
         public static readonly byte[] FourByThreeLayout = new byte[] { 4, 3 };
+
+        /// <summary>
+        /// Represents a layotu that can have 3 rows and 4 columns (max 12 photos).
+        /// </summary>
         public static readonly byte[] ThreeByFourLayout = new byte[] { 3, 4 };
 
     }

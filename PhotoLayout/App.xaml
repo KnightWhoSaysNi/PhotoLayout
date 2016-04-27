@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="/PhotoLayout;component/Themes/ButtonBase/RadioButtonStyles.xaml" />
                 <ResourceDictionary Source="/PhotoLayout;component/Themes/ButtonBase/ToggleButtonStyles.xaml" />
                 <ResourceDictionary Source="/PhotoLayout;component/Themes/EllipseStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/Typography.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
