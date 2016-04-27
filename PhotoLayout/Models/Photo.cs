@@ -26,9 +26,9 @@ namespace PhotoLayout.Models
         #endregion
 
         #region - Constructors -
-        
-        // On Save a name is given (extension as well, most likely) and an image is saved to temp folder with a specific uri.
-        // Part of that uri is specified here, with the name and extension
+
+        // TODO On "Save" a name is given (extension as well, most likely if the user can choose what he wants it to be) 
+        // and an image file is saved to temp folder with a specific uri. Part of that uri is specified here, with the name and extension
         /// <summary>
         /// Creates a photo object; a representation of an image/photograph.
         /// </summary>
@@ -152,7 +152,6 @@ namespace PhotoLayout.Models
             return this.Name;
         }
 
-        // TODO Remove this and refactor properties if VirtualizingWrapPanel doesn't need to use this method
         /// <summary>
         /// Refreshes the photo's bitmap source of the specified type. Used when bitmap source is needed, but the current value is null.
         /// </summary>
@@ -196,8 +195,7 @@ namespace PhotoLayout.Models
                 }                
                 source.UriSource = PhotoUri;
                 source.EndInit();
-                source.Freeze();
-                     
+                source.Freeze();                     
                     
                 return source;
             }
@@ -226,7 +224,7 @@ namespace PhotoLayout.Models
         }
 
         /// <summary>
-        /// Sets uri for the photo. Used only for the newly created photo.
+        /// Sets uri for the photo. Used only for the newly created photos.
         /// </summary>
         private void SetPhotoUri()
         {

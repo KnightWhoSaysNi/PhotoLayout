@@ -13,16 +13,16 @@ using System.Windows.Media;
 namespace PhotoLayout.Converters
 {
     /// <summary>
-    /// Int to specified color converter. Below a certain value the parameter color is returned.
+    /// Int to specified color converter.
     /// </summary>
     public class IntToColorConverter : IValueConverter
     {
         /// <summary>
         /// Converts the given integer value to a certain color.
         /// </summary>
-        /// <param name="value">Int getting compared to MaxSelectedPhotos value.</param>
-        /// <param name="parameter">Color you wish to return if the value is below MaxSelectedPhotos.</param>
-        /// <returns>Returns parameter specified color, or Red.</returns>
+        /// <param name="value">Int getting compared to <see cref="Constants.MaxSelectedPhotos"/> value.</param>
+        /// <param name="parameter">Color you wish to return if the value is below <see cref="Constants.MaxSelectedPhotos"/>.</param>
+        /// <returns>Returns parameter specified color, or the default Red.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int count = (int)value;
@@ -34,7 +34,6 @@ namespace PhotoLayout.Converters
             }
             else
             {
-                // Default value returned
                 return Brushes.Red;
             }
         }

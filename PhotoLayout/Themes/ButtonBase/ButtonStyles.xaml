@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/PhotoLayout;component/Themes/Brushes.xaml" />
+        <ResourceDictionary Source="/PhotoLayout;component/Themes/Typography.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
     <!-- Button with transparent background and border -->
@@ -9,7 +10,7 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -25,6 +26,9 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Foreground" Value="{StaticResource Accent}" />                            
                         </Trigger>
+                        <!--<Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource ForegroundDisabled}" />
+                        </Trigger>-->
                     </ControlTemplate.Triggers>                    
                 </ControlTemplate>
             </Setter.Value>

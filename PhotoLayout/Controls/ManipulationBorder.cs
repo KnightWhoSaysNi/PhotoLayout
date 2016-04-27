@@ -11,6 +11,7 @@ using System.Windows.Input;
 namespace PhotoLayout.Controls
 {
     // Core code from: http://www.codeproject.com/Articles/168176/Zooming-and-panning-in-WPF-with-fixed-focus
+    // TODO Make child confined inside the border, i.e. not let any part of the border be empty in any moment.
     public class ManipulationBorder : Border
     {
         #region - Fields -
@@ -61,16 +62,6 @@ namespace PhotoLayout.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
-            //Size newSize;
-            //if (constraint.Width > constraint.Height)
-            //{
-            //    newSize = new Size(constraint.Width, constraint.Width);
-            //}
-            //else
-            //{
-            //    newSize = new Size(constraint.Height, constraint.Height);
-            //}
-            //return base.MeasureOverride(newSize);
             return base.MeasureOverride(constraint);
         }
 
@@ -83,7 +74,9 @@ namespace PhotoLayout.Controls
 
         #region - Private methods - 
 
-
+        /// <summary>
+        /// Initializes manipulations of the child element. Zoom and panning manipulations.
+        /// </summary>
         private void InitializeManipulations()
         {
             MouseWheel += ManipulationBorder_MouseWheel;
@@ -92,10 +85,14 @@ namespace PhotoLayout.Controls
             MouseMove += ManipulationBorder_MouseMove;
         }
 
+        /// <summary>
+        /// Resolves zooming in or out of the child element -> Scales its in X and Y coordinates.
+        /// </summary>
         private void ManipulationBorder_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (this.child != null)
             {
+                // TODO Create a real solution to the problem of child going outside of the parent border
                 if (e.Delta < 0 && this.child.RenderTransform.Value.M11 < 1 && this.child.RenderTransform.Value.M22 < 1)
                 {
                     return;
@@ -118,6 +115,9 @@ namespace PhotoLayout.Controls
             }
         }
 
+        /// <summary>
+        /// Captures positions of mouse inside the border and the offset of the child element.
+        /// </summary>        
         private void ManipulationBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (this.IsMouseCaptured)
@@ -134,6 +134,9 @@ namespace PhotoLayout.Controls
             }
         }
 
+        /// <summary>
+        /// Releases mouse capture of the child.
+        /// </summary>        
         private void ManipulationBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (this.child != null)
@@ -142,6 +145,11 @@ namespace PhotoLayout.Controls
             }
         }
 
+        /// <summary>
+        /// Panning/drag manipulation of the child element.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ManipulationBorder_MouseMove(object sender, MouseEventArgs e)
         {
             if (this.child != null)

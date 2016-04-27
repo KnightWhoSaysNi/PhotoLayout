@@ -26,10 +26,7 @@ namespace PhotoLayout.Views
         public PhotoLayoutSelectionView()
         {
             InitializeComponent();
-            SelectedPhotos = new ObservableCollection<Photo>();
         }
-        
-        public ObservableCollection<Photo> SelectedPhotos { get; set; }
 
         /// <summary>
         /// Stops auto scrolling of selected item into view. When selected item is partially visible stops the ListBox from auto scrolling to it.
@@ -39,31 +36,34 @@ namespace PhotoLayout.Views
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Adds selected item (photo) to the SelectedPhotos collection
+        /// </summary>
         private void allPhotosListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListBox listBox = sender as ListBox;
+            // TODO When switching folders automatically select photos that are in the SelectedPhotos collection
+            // TODO DO NOT remove the first selected photo when changing folders
 
-            if (listBox != null)
+            if (allPhotosListBox.SelectedItems.Count > Constants.MaxSelectedPhotos)
             {
-                if (listBox.SelectedItems.Count > Constants.MaxSelectedPhotos)
-                {
-                    // Maximum number of selected photos reached
-                    listBox.SelectedItems.RemoveAt(listBox.SelectedItems.Count - 1);
-                    return;
-                }
+                // Maximum number of selected photos reached
+                allPhotosListBox.SelectedItems.RemoveAt(allPhotosListBox.SelectedItems.Count - 1);
+                return;
+            }
 
-                System.Collections.IList eAdded = e.AddedItems;
-                System.Collections.IList eRemoved = e.RemovedItems;
-                ObservableCollection<Photo> selectedItems = AttachedProperties.GetSelectedPhotos(listBox);
-
-                if (eAdded.Count != 0)
-                {
-                    selectedItems.Add((Photo)eAdded[0]);
-                }
-                else if (eRemoved.Count != 0)
-                {
-                    selectedItems.Remove((Photo)eRemoved[0]);
-                }
+            System.Collections.IList eAdded = e.AddedItems;
+            System.Collections.IList eRemoved = e.RemovedItems;
+            ObservableCollection<Photo> selectedItems = AttachedProperties.GetSelectedPhotos(allPhotosListBox);
+            
+            if (eAdded.Count != 0)
+            {
+                // New photo selected
+                selectedItems.Add((Photo)eAdded[0]);
+            }
+            else if (eRemoved.Count != 0)
+            {
+                // Photo unselected
+                selectedItems.Remove((Photo)eRemoved[0]); // When folders change and SelectionChanged is raised this removes the first photo from the SelectedPhotos
             }
         }
     }

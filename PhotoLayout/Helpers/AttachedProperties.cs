@@ -12,17 +12,18 @@ namespace PhotoLayout.Helpers
 {
     public class AttachedProperties
     {
-
+        // TODO Delete this if it's not being used
         #region - ListBox SelectedPhotos -
 
         /// <summary>
         /// Attached property representing the selected photo items of a list box, as an ObservableCollection.
-        /// </summary>        public static readonly DependencyProperty SelectedPhotosProperty =
-            DependencyProperty.RegisterAttached("SelectedPhotos", 
-                typeof(ObservableCollection<Photo>), 
-                typeof(AttachedProperties), 
-                new PropertyMetadata(null, OnPropertyChanged));
-        private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        /// </summary>        
+        public static readonly DependencyProperty SelectedPhotosProperty =
+             DependencyProperty.RegisterAttached("SelectedPhotos",
+                 typeof(ObservableCollection<Photo>),
+                 typeof(AttachedProperties),
+                 new PropertyMetadata(new ObservableCollection<Photo>()));
+
         /// <summary>
         /// Gets a value of SelectedPhotos for the specified ListBox.
         /// </summary>
@@ -37,14 +38,9 @@ namespace PhotoLayout.Helpers
         /// </summary>
         /// <param name="obj">ListBox whose SelectedPhotos property you're setting.</param>
         /// <param name="value">Collection of items representing the SelectedPhotos.</param>
-        public static void SetSelectedItems(DependencyObject obj, ObservableCollection<Photo> value)
+        public static void SetSelectedPhotos(DependencyObject obj, ObservableCollection<Photo> value)
         {
             obj.SetValue(SelectedPhotosProperty, value);
-        }
-
-        private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-
         }
 
         #endregion
