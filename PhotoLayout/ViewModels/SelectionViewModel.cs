@@ -19,6 +19,9 @@ namespace PhotoLayout.ViewModels
         #region - Fields -
 
         private Folder currentFolder;
+        /// <summary>
+        /// A collection of folders, each of which contains a list of photos
+        /// </summary>
         private Dictionary<Folder, List<Photo>> photoDictionary;
         private IList<string> photoExtensions;
 
@@ -29,6 +32,9 @@ namespace PhotoLayout.ViewModels
 
         #region - Constructors -
 
+        /// <summary>
+        /// Creates a view model responsible for the logic around getting and selecting the photos used in a manipulation view model.
+        /// </summary>
         public SelectionViewModel()
         {   
             InitializeFields();
@@ -44,17 +50,30 @@ namespace PhotoLayout.ViewModels
 
         #region - Commands -
 
-        public ICommand OpenFolder { get; set; }
-        public ICommand PreviousFolder { get; set; }
-        public ICommand PhotoCollect { get; set; }
-        public ICommand TestCancelWorkers { get; set; }
+        public ICommand OpenFolder { get; set; } // Command for opening the folder
+        public ICommand PreviousFolder { get; set; } // Command for going up the folder hierarchy tree
+        public ICommand PhotoCollect { get; set; } // Command for collecting photos from a fiel source
 
         #endregion
 
+        /// <summary>
+        /// Gets or sets a collection of folders.
+        /// </summary>
         public ObservableCollection<Folder> Folders { get; set; }
-        public ObservableCollection<Photo> Photos { get; set; }
-        public ObservableCollection<Photo> SelectedPhotos { get; set; }
 
+        /// <summary>
+        /// Gets or sets a collection of photos.
+        /// </summary>
+        public ObservableCollection<Photo> Photos { get; set; }
+
+        /// <summary>
+        /// Gets or sets a collection of selected photos.
+        /// </summary>
+        public ObservableCollection<object> SelectedPhotos { get; set; }
+
+        /// <summary>
+        /// Gets or sets the currently selected folder.
+        /// </summary>
         public Folder CurrentFolder
         {
             get { return currentFolder; }
@@ -67,20 +86,31 @@ namespace PhotoLayout.ViewModels
 
         #endregion
 
+        #region - Public methods -
+
+        #endregion
+
         #region - Private methods -
 
         #region - Constructor initializations -
 
+        /// <summary>
+        /// Initializes fields and properties that need initialization through constructor.
+        /// </summary>
         private void InitializeFields()
         {
             // TODO Check which extensions can be used and mayhaps put them somewhere else
-            this.photoExtensions=new List<string>() { ".jpg", ".jpeg", ".png", ".bmp", ".tiff" };
+            this.photoExtensions = new List<string>() { ".jpg", ".jpeg", ".png", ".bmp", ".tiff" };
             this.photoDictionary = new Dictionary<Folder, List<Photo>>();
                         
             Folders = new ObservableCollection<Folder>();
             Photos = new ObservableCollection<Photo>();
+            SelectedPhotos = new ObservableCollection<object>();
         }
 
+        /// <summary>
+        /// Initializes background workers for collecting new and refreshing current folders nad photos.
+        /// </summary>
         private void InitializeWorkers()
         {
             photoCollectionWorker = new BackgroundWorker();
@@ -95,34 +125,33 @@ namespace PhotoLayout.ViewModels
             refreshWorker.ProgressChanged += OnRefreshWorkerProgressChanged;
         }
 
+        /// <summary>
+        /// Initializes commands.
+        /// </summary>
         private void InitializeCommands()
         {
             OpenFolder = new RelayCommand(OnOpenFolder);
             PreviousFolder = new RelayCommand(x => OnPreviousFolder(), x => HasPreviousFolder());
-            PhotoCollect = new RelayCommand(OnPhotoCollect);
-
-            TestCancelWorkers = new RelayCommand(x =>
-              {
-                  if (refreshWorker.IsBusy || photoCollectionWorker.IsBusy)
-                  {
-                      refreshWorker.CancelAsync();
-                      photoCollectionWorker.CancelAsync();
-                  }
-              });
+            PhotoCollect = new RelayCommand(OnPhotoCollect);            
         }
 
         #endregion
 
         #region - OpenFolder Command -
 
+        /// <summary>
+        /// Sets CurrentFolder property to the specified new folder and calls <see cref="RefreshCurrentFolder"/> method to update folders and photos.
+        /// </summary>
+        /// <param name="parameter">Folder being set as CurrentFolder.</param>
         private void OnOpenFolder(object parameter)
         {
             Folder selectedFolder = parameter as Folder;
             if (selectedFolder != null)
             {
-                if (refreshWorker.IsBusy)
+                if (this.refreshWorker.IsBusy)
                 {
-                    refreshWorker.CancelAsync();
+                    // Refresher worker is already working on something, so cancel the work as this method being called for the second time
+                    this.refreshWorker.CancelAsync();
                 }
 
                 CurrentFolder = selectedFolder;
@@ -134,17 +163,21 @@ namespace PhotoLayout.ViewModels
 
         #region - PreviousFolder Command -
 
+        /// <summary>
+        /// Sets CurrentFolder to its parent -> goes back up the hierarchy tree.
+        /// </summary>
         private void OnPreviousFolder()
         {
             if (refreshWorker.IsBusy)
             {
+                // Refresher worker is already working on something, so cancel the work as this method is being called for the second time
                 refreshWorker.CancelAsync();
             }
 
             CurrentFolder = CurrentFolder.Parent;
             RefreshCurrentFolder();            
         }
-
+        
         private bool HasPreviousFolder()
         {
             bool hasPreviousFolder =  CurrentFolder?.Parent != null;
@@ -155,6 +188,10 @@ namespace PhotoLayout.ViewModels
 
         #region - PhotoCollect Command -        
 
+        /// <summary>
+        /// Stops working workers and calls poto collection worker to collect photos from the specified file source.
+        /// </summary>
+        /// <param name="parameter">Files source from which to get photos.</param>
         private void OnPhotoCollect(object parameter)
         {
             if (this.photoCollectionWorker.IsBusy || this.refreshWorker.IsBusy)
@@ -171,10 +208,13 @@ namespace PhotoLayout.ViewModels
             }
 
             // TODO Initial collecting from a file source -> Some animation should be enabled
-            this.photoCollectionWorker.RunWorkerAsync(parameter); // Calls PhotoCollectionWorkerDoWork below
+            this.photoCollectionWorker.RunWorkerAsync(parameter); // Calls PhotoCollectionWorkerDoWork
             // TODO Stop loading/photo collecting animation at this point   
         }
 
+        /// <summary>
+        /// Collects photos from the file source specified in the argument.
+        /// </summary>
         private void PhotoCollectionWorkerDoWork(object sender, DoWorkEventArgs e)
         {
             string source = e.Argument as string;
@@ -190,7 +230,7 @@ namespace PhotoLayout.ViewModels
                         // Get photos from instagram
                         break;
                     case "Usb":
-                        DisplayUsbPhotos();
+                        CollectUsbPhotos();
                         break;
                     case "EmailCode":
                         // Get photos sent to Easy2U email
@@ -203,12 +243,15 @@ namespace PhotoLayout.ViewModels
                         break;
                     case "Recent":
                         // TODO Collect recent photos
-                        DisplayRecentPhotos();
+                        CollectRecentPhotos();
                         break;
                 }
             }
         }        
 
+        /// <summary>
+        /// Photo collection is completed, calling for refresh of the current folder.
+        /// </summary>
         private void RunPhotoCollectionWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             RefreshCurrentFolder();
@@ -226,26 +269,26 @@ namespace PhotoLayout.ViewModels
         #region - Usb photos -
 
         /// <summary>
-        /// Display folders and photos from the usb drive.
+        /// Collects folders and photos from the usb drive. Sets the usb drive as the current folder.
         /// </summary>
         /// <remarks>
         /// For testing purposes it gets all logical drives, not just the fixed usb drive.
         /// </remarks>
-        private void DisplayUsbPhotos()
+        private void CollectUsbPhotos()
         {
             DriveInfo[] localDrives = DriveInfo.GetDrives();
 
             #region "TEST CODE"
 
             // All drives will be shown and have this folder as root (parent)        
-            Folder virtualRoot = new Folder("root", null, photoExtensions);
+            Folder virtualRoot = new Folder("Root folder", null, photoExtensions);
 
+            // Each drive is represented as a folder and added to virtualRoot, which represents the CurrentFolder
             foreach (DriveInfo drive in localDrives)
             {                
                 Folder driveAsFolder = new Folder(drive.Name, virtualRoot, photoExtensions);
                 virtualRoot.SubFolders.Add(driveAsFolder);
             }
-
             CurrentFolder = virtualRoot;
 
             #endregion
@@ -271,7 +314,10 @@ namespace PhotoLayout.ViewModels
 
         #region - Recent photos -
 
-        private void DisplayRecentPhotos()
+        /// <summary>
+        /// Collects recent folders and photos. Sets the recent folder as the current folder.
+        /// </summary>
+        private void CollectRecentPhotos()
         {
             // TODO Create 'Recent Photos' folder somewhere, where saved photos will reside            
             string recentFolderPath = @"../Recent Photos/";
@@ -292,12 +338,16 @@ namespace PhotoLayout.ViewModels
         {
             while (this.refreshWorker.IsBusy)
             {
+                // Waiting for refresh worker to stop his current work, before starting a new one
                 System.Windows.Forms.Application.DoEvents();
             }
 
-            this.refreshWorker.RunWorkerAsync();
-        }       
+            this.refreshWorker.RunWorkerAsync(); // Calling RefreshWorkerDoWork
+        }
 
+        /// <summary>
+        /// Calls for updates of Folders and Photos collections.
+        /// </summary>
         private void RefreshWorkerDoWork(object sender, DoWorkEventArgs e)
         {
             UpdateFolders(e); 
@@ -313,7 +363,7 @@ namespace PhotoLayout.ViewModels
 
             foreach (Folder folder in CurrentFolder.SubFolders)
             {
-                if (refreshWorker.CancellationPending)
+                if (this.refreshWorker.CancellationPending)
                 {
                     e.Cancel = true;
                     return;
@@ -331,35 +381,37 @@ namespace PhotoLayout.ViewModels
 
             if (!this.photoDictionary.ContainsKey(CurrentFolder))
             {
-                // First time initialization of the CurrentFolder's Photos OR the dictionary has released some memory and needs reinitialization
+                // First time initialization of the CurrentFolder's Photos OR the dictionary has removed some key-value pairs and needs reinitialization
                 this.photoDictionary[CurrentFolder] = new List<Photo>();
             }
 
             for (int i = 0; i < CurrentFolder.Files.Count; i++)
             {
-                if (refreshWorker.CancellationPending)
+                if (this.refreshWorker.CancellationPending)
                 {
                     e.Cancel = true;
                     return;
                 }
 
-                FileInfo file = CurrentFolder.Files[i];
-                
+                FileInfo file = CurrentFolder.Files[i];                
                 Photo photo = new Photo(new Uri(file.FullName), file.Name, file.Extension);
 
                 if (this.photoDictionary[CurrentFolder].Contains(photo))
                 {
-                    // Work was cancelled, but photo was already inserted, so no need to do it twice. Check the next photo
+                    // Work was cancelled, but photo was already created, so no need to do it twice. Go to the next iteration and check the next photo
                     continue;
                 }
                 photo.RefreshBitmapSource(BitmapType.Thumbnail);
                 this.photoDictionary[CurrentFolder].Add(photo);
 
-                int percentProgress = i + 1 / CurrentFolder.Files.Count;
-                this.refreshWorker.ReportProgress(percentProgress, photo);
+                int progressPercentage = i + 1 / CurrentFolder.Files.Count;
+                this.refreshWorker.ReportProgress(progressPercentage, photo);
             }
         }
 
+        /// <summary>
+        /// Reporting on refresh worker's progress. Adding a photo to the Photos collection.
+        /// </summary>
         private void OnRefreshWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Photo photo = e.UserState as Photo;
@@ -374,8 +426,5 @@ namespace PhotoLayout.ViewModels
 
         #endregion
 
-        #region - Public methods -
-
-        #endregion
     }
 }

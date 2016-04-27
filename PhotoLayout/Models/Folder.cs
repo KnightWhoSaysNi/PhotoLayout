@@ -11,7 +11,6 @@ namespace PhotoLayout.Models
     public class Folder
     {
         #region - Fields -
-
         private Folder parent;
         private DirectoryInfo folder;
         private ObservableCollection<Folder> subFolders;
@@ -23,10 +22,16 @@ namespace PhotoLayout.Models
 
         #region - Constructors -
 
-        public Folder(string rootPath, Folder parent = null, IList<string> extensions = null)
+        /// <summary>
+        /// Creates a structure that represents a folder with subfolders and files. If extensions are specified only finds certain files.
+        /// </summary>
+        /// <param name="fullPath">Full path to the folder.</param>
+        /// <param name="parent">Parent folder.</param>
+        /// <param name="extensions">Extensions for the files of the folder. Only files with certain extensions will be found.</param>
+        public Folder(string fullPath, Folder parent = null, IList<string> extensions = null)
         {
-            this.FullPath = rootPath;
-            this.parent = parent;
+            this.FullPath = fullPath;
+            this.Parent = parent;
             this.extensions = extensions;
 
             if (extensions != null)
@@ -39,6 +44,9 @@ namespace PhotoLayout.Models
 
         #region - Properties -
 
+        /// <summary>
+        /// Gets or sets the full path of the folder.
+        /// </summary>
         public string FullPath
         {
             get { return this.folder?.FullName; }
@@ -56,27 +64,22 @@ namespace PhotoLayout.Models
             }
         }
 
+        /// <summary>
+        /// Gets just the name part of the folder's FullPath.
+        /// </summary>
         public string Name
         {
             get { return this.folder?.Name; }
         }
 
-        public Folder Parent
-        {
-            get { return parent; }
-            set
-            {
-                if (this.parent == null)
-                {
-                    parent = value;
-                }
-                else
-                {
-                    throw new ArgumentException($"{Name} already has a parent: {parent.Name}");
-                }
-            }
-        }
+        /// <summary>
+        /// Gets or sets the parent folder.
+        /// </summary>
+        public Folder Parent { get; set; }
 
+        /// <summary>
+        /// Gets a collection of subfolders.
+        /// </summary>
         public ObservableCollection<Folder> SubFolders
         {
             get
@@ -90,6 +93,9 @@ namespace PhotoLayout.Models
             }
         }
 
+        /// <summary>
+        /// Gets a collection of files.
+        /// </summary>
         public ObservableCollection<FileInfo> Files
         {
             get
@@ -107,21 +113,26 @@ namespace PhotoLayout.Models
 
         #region - Private methods -
             
+        /// <summary>
+        /// Populates/fills the sub folders of the folder.
+        /// </summary>
         private void PopulateSubFolders()
         {
             if (this.folder == null)
             {
+                // This folder is a virtual folder and has no DirectoryInfo. Sub folders are added manually
                 return;
             }
 
             try
             {
-                var dirInfos = this.folder.GetDirectories()
-                    .Where(x => !(x.Attributes.HasFlag(FileAttributes.Hidden) || x.Attributes.HasFlag(FileAttributes.System))); // TODO Do not show certain folders
-                foreach (DirectoryInfo directory in dirInfos)
+                IEnumerable<DirectoryInfo> directories = this.folder.GetDirectories(.
+                    .Where(x => !(x.Attributes.HasFlag(FileAttributes.Hidden) || x.Attributes.HasFlag(FileAttributes.System))); // TODO Check which folders to ignore
+
+                foreach (DirectoryInfo directory in directories)
                 {
-                    Folder subFolder = new Folder(directory.FullName, this, extensions);
-                    subFolders.Add(subFolder);
+                    Folder subFolder = new Folder(directory.FullName, this, this.extensions);
+                    this.subFolders.Add(subFolder);
                 }
             }
             catch (UnauthorizedAccessException)
@@ -134,10 +145,14 @@ namespace PhotoLayout.Models
             }
         }
 
+        /// <summary>
+        /// Populates/fills the files of the folder. If specified selects files by extension.
+        /// </summary>
         private void PopulateFiles()
         {
             if (this.folder == null)
             {
+                // This folder is a virtual folder and has no files by default
                 return;
             }
 
@@ -145,9 +160,9 @@ namespace PhotoLayout.Models
             {
                 IEnumerable<FileInfo> fileInfos;
 
-                if (selectByExtension)
+                if (this.selectByExtension)
                 {
-                    // this.Files will return only files with the correct extension
+                    // this.Files will return only files with the correct extension                     
                     fileInfos = from file in this.folder.EnumerateFiles()
                                 where this.extensions.Contains(file.Extension, StringComparer.CurrentCultureIgnoreCase)
                                 select file;
@@ -160,7 +175,7 @@ namespace PhotoLayout.Models
 
                 foreach (FileInfo file in fileInfos)
                 {                    
-                        files.Add(file);
+                        this.files.Add(file);
                 }
             }
             catch (UnauthorizedAccessException)
