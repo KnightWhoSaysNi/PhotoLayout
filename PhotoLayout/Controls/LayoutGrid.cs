@@ -601,7 +601,7 @@ namespace PhotoLayout.Controls
             }
             else
             {
-
+                RemoveRowFirst(rowCount, cellCount, col, layoutGrid);
             }
         }
 

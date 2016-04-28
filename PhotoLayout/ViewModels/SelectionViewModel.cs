@@ -264,7 +264,10 @@ namespace PhotoLayout.ViewModels
         /// </summary>
         private void RunPhotoCollectionWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            RefreshCurrentFolder();
+            if (CurrentFolder != null)
+            {
+                RefreshCurrentFolder();
+            }
         }
 
         private bool CanPhotoCollect(object parameter)
