@@ -1,0 +1,109 @@
+﻿<UserControl x:Class="PhotoLayout.Views.FileSourceSelectionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PhotoLayout.Views"
+             xmlns:converters="clr-namespace:PhotoLayout.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="300"
+             Background="{StaticResource BackgroundBlack}" SnapsToDevicePixels="True">
+    <UserControl.Resources>
+        <!-- Converters -->
+        <converters:CheckedToVisibilityConverter x:Key="CheckedToVisibility" />
+
+        <!-- Default RadioButton style -->
+        <Style TargetType="RadioButton" BasedOn="{StaticResource FileSourceRadioButton}">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Command" Value="{Binding PhotoCollect}" />
+        </Style>
+        
+        <!-- Default Path style -->
+        <Style TargetType="Path" BasedOn="{StaticResource RadioButtonPath}" />
+
+        <!-- Default TextBlock style -->
+        <Style TargetType="TextBlock" BasedOn="{StaticResource RadioButtonTextBlock}" />
+        
+    </UserControl.Resources>
+    
+    <!-- ****************************************************************************************************** -->
+    <!--                     VIEWBOX PUT FOR TESTING PURPOSES. REMOVE AFTER TESTING (or not...)                 -->
+    <!-- ****************************************************************************************************** -->
+    <Viewbox MaxWidth="200">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!-- Facebook -->
+            <RadioButton x:Name="facebook" CommandParameter="Facebook">
+                <StackPanel>
+                    <Path Data="{StaticResource Facebook}" />
+                    <TextBlock Text="Facebook" />
+                </StackPanel>
+            </RadioButton>
+            <Ellipse Margin="230,0,5,0" Height="15" Width="15" Visibility="Hidden" />
+            <Ellipse Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=facebook, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+
+            <!-- Instagram -->
+            <RadioButton x:Name="instagram" Grid.Row="1">
+                <StackPanel>
+                    <Path Data="{StaticResource Instagram}" />
+                    <TextBlock Text="Instagram" />
+                </StackPanel>
+            </RadioButton>
+            <Ellipse Grid.Row="1" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=instagram, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+
+            <!-- Usb -->
+            <RadioButton x:Name="usb" Grid.Row="2" CommandParameter="Usb">
+                <StackPanel>
+                    <Path Data="{StaticResource Usb}" />
+                    <TextBlock Text="Usb device" />
+                </StackPanel>
+            </RadioButton>
+            <Ellipse Grid.Row="2" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=usb, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+
+            <!-- Email code -->
+            <RadioButton x:Name="emailCode" Grid.Row="3">
+                <StackPanel>
+                    <Path Data="{StaticResource EmailCode}" />
+                    <TextBlock Text="Email code" />
+                </StackPanel>
+            </RadioButton>
+            <Ellipse Grid.Row="3" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=emailCode, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+
+            <!-- Dropbox -->
+            <RadioButton x:Name="dropbox" Grid.Row="4">
+                <StackPanel>
+                    <Path Data="{StaticResource Dropbox}" />
+                    <TextBlock Text="Dropbox" />
+                </StackPanel>
+            </RadioButton>
+            <Ellipse Grid.Row="4" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=dropbox, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+
+            <!-- Google drive -->
+            <RadioButton x:Name="googleDrive" Grid.Row="5">
+                <StackPanel>
+                    <Path Data="{StaticResource GoogleDrive}" />
+                    <TextBlock Text="Google drive" />
+                </StackPanel>
+            </RadioButton>
+            <Ellipse Grid.Row="5" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=googleDrive, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+            
+            <!-- Recent images -->
+            <RadioButton x:Name="recentImages" Grid.Row="6" CommandParameter="Recent">
+                <StackPanel>
+                    <Path Data="{StaticResource RecentImages}" />
+                    <TextBlock Text="Recent images" />
+                </StackPanel>
+            </RadioButton>
+            <Ellipse Grid.Row="6" Style="{StaticResource DecorativeEllipse}" Visibility="{Binding ElementName=recentImages, Path=IsChecked, Converter={StaticResource CheckedToVisibility}}" />
+        </Grid>
+    </Viewbox>
+</UserControl>

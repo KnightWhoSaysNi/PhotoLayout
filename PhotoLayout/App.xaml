@@ -7,10 +7,18 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- First 2 ways can produce a bug in VS2015, where the source path is not recognized for some reason -->
-                <ResourceDictionary Source="Resources/Shapes.xaml" />
-                <ResourceDictionary Source="Resources/ButtonStyles.xaml" />
-                <ResourceDictionary Source="/PhotoLayout;component/Resources/PathStyles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/PhotoLayout;component/Resources/Brushes.xaml" />
+                <!-- Could be that build-delete-retype is enough to fix the bug -->
+                <ResourceDictionary Source="Themes/Geometry.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/PathStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/PhotoLayout;component/Themes/Brushes.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/TextBlockStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/BorderStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/Brushes.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/ButtonBase/ButtonStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/ButtonBase/RadioButtonStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/ButtonBase/ToggleButtonStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/EllipseStyles.xaml" />
+                <ResourceDictionary Source="/PhotoLayout;component/Themes/Typography.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

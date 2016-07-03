@@ -4,44 +4,44 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:PhotoLayout.Views"
+        xmlns:vm="clr-namespace:PhotoLayout.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1600">
-    <Window.Background>
-        <SolidColorBrush Color="#2c3e50" />
-    </Window.Background>
-    
+        Title="MainWindow" Height="800" Width="1600" 
+        Icon="Images/temp layout icon.ico"
+        Background="{StaticResource BackgroundDark}">
+    <Window.Resources>
+        <vm:SelectionViewModel x:Key="SelectionViewModel" />
+    </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <!-- GRID ROWS FOR TESTING PURPOSES -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions>  
+      
+        <!-- FileSource selection  -->
+        <views:FileSourceSelectionView DataContext="{StaticResource SelectionViewModel}"/>
 
-        <!-- Top bar -->
-        <Border x:Name="topBorder" BorderBrush="LightBlue" BorderThickness="0.5" Margin="-10,-100,0,0">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Visibility}" Value="Visible">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ThicknessAnimation Duration="0:0:0.3" To="0,0,0,2" Storyboard.TargetProperty="Margin" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <views:TopBar />            
+        <!-- Photo and layout selection -->
+        <Border Grid.Column="1" BorderBrush="LightSalmon" BorderThickness="0,0,1,0" Padding="15">
+            <views:PhotoLayoutSelectionView DataContext="{StaticResource SelectionViewModel}" />
         </Border>
+        
+        <!-- Photo preview -->
+        <views:PhotoPreviewView Grid.Column="2" />
 
-        <Border Grid.Row="2" BorderBrush="LightCyan" BorderThickness="1" CornerRadius="5" Padding="35" VerticalAlignment="Bottom">
-            <views:PhotoManipulationView />
-        </Border>
+        <!-- Photo manipulation view -->
+        <views:PhotoManipulationView Grid.Column="3" Grid.RowSpan="2"/>
 
-        <Button Visibility="Collapsed" Grid.Row="2" Content="Show" Foreground="Black" FontSize="22" Margin="200" Click="Button_Click" VerticalAlignment="Bottom" />
+        <!-- BUTTONS FOR TESTING -->
+        <StackPanel Visibility="Collapsed" Background="{StaticResource BackgroundLight}" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" VerticalAlignment="Center">            
+            <Button Content="Call GC" FontSize="22" Click="CallGC" Margin="5" />
+        </StackPanel>
     </Grid>
 </Window>
