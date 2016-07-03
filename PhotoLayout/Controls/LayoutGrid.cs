@@ -245,7 +245,7 @@ namespace PhotoLayout.Controls
         {
             System.Diagnostics.Debug.WriteLine($"PhotoCollectionChanged -> Removed {photo}");
 
-            // Go through every image control and set it hosts the photo (either a Thumbnail or a PreviewBitmap version) sets its Source to null 
+            // Go through every image control and see if it hosts the photo (either a Thumbnail or a PreviewBitmap version) and set its Source to null 
             for (int i = 0; i < layoutGrid.images.Count; i++)
             {
                 if (layoutGrid.images[i].Source != null && (layoutGrid.images[i].Source == photo.Thumbnail || layoutGrid.images[i].Source == photo.PreviewBitmap))
