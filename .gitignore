@@ -1,4 +1,5 @@
-ControlTesting/*
+ControlTesting/
+*
 .vs
-bin
+
 obj
